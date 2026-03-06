@@ -58,54 +58,96 @@ html, body {
 }
 
 /* ── LOGIN SCREEN ── */
+/* ── GmarketSans 폰트 ── */
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('fonts/GmarketSansTTFBold.ttf') format('truetype'),
+       url('fonts/GmarketSansBold.otf') format('opentype');
+  font-weight: 700; font-style: normal;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('fonts/GmarketSansTTFLight.ttf') format('truetype'),
+       url('fonts/GmarketSansLight.otf') format('opentype');
+  font-weight: 300; font-style: normal;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('fonts/GmarketSansMedium.otf') format('opentype');
+  font-weight: 500; font-style: normal;
+}
+
 .login-screen {
   position: fixed; inset: 0; z-index: 1000;
-  background: var(--hdr-bg);
+  background: #13131f;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
 }
 .login-screen.hidden { display: none; }
 .login-box {
-  width: 400px;
-  display: flex; flex-direction: column; align-items: center;
+  width: 420px;
+  display: flex; flex-direction: column; align-items: flex-start;
 }
-.login-logo {
-  font-size: 9px; font-weight: 900; letter-spacing: 0.35em;
-  text-transform: uppercase; color: rgba(255,255,255,0.35);
-  margin-bottom: 48px;
+.login-brand { margin-bottom: 40px; }
+.login-brand-synapse {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 64px; line-height: 1;
+  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block;
 }
-.login-title {
-  font-size: 28px; font-weight: 900; color: #fff;
-  letter-spacing: -0.02em; margin-bottom: 8px;
+.login-brand-brain {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 64px; line-height: 1;
+  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block;
 }
-.login-sub {
-  font-size: 12px; color: rgba(255,255,255,0.35);
-  margin-bottom: 40px; letter-spacing: 0.06em;
+.login-tagline {
+  width: 100%; padding: 18px 22px;
+  border: 1.5px solid rgba(108,99,255,0.45);
+  border-radius: 16px; background: rgba(108,99,255,0.06);
+  color: rgba(255,255,255,0.35);
+  font-family: 'GmarketSans', var(--font); font-weight: 300; font-size: 15px;
+  text-align: center; margin-bottom: 32px; line-height: 1.5;
 }
 .login-field { width: 100%; margin-bottom: 12px; }
 .login-field input {
   width: 100%; padding: 15px 18px;
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: 10px;
-  color: #fff; font-family: var(--font); font-size: 15px;
-  outline: none;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #fff; font-family: 'GmarketSans', var(--font); font-size: 15px; font-weight: 300;
+  outline: none; transition: border-color .2s;
 }
-.login-field input::placeholder { color: rgba(255,255,255,0.28); }
-.login-field input:focus { border-color: rgba(255,255,255,0.38); }
+.login-field input::placeholder { color: rgba(255,255,255,0.25); }
+.login-field input:focus { border-color: rgba(108,99,255,0.6); }
+.login-remember {
+  display: flex; align-items: center; gap: 10px;
+  margin: 4px 0 16px; cursor: pointer;
+}
+.login-remember input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: #a855f7; cursor: pointer;
+}
+.login-remember span {
+  font-family: 'GmarketSans', var(--font); font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,0.4);
+}
 .login-btn {
   width: 100%; padding: 16px;
-  background: #fff; color: #111;
-  border: none; border-radius: 10px;
-  font-family: var(--font); font-size: 13px; font-weight: 800;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  cursor: pointer; margin-top: 8px;
+  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
+  color: #fff;
+  border: none; border-radius: 12px;
+  font-family: 'GmarketSans', var(--font); font-size: 15px; font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer; margin-top: 4px;
   transition: opacity .15s;
 }
 .login-btn:hover { opacity: 0.88; }
 .login-err {
   font-size: 12px; color: #ff6b6b;
   margin-top: 12px; min-height: 18px;
+  font-family: 'GmarketSans', var(--font); font-weight: 300;
 }
 
 /* ── LAYOUT ── */
@@ -427,44 +469,14 @@ html, body {
   overflow: hidden;
 }
 .add-row:hover { background: var(--line); }
-.add-row-plus {
-  width: 40px; flex-shrink: 0;
-  border-right: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 300; color: var(--text3);
-}
-.add-row-pri {
-  width: 58px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  border-right: 1px solid var(--line);
-}
-.pri-select {
-  width: 44px; height: 24px;
-  border: 1px solid var(--border-mid);
-  border-radius: 4px;
-  background: var(--surface); color: var(--text);
-  font-family: var(--font); font-size: 11px; font-weight: 700;
-  cursor: pointer; outline: none;
-  -webkit-appearance: none; appearance: none;
-  text-align: center; text-align-last: center;
-  padding: 0;
-}
 .add-row-input {
-  flex: 1; padding: 10px 10px;
+  flex: 1; padding: 12px 14px;
   font-size: 13px; font-family: var(--font);
   background: transparent; border: none; outline: none;
   color: var(--text2); font-style: italic;
+  width: 100%;
 }
 .add-row-input::placeholder { color: var(--text3); }
-.add-row-btn {
-  width: 46px; flex-shrink: 0;
-  border: none; background: var(--hdr-bg); color: var(--hdr-text);
-  font-size: 22px; font-weight: 300;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: opacity .15s;
-}
-.add-row-btn:hover { opacity: 0.75; }
-.add-row-btn:active { transform: scale(0.9); }
 
 /* ── PRIORITY POPUP ── */
 .pri-popup {
@@ -679,15 +691,21 @@ html, body {
 <!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <div class="login-logo">Brain Dump</div>
-    <div class="login-title">Welcome Back</div>
-    <div class="login-sub">jasoneye.com</div>
+    <div class="login-brand">
+      <span class="login-brand-synapse">Synapse</span>
+      <span class="login-brand-brain">Brain</span>
+    </div>
+    <div class="login-tagline">생각을 정리하고, 오늘을 설계하는 나만의 공간</div>
     <div class="login-field">
       <input type="email" id="loginEmail" placeholder="이메일" autocomplete="email" value="yhun1542@jasoneye.com">
     </div>
     <div class="login-field">
       <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
     </div>
+    <label class="login-remember">
+      <input type="checkbox" id="rememberMe" checked>
+      <span>자동 로그인</span>
+    </label>
     <button class="login-btn" id="loginBtn">로그인</button>
     <div class="login-err" id="loginErr"></div>
   </div>
@@ -697,12 +715,6 @@ html, body {
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <span class="brand">Brain Dump</span>
-    <div class="topbar-right">
-      <button class="icon-btn" id="btnToday"><span class="ico">📅</span> Today</button>
-      <button class="icon-btn" id="btnTheme"><span class="ico" id="themeIco">🌙</span> Theme</button>
-      <button class="icon-btn" id="btnLogout" style="display:none"><span class="ico">⏻</span> 로그아웃</button>
-    </div>
   </div>
 
   <!-- VERSION LINKS -->
@@ -774,7 +786,7 @@ html, body {
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, onSnapshot }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
@@ -902,14 +914,18 @@ onAuthStateChanged(auth, user => {
   if(user) {
     currentUser = user;
     document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('btnLogout').style.display='flex';
+    // logout btn removed
+    // Firestore에서 OpenAI 키 로드
+    getDoc(doc(db2,'config','openai')).then(snap=>{
+      if(snap.exists()) window.__OPENAI_KEY__ = snap.data().key || '';
+    }).catch(()=>{});
     try { db = JSON.parse(localStorage.getItem('bd_pc_v3')||'{}'); } catch {}
     subscribeFirestore();
     applyTheme(); renderDate(); renderCards();
   } else {
     currentUser = null;
     document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('btnLogout').style.display='none';
+    // logout btn removed
     if(unsubscribe) { unsubscribe(); unsubscribe=null; }
   }
 });
@@ -930,10 +946,7 @@ document.getElementById('loginPw').addEventListener('keydown', e => {
   if(e.key==='Enter') document.getElementById('loginBtn').click();
 });
 
-document.getElementById('btnLogout').addEventListener('click', async () => {
-  await signOut(auth);
-  toast('로그아웃됨');
-});
+
 
 function renderDate() {
   const info=fmtDisplay(curDate);
@@ -992,15 +1005,7 @@ function buildCard(cfg) {
   const addRow=document.createElement('div');
   addRow.className='add-row';
   addRow.innerHTML=`
-    <div class="add-row-plus">+</div>
-    <div class="add-row-pri">
-      <select class="pri-select" data-card="${cfg.id}">
-        <option value="">—</option>
-        ${PRI_OPTS.map(p=>`<option value="${p}">${p}</option>`).join('')}
-      </select>
-    </div>
     <input class="add-row-input" placeholder="새 항목 입력 후 Enter..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
-    <button class="add-row-btn" data-card="${cfg.id}">+</button>
   `;
   body.appendChild(addRow);
   card.appendChild(body);
@@ -1326,8 +1331,7 @@ function bindEvents() {
   document.getElementById('btnPrev').addEventListener('click',()=>goDate(offsetDate(curDate,-1)));
   document.getElementById('btnNext').addEventListener('click',()=>goDate(offsetDate(curDate,+1)));
   document.getElementById('dateCenter').addEventListener('click',openDatePopup);
-  document.getElementById('btnToday').addEventListener('click',()=>{ goDate(todayStr()); toast('오늘로 이동'); });
-  document.getElementById('btnTheme').addEventListener('click',()=>{ isDark=!isDark; applyTheme(); });
+
 
   document.getElementById('btnConfirm').addEventListener('click',()=>{
     const v=document.getElementById('dateInput').value;
@@ -1372,22 +1376,15 @@ function bindEvents() {
   document.addEventListener('click',e=>{
     if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
     if(!e.target.closest('.list-row')&&swipedRow) closeSwipe(swipedRow);
-    const addBtn=e.target.closest('.add-row-btn');
-    if(addBtn){
-      const cardId=addBtn.dataset.card;
-      const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
-      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
-      if(inp){ addItem(cardId,inp.value,sel?sel.value:''); inp.value=''; if(sel) sel.value=''; }
-    }
+
   });
 
   document.addEventListener('keydown',e=>{
     if(e.target.classList.contains('add-row-input')&&e.key==='Enter'){
       e.preventDefault();
       const cardId=e.target.dataset.card;
-      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
-      addItem(cardId,e.target.value,sel?sel.value:'');
-      e.target.value=''; if(sel) sel.value='';
+      addItem(cardId,e.target.value,'');
+      e.target.value='';
       return;
     }
     const tag=document.activeElement.tagName;
