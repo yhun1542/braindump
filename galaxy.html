@@ -111,13 +111,27 @@ body {
 }
 #loginScreen.hidden { display: none; }
 .login-logo {
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 6px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin-bottom: 8px; text-align: center;
 }
 .login-logo img {
-  height: 56px;
+  height: 40px;
   width: auto;
   display: block;
+  margin-bottom: 10px;
+}
+
+.login-brand-text {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  background: linear-gradient(135deg, #6c63ff 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+  letter-spacing: -1px;
 }
 .login-sub {
   font-size: 12px; color: #555577; margin-bottom: 36px; text-align: center;
@@ -853,10 +867,11 @@ window.__hideSplash = function () {
 </script>
 <div id="loginScreen">
 <div class="login-card">
-    <div class="login-logo">
+        <div class="login-logo">
       <img src="/images/jf_os_header_light_1x.png"
            srcset="/images/jf_os_header_light_1x.png 1x, /images/jf_os_header_light_2x.png 2x, /images/jf_os_header_light_3x.png 3x"
-           alt="JF OS" height="56" id="loginLogoImg">
+           alt="JF OS" height="40" id="loginLogoImg" style="margin-bottom:10px;">
+      <div class="login-brand-text">Synapse<br>Brain</div>
     </div>
     <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
     <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
