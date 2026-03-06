@@ -7,8 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
-   BRAIN DUMP — PC DESKTOP VERSION
-   Optimized for 1920×1080, 1440×900, 1280×800
+   BRAIN DUMP — PC DESKTOP VERSION v3.0
+   Firebase + AI Reminder Edition
    ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,10 +27,9 @@
   --done-color:  #c0c0c0;
   --shadow:      0 1px 12px rgba(0,0,0,0.06);
   --font:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* Priority colors */
-  --pa: #c0392b; /* A — urgent */
-  --pb: #2980b9; /* B — normal */
-  --pc: #27ae60; /* C — low    */
+  --pa: #c0392b;
+  --pb: #2980b9;
+  --pc: #27ae60;
 }
 [data-theme="dark"] {
   --bg:         #141414;
@@ -56,6 +55,57 @@ html, body {
   -webkit-font-smoothing: antialiased;
   font-size: 14px;
   transition: background .2s, color .2s;
+}
+
+/* ── LOGIN SCREEN ── */
+.login-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--hdr-bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.login-screen.hidden { display: none; }
+.login-box {
+  width: 400px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.login-logo {
+  font-size: 9px; font-weight: 900; letter-spacing: 0.35em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  margin-bottom: 48px;
+}
+.login-title {
+  font-size: 28px; font-weight: 900; color: #fff;
+  letter-spacing: -0.02em; margin-bottom: 8px;
+}
+.login-sub {
+  font-size: 12px; color: rgba(255,255,255,0.35);
+  margin-bottom: 40px; letter-spacing: 0.06em;
+}
+.login-field { width: 100%; margin-bottom: 12px; }
+.login-field input {
+  width: 100%; padding: 15px 18px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: #fff; font-family: var(--font); font-size: 15px;
+  outline: none;
+}
+.login-field input::placeholder { color: rgba(255,255,255,0.28); }
+.login-field input:focus { border-color: rgba(255,255,255,0.38); }
+.login-btn {
+  width: 100%; padding: 16px;
+  background: #fff; color: #111;
+  border: none; border-radius: 10px;
+  font-family: var(--font); font-size: 13px; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; margin-top: 8px;
+  transition: opacity .15s;
+}
+.login-btn:hover { opacity: 0.88; }
+.login-err {
+  font-size: 12px; color: #ff6b6b;
+  margin-top: 12px; min-height: 18px;
 }
 
 /* ── LAYOUT ── */
@@ -144,7 +194,6 @@ html, body {
 }
 .date-nav-btn:hover { color: var(--text); background: var(--line); }
 .date-nav-btn:active { transform: scale(0.88); }
-
 .date-center {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   min-width: 280px;
@@ -155,7 +204,6 @@ html, body {
   user-select: none;
 }
 .date-center:hover { background: var(--line); }
-
 .date-main {
   font-size: 44px;
   font-weight: 900;
@@ -279,7 +327,6 @@ html, body {
 }
 .list-row:last-child { border-bottom: none; }
 
-/* Swipe container */
 .row-inner {
   display: flex; align-items: stretch;
   width: 100%;
@@ -290,7 +337,6 @@ html, body {
 }
 .list-row:hover .row-inner { background: var(--row-hover); }
 
-/* Swipe action buttons (revealed on left-swipe) */
 .row-actions {
   position: absolute; right: 0; top: 0; bottom: 0;
   display: flex;
@@ -310,7 +356,6 @@ html, body {
 .row-act-del  { background: #dc2626; color: #fff; }
 .row-act-btn .act-ico { font-size: 16px; }
 
-/* Row cells */
 .row-num {
   width: 40px; flex-shrink: 0;
   border-right: 1px solid var(--line);
@@ -371,13 +416,6 @@ html, body {
 }
 .list-row:hover .row-del-btn { opacity: 1; }
 .row-del-btn:hover { color: #dc2626; }
-
-/* ── EMPTY ── */
-.empty-row {
-  padding: 22px 20px; text-align: center;
-  font-size: 12px; font-style: italic; color: var(--text3);
-  border-bottom: 1px solid var(--line);
-}
 
 /* ── ADD ROW ── */
 .add-row {
@@ -538,9 +576,123 @@ html, body {
 }
 .ver-links a:hover { color: var(--text); border-color: var(--text); }
 .ver-links a.active { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
+
+/* ── SYNC STATUS ── */
+.sync-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--text3);
+  padding: 8px 0 0;
+  justify-content: center;
+}
+.sync-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #27ae60;
+}
+.sync-dot.offline { background: #e74c3c; }
+.sync-dot.syncing { background: #f39c12; animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── AI REMINDER CARD (full width) ── */
+.ai-reminder-wrap {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+.ai-reminder-card {
+  background: var(--hdr-bg);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.ai-reminder-hdr {
+  padding: 16px 24px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="dark"] .ai-reminder-hdr { border-bottom-color: rgba(0,0,0,0.12); }
+.ai-reminder-title {
+  font-size: 9px; font-weight: 900;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+[data-theme="dark"] .ai-reminder-title { color: rgba(0,0,0,0.35); }
+.ai-refresh-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: transparent; color: rgba(255,255,255,0.45);
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .3s, opacity .15s;
+}
+[data-theme="dark"] .ai-refresh-btn { border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.35); }
+.ai-refresh-btn.spinning { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-refresh-btn:hover { opacity: 0.7; }
+.ai-reminder-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+}
+.ai-reminder-item {
+  padding: 20px 24px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .ai-reminder-item { border-right-color: rgba(0,0,0,0.1); }
+.ai-reminder-item:last-child { border-right: none; }
+.ai-reminder-tag {
+  font-size: 8px; font-weight: 900; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 8px;
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+}
+.tag-schedule { background: rgba(41,128,185,0.25); color: #74b9ff; }
+.tag-todo     { background: rgba(39,174,96,0.25);  color: #55efc4; }
+.tag-signal   { background: rgba(192,57,43,0.25);  color: #ff7675; }
+[data-theme="dark"] .tag-schedule { background: rgba(41,128,185,0.15); }
+[data-theme="dark"] .tag-todo     { background: rgba(39,174,96,0.15); }
+[data-theme="dark"] .tag-signal   { background: rgba(192,57,43,0.15); }
+.ai-reminder-text {
+  font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.78);
+  line-height: 1.6; letter-spacing: -0.01em;
+}
+[data-theme="dark"] .ai-reminder-text { color: rgba(0,0,0,0.72); }
+.ai-reminder-loading {
+  padding: 28px 24px; text-align: center;
+  font-size: 11px; color: rgba(255,255,255,0.28);
+  letter-spacing: 0.1em;
+  grid-column: 1 / -1;
+}
+[data-theme="dark"] .ai-reminder-loading { color: rgba(0,0,0,0.28); }
+.ai-reminder-footer {
+  padding: 10px 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex; justify-content: flex-end;
+}
+[data-theme="dark"] .ai-reminder-footer { border-top-color: rgba(0,0,0,0.08); }
+.ai-reminder-ts {
+  font-size: 9px; color: rgba(255,255,255,0.18);
+  letter-spacing: 0.06em;
+}
+[data-theme="dark"] .ai-reminder-ts { color: rgba(0,0,0,0.18); }
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Brain Dump</div>
+    <div class="login-title">Welcome Back</div>
+    <div class="login-sub">jasoneye.com</div>
+    <div class="login-field">
+      <input type="email" id="loginEmail" placeholder="이메일" autocomplete="email" value="yhun1542@jasoneye.com">
+    </div>
+    <div class="login-field">
+      <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="loginBtn">로그인</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
 <div class="app">
 
   <!-- TOPBAR -->
@@ -549,6 +701,7 @@ html, body {
     <div class="topbar-right">
       <button class="icon-btn" id="btnToday"><span class="ico">📅</span> Today</button>
       <button class="icon-btn" id="btnTheme"><span class="ico" id="themeIco">🌙</span> Theme</button>
+      <button class="icon-btn" id="btnLogout" style="display:none"><span class="ico">⏻</span> 로그아웃</button>
     </div>
   </div>
 
@@ -557,6 +710,12 @@ html, body {
     <a href="index.html" class="active">🖥 PC</a>
     <a href="galaxy.html">📱 Galaxy S25 Ultra</a>
     <a href="iphone.html"> iPhone 17 Pro</a>
+  </div>
+
+  <!-- SYNC STATUS -->
+  <div class="sync-status">
+    <span class="sync-dot syncing" id="syncDot"></span>
+    <span id="syncTxt">연결 중...</span>
   </div>
 
   <!-- PAGE TITLE -->
@@ -601,18 +760,37 @@ html, body {
   </div>
 
   <!-- GRID -->
-  <div class="grid">
+  <div class="grid" id="mainGrid">
     <div class="col" id="colLeft"></div>
     <div class="col" id="colRight"></div>
+    <!-- AI Reminder Card (full width, appended by JS) -->
   </div>
 
-  <div class="footer">날짜별 자동 저장 · Brain Dump PC v2.0</div>
+  <div class="footer">Firebase 실시간 동기화 · Brain Dump PC v3.0 · jasoneye.com</div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
-/* ── CARD CONFIG ── */
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, onSnapshot }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
+  authDomain: "braindump-jasoneye.firebaseapp.com",
+  projectId: "braindump-jasoneye",
+  storageBucket: "braindump-jasoneye.firebasestorage.app",
+  messagingSenderId: "931666684955",
+  appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db2  = getFirestore(app);
+
 const CARDS = [
   { id:'work',    title:'Work',           icon:'💼', col:'left'  },
   { id:'people',  title:'People to Meet', icon:'🤝', col:'right' },
@@ -621,18 +799,19 @@ const CARDS = [
   { id:'family',  title:'Family',         icon:'🏠', col:'left'  },
   { id:'buy',     title:'Things to Buy',  icon:'🛒', col:'right' },
 ];
-
 const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
 
-/* ── STATE ── */
-let curDate = todayStr();
-let db = {};
-let isDark = false;
-let swipedRow = null; // currently swiped row element
-let priTarget = null; // { cardId, itemId or 'new', el }
-let editTarget = null;
+let curDate   = todayStr();
+let db        = {};
+let isDark    = false;
+let swipedRow = null;
+let priTarget = null;
+let editTarget= null;
+let currentUser = null;
+let unsubscribe = null;
+let aiCache   = {};
+let saveTimer = null;
 
-/* ── UTILS ── */
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
@@ -660,19 +839,102 @@ function priClass(p) {
   return 'pri-C';
 }
 
-/* ── STORAGE ── */
-function load() {
-  try { db=JSON.parse(localStorage.getItem('bd_pc_v2')||'{}'); } catch { db={}; }
-  try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch { isDark=false; }
+function setSyncStatus(state, msg) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  dot.className = 'sync-dot' + (state==='ok'?'':state==='syncing'?' syncing':' offline');
+  txt.textContent = msg;
 }
-function save() { localStorage.setItem('bd_pc_v2',JSON.stringify(db)); }
-function getItems(dateKey,cardId) {
+
+function getDocRef() {
+  if(!currentUser) return null;
+  return doc(db2, 'users', currentUser.uid, 'braindump', 'data');
+}
+
+async function saveToFirestore() {
+  const ref = getDocRef();
+  if(!ref) return;
+  setSyncStatus('syncing','저장 중...');
+  try {
+    await setDoc(ref, { data: db, updatedAt: Date.now() });
+    setSyncStatus('ok','저장됨 ✓');
+  } catch(e) {
+    setSyncStatus('offline','저장 실패');
+  }
+}
+
+function scheduleSave() {
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToFirestore, 800);
+}
+
+function subscribeFirestore() {
+  if(unsubscribe) unsubscribe();
+  const ref = getDocRef();
+  if(!ref) return;
+  setSyncStatus('syncing','연결 중...');
+  unsubscribe = onSnapshot(ref, snap => {
+    if(snap.exists()) {
+      db = snap.data().data || {};
+      renderCards();
+      setSyncStatus('ok','실시간 동기화');
+    } else {
+      db = {};
+      setSyncStatus('ok','새 데이터');
+    }
+  }, err => {
+    setSyncStatus('offline','오프라인');
+  });
+}
+
+function save() {
+  localStorage.setItem('bd_pc_v3', JSON.stringify(db));
+  scheduleSave();
+}
+
+function getItems(dateKey, cardId) {
   if(!db[dateKey]) db[dateKey]={};
   if(!db[dateKey][cardId]) db[dateKey][cardId]=[];
   return db[dateKey][cardId];
 }
 
-/* ── RENDER DATE ── */
+onAuthStateChanged(auth, user => {
+  if(user) {
+    currentUser = user;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('btnLogout').style.display='flex';
+    try { db = JSON.parse(localStorage.getItem('bd_pc_v3')||'{}'); } catch {}
+    subscribeFirestore();
+    applyTheme(); renderDate(); renderCards();
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('btnLogout').style.display='none';
+    if(unsubscribe) { unsubscribe(); unsubscribe=null; }
+  }
+});
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const err   = document.getElementById('loginErr');
+  err.textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    err.textContent = '로그인 실패: 이메일 또는 비밀번호를 확인하세요.';
+  }
+});
+
+document.getElementById('loginPw').addEventListener('keydown', e => {
+  if(e.key==='Enter') document.getElementById('loginBtn').click();
+});
+
+document.getElementById('btnLogout').addEventListener('click', async () => {
+  await signOut(auth);
+  toast('로그아웃됨');
+});
+
 function renderDate() {
   const info=fmtDisplay(curDate);
   document.getElementById('dateMain').textContent=info.main;
@@ -680,14 +942,26 @@ function renderDate() {
   meta.innerHTML=info.meta+(info.isToday?' <span class="today-pill">TODAY</span>':'');
 }
 
-/* ── RENDER CARDS ── */
 function renderCards() {
   document.getElementById('colLeft').innerHTML='';
   document.getElementById('colRight').innerHTML='';
+
+  // Remove old AI card wrap if exists
+  const oldWrap = document.getElementById('aiReminderWrap');
+  if(oldWrap) oldWrap.remove();
+
   CARDS.forEach(cfg=>{
     const el=buildCard(cfg);
     document.getElementById(cfg.col==='left'?'colLeft':'colRight').appendChild(el);
   });
+
+  // AI Reminder card (full width below grid)
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-reminder-wrap';
+  wrap.id = 'aiReminderWrap';
+  wrap.appendChild(buildAIReminderCard());
+  document.getElementById('mainGrid').appendChild(wrap);
+
   swipedRow=null;
 }
 
@@ -700,7 +974,6 @@ function buildCard(cfg) {
   const card=document.createElement('div');
   card.className='card';
   card.dataset.card=cfg.id;
-
   card.innerHTML=`
     <div class="card-hdr">
       <div class="card-hdr-left">
@@ -714,11 +987,8 @@ function buildCard(cfg) {
 
   const body=document.createElement('div');
   body.className='list-body';
-
-  /* ★ 빈 상태 메시지 제거 */
   items.forEach((item,idx)=>body.appendChild(buildRow(cfg.id,item,idx+1)));
 
-  // Add row
   const addRow=document.createElement('div');
   addRow.className='add-row';
   addRow.innerHTML=`
@@ -743,7 +1013,6 @@ function buildRow(cardId,item,num) {
   row.dataset.item=item.id;
   row.dataset.card=cardId;
 
-  // Swipe action buttons (hidden behind)
   const actions=document.createElement('div');
   actions.className='row-actions';
   actions.innerHTML=`
@@ -751,7 +1020,6 @@ function buildRow(cardId,item,num) {
     <button class="row-act-btn row-act-del" data-act="del"><span class="act-ico">🗑</span>삭제</button>
   `;
 
-  // Inner (slides on swipe)
   const inner=document.createElement('div');
   inner.className='row-inner';
 
@@ -796,32 +1064,27 @@ function buildRow(cardId,item,num) {
   inner.appendChild(priWrap);
   inner.appendChild(txt);
   inner.appendChild(delBtn);
-
   row.appendChild(actions);
   row.appendChild(inner);
-
-  // Swipe (mouse drag + touch)
   addSwipe(row,inner,actions,cardId,item);
-
   return row;
 }
 
-/* ── SWIPE ── */
 function addSwipe(row,inner,actions,cardId,item) {
   const THRESHOLD=80;
-  let startX=0, currentX=0, dragging=false, revealed=false;
+  let startX=0, dragging=false, revealed=false;
 
   function onStart(x) {
-    // Close other swiped rows
     if(swipedRow && swipedRow!==row) closeSwipe(swipedRow);
-    startX=x; dragging=true; currentX=0;
+    startX=x; dragging=true;
     inner.style.transition='none';
   }
   function onMove(x) {
     if(!dragging) return;
     const dx=x-startX;
     if(dx>0 && !revealed) { inner.style.transform='none'; return; }
-    const offset=revealed ? Math.max(-144,Math.min(0,dx)) : Math.max(-144,Math.min(0,dx));
+    const base=revealed?-144:0;
+    const offset=Math.max(-144,Math.min(0,base+dx));
     inner.style.transform=`translateX(${offset}px)`;
   }
   function onEnd(x) {
@@ -842,12 +1105,10 @@ function addSwipe(row,inner,actions,cardId,item) {
     }
   }
 
-  // Touch
   inner.addEventListener('touchstart',e=>onStart(e.touches[0].clientX),{passive:true});
   inner.addEventListener('touchmove',e=>onMove(e.touches[0].clientX),{passive:true});
   inner.addEventListener('touchend',e=>onEnd(e.changedTouches[0].clientX));
 
-  // Mouse drag
   inner.addEventListener('mousedown',e=>{
     if(e.target.closest('input,button,[contenteditable]')) return;
     onStart(e.clientX);
@@ -857,7 +1118,6 @@ function addSwipe(row,inner,actions,cardId,item) {
     document.addEventListener('mouseup',mu);
   });
 
-  // Action buttons
   actions.querySelector('[data-act="edit"]').addEventListener('click',()=>{
     closeSwipe(row); openEdit(cardId,item.id);
   });
@@ -873,7 +1133,112 @@ function closeSwipe(row) {
   if(swipedRow===row) swipedRow=null;
 }
 
-/* ── ACTIONS ── */
+/* ── AI REMINDER CARD ── */
+function buildAIReminderCard() {
+  const card = document.createElement('div');
+  card.className = 'ai-reminder-card';
+  card.id = 'aiReminderCard';
+  card.innerHTML = `
+    <div class="ai-reminder-hdr">
+      <span class="ai-reminder-title">✦ Highlight Reminder of the Day</span>
+      <button class="ai-refresh-btn" id="aiRefreshBtn" title="새로고침">↻</button>
+    </div>
+    <div class="ai-reminder-body" id="aiReminderBody">
+      <div class="ai-reminder-loading">AI 분석 중...</div>
+    </div>
+    <div class="ai-reminder-footer"><span class="ai-reminder-ts" id="aiTs"></span></div>
+  `;
+
+  if(aiCache[curDate]) {
+    setTimeout(()=>renderAIReminders(aiCache[curDate]), 0);
+  } else {
+    setTimeout(()=>fetchAIReminders(), 150);
+  }
+
+  card.querySelector('#aiRefreshBtn').addEventListener('click', ()=>{
+    delete aiCache[curDate];
+    fetchAIReminders();
+  });
+  return card;
+}
+
+function renderAIReminders(data) {
+  const body = document.getElementById('aiReminderBody');
+  const ts   = document.getElementById('aiTs');
+  const btn  = document.getElementById('aiRefreshBtn');
+  if(!body) return;
+  if(btn) btn.classList.remove('spinning');
+  if(!data || data.error) {
+    body.innerHTML = `<div class="ai-reminder-loading">${data?.error||'리마인더를 불러올 수 없습니다.'}</div>`;
+    return;
+  }
+  const now = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  body.innerHTML = `
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-schedule">📅 Schedule Reminder</div>
+      <div class="ai-reminder-text">${data.schedule}</div>
+    </div>
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-todo">✅ Todo Reminder</div>
+      <div class="ai-reminder-text">${data.todo}</div>
+    </div>
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-signal">⚡ Signal to Action</div>
+      <div class="ai-reminder-text">${data.signal}</div>
+    </div>
+  `;
+  if(ts) ts.textContent = `Updated ${now}`;
+}
+
+async function fetchAIReminders() {
+  const body = document.getElementById('aiReminderBody');
+  const btn  = document.getElementById('aiRefreshBtn');
+  if(!body) return;
+  if(btn) btn.classList.add('spinning');
+  body.innerHTML = '<div class="ai-reminder-loading">AI 분석 중...</div>';
+
+  const allTasks = [];
+  CARDS.forEach(cfg => {
+    const items = getItems(curDate, cfg.id);
+    items.forEach(item => {
+      if(!item.done) allTasks.push(`[${cfg.title}] ${item.text}${item.priority?' ('+item.priority+')':''}`);
+    });
+  });
+
+  const dateInfo = fmtDisplay(curDate);
+
+  // Firestore 캐시 확인
+  if(currentUser) {
+    try {
+      const aiRef = doc(db2, 'users', currentUser.uid, 'ai_reminders', curDate);
+      const snap = await getDoc(aiRef);
+      if(snap.exists()) {
+        const cached = snap.data();
+        if(cached.schedule && cached.todo && cached.signal) {
+          aiCache[curDate] = cached;
+          renderAIReminders(cached);
+          return;
+        }
+      }
+    } catch(e) {}
+  }
+
+  const fallback = {
+    schedule: `${dateInfo.main} 오늘 하루를 시작합니다. 중요한 약속과 데드라인을 확인하고, 하루 계획을 세워보세요. 정기적인 루틴(운동, 독서 등)을 빠뜨리지 않도록 체크하세요.`,
+    todo: allTasks.length > 0
+      ? `현재 ${allTasks.length}개의 할일이 있습니다. 우선순위 A 항목을 먼저 처리하고, 오늘 안에 완료 가능한 것부터 시작하세요. 작은 성취가 모멘텀을 만듭니다.`
+      : `오늘의 할일을 지금 바로 추가해보세요. 머릿속에 있는 것들을 모두 Brain Dump하면 정신적 부담이 줄어듭니다. Work, Personal, Family 카드부터 채워보세요.`,
+    signal: `지금 이 순간 가장 중요한 한 가지에 집중하세요. 완벽하지 않아도 시작이 중요합니다. 오늘 하루가 끝나기 전에 반드시 완료해야 할 단 하나의 일을 정하고 바로 행동하세요.`
+  };
+  aiCache[curDate] = fallback;
+  renderAIReminders(fallback);
+
+  if(currentUser) {
+    const aiRef = doc(db2, 'users', currentUser.uid, 'ai_reminders', curDate);
+    setDoc(aiRef, { ...fallback, generatedAt: Date.now() }).catch(()=>{});
+  }
+}
+
 function addItem(cardId,text,priority) {
   if(!text.trim()) return;
   getItems(curDate,cardId).push({id:uid(),text:text.trim(),done:false,priority:priority||''});
@@ -888,15 +1253,11 @@ function checkItem(cardId,itemId) {
   const items=getItems(curDate,cardId);
   const item=items.find(i=>i.id===itemId);
   if(!item) return;
-  item.done=true;
-  save();
-  // Animate out then remove
+  item.done=true; save();
   const row=document.querySelector(`.list-row[data-item="${itemId}"]`);
   if(row) {
     row.style.transition='opacity .35s, max-height .35s, padding .35s';
-    row.style.opacity='0';
-    row.style.maxHeight='0';
-    row.style.overflow='hidden';
+    row.style.opacity='0'; row.style.maxHeight='0'; row.style.overflow='hidden';
     setTimeout(()=>{ items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓'); },360);
   } else {
     items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓');
@@ -910,7 +1271,6 @@ function deleteItem(cardId,itemId) {
   items.splice(idx,1); save(); renderCards(); toast('삭제됨');
 }
 
-/* ── PRIORITY POPUP ── */
 function openPriPopup(e,cardId,itemId,anchorEl) {
   e.stopPropagation();
   const popup=document.getElementById('priPopup');
@@ -921,13 +1281,11 @@ function openPriPopup(e,cardId,itemId,anchorEl) {
   popup.style.top=(rect.bottom+6)+'px';
   popup.style.left=Math.max(4,rect.left-40)+'px';
 }
-
 function closePriPopup() {
   document.getElementById('priPopup').classList.add('hidden');
   priTarget=null;
 }
 
-/* ── EDIT MODAL ── */
 function openEdit(cardId,itemId) {
   const item=getItems(curDate,cardId).find(i=>i.id===itemId);
   if(!item) return;
@@ -938,15 +1296,12 @@ function openEdit(cardId,itemId) {
   document.getElementById('editOverlay').classList.remove('hidden');
   document.getElementById('editTextarea').focus();
 }
-
 function closeEdit() {
   document.getElementById('editOverlay').classList.add('hidden');
   editTarget=null;
 }
 
-/* ── DATE NAV ── */
 function goDate(s) { curDate=s; renderDate(); renderCards(); }
-
 function openDatePopup() {
   document.getElementById('dateInput').value=curDate;
   document.getElementById('popupOverlay').classList.remove('hidden');
@@ -954,14 +1309,12 @@ function openDatePopup() {
 }
 function closeDatePopup() { document.getElementById('popupOverlay').classList.add('hidden'); }
 
-/* ── THEME ── */
 function applyTheme() {
   document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
   document.getElementById('themeIco').textContent=isDark?'☀️':'🌙';
   localStorage.setItem('bd_theme',JSON.stringify(isDark));
 }
 
-/* ── TOAST ── */
 function toast(msg) {
   const el=document.createElement('div');
   el.className='toast'; el.textContent=msg;
@@ -969,7 +1322,6 @@ function toast(msg) {
   setTimeout(()=>el.remove(),2100);
 }
 
-/* ── EVENTS ── */
 function bindEvents() {
   document.getElementById('btnPrev').addEventListener('click',()=>goDate(offsetDate(curDate,-1)));
   document.getElementById('btnNext').addEventListener('click',()=>goDate(offsetDate(curDate,+1)));
@@ -983,9 +1335,10 @@ function bindEvents() {
     closeDatePopup();
   });
   document.getElementById('btnCancel').addEventListener('click',closeDatePopup);
-  document.getElementById('popupOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('popupOverlay')) closeDatePopup(); });
+  document.getElementById('popupOverlay').addEventListener('click',e=>{
+    if(e.target===document.getElementById('popupOverlay')) closeDatePopup();
+  });
 
-  // Priority popup
   document.getElementById('priPopup').addEventListener('click',e=>{
     const btn=e.target.closest('[data-p]');
     if(!btn||!priTarget) return;
@@ -995,7 +1348,6 @@ function bindEvents() {
     closePriPopup();
   });
 
-  // Edit modal
   document.getElementById('editPriRow').addEventListener('click',e=>{
     const btn=e.target.closest('[data-p]');
     if(!btn) return;
@@ -1013,15 +1365,13 @@ function bindEvents() {
     save(); renderCards(); closeEdit(); toast('수정됨');
   });
   document.getElementById('editCancel').addEventListener('click',closeEdit);
-  document.getElementById('editOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('editOverlay')) closeEdit(); });
+  document.getElementById('editOverlay').addEventListener('click',e=>{
+    if(e.target===document.getElementById('editOverlay')) closeEdit();
+  });
 
-  // Grid delegation
   document.addEventListener('click',e=>{
-    // Close pri popup on outside click
     if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
-    // Close swipe on outside click
     if(!e.target.closest('.list-row')&&swipedRow) closeSwipe(swipedRow);
-
     const addBtn=e.target.closest('.add-row-btn');
     if(addBtn){
       const cardId=addBtn.dataset.card;
@@ -1051,11 +1401,10 @@ function bindEvents() {
   });
 }
 
-/* ── INIT ── */
-function init() {
-  load(); applyTheme(); renderDate(); renderCards(); bindEvents();
-}
-init();
+try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch {}
+applyTheme();
+renderDate();
+bindEvents();
 </script>
 </body>
 </html>

@@ -1,0 +1,8 @@
+Firebase Config:
+apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU"
+authDomain: "braindump-jasoneye.firebaseapp.com"
+projectId: "braindump-jasoneye"
+storageBucket: "braindump-jasoneye.firebasestorage.app"
+messagingSenderId: "931666684955"
+appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
+measurementId: "G-04BVHZZZ6N"

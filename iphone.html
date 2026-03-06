@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
-   BRAIN DUMP — iPHONE 17 PRO  v2.1
-   Dynamic Island · safe-area-inset
+   BRAIN DUMP — iPHONE 17 PRO  v3.0
+   Firebase + AI Reminder · Dynamic Island
    ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -65,6 +65,54 @@ body {
   transition: background .2s, color .2s;
 }
 
+/* ── LOGIN SCREEN ── */
+.login-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--hdr-bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: max(var(--safe-top),54px) 28px max(var(--safe-bot),34px);
+}
+.login-screen.hidden { display: none; }
+.login-logo {
+  font-size: 9px; font-weight: 900; letter-spacing: 0.35em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  margin-bottom: 48px;
+}
+.login-title {
+  font-size: 26px; font-weight: 900; color: #fff;
+  letter-spacing: -0.02em; margin-bottom: 8px; text-align: center;
+}
+.login-sub {
+  font-size: 12px; color: rgba(255,255,255,0.35);
+  margin-bottom: 40px; text-align: center; letter-spacing: 0.04em;
+}
+.login-field { width: 100%; margin-bottom: 12px; }
+.login-field input {
+  width: 100%; padding: 16px 18px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  color: #fff; font-family: var(--font); font-size: 16px;
+  outline: none; -webkit-appearance: none;
+}
+.login-field input::placeholder { color: rgba(255,255,255,0.28); }
+.login-field input:focus { border-color: rgba(255,255,255,0.38); }
+.login-btn {
+  width: 100%; padding: 17px;
+  background: #fff; color: #111;
+  border: none; border-radius: 14px;
+  font-family: var(--font); font-size: 14px; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; margin-top: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.login-btn:active { opacity: 0.8; }
+.login-err {
+  font-size: 12px; color: #ff6b6b;
+  margin-top: 12px; text-align: center; min-height: 18px;
+}
+
 /* ── STICKY HEADER (Dynamic Island aware) ── */
 .sticky-hdr {
   position: sticky; top: 0; z-index: 100;
@@ -114,7 +162,6 @@ body {
 }
 [data-theme="dark"] .date-nav-btn { background: rgba(0,0,0,0.1); }
 .date-nav-btn:active { opacity: 0.6; }
-
 .date-center { flex: 1; text-align: center; padding: 0 6px; cursor: pointer; min-width: 0; }
 .date-main {
   font-size: 30px; font-weight: 900;
@@ -193,7 +240,6 @@ body {
 }
 .list-row:last-child { border-bottom: none; }
 
-/* Swipe action buttons */
 .row-actions {
   position: absolute; right: 0; top: 0; bottom: 0;
   display: flex; z-index: 0;
@@ -236,8 +282,7 @@ body {
   flex-shrink: 0;
 }
 .row-chk input[type="checkbox"]:checked {
-  background: var(--text);
-  border-color: var(--text);
+  background: var(--text); border-color: var(--text);
 }
 .row-chk input[type="checkbox"]:checked::after {
   content: '';
@@ -272,7 +317,6 @@ body {
 /* ── 텍스트 ── */
 .row-txt {
   flex: 1; padding: 12px 12px 12px 10px;
-  /* iOS: 16px 이상으로 줌 방지 */
   font-size: max(16px, 14px);
   font-weight: 400; color: var(--text);
   line-height: 1.5; word-break: break-word;
@@ -480,9 +524,106 @@ body {
 }
 @keyframes tIn  { from { opacity:0; transform:translateY(12px) scale(.93); } to { opacity:1; transform:none; } }
 @keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(-8px) scale(.96); } }
+
+/* ── AI REMINDER CARD ── */
+.ai-reminder-card {
+  background: var(--hdr-bg);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.ai-reminder-hdr {
+  padding: 14px 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+[data-theme="dark"] .ai-reminder-hdr { border-bottom-color: rgba(0,0,0,0.15); }
+.ai-reminder-title {
+  font-size: 9px; font-weight: 900;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+[data-theme="dark"] .ai-reminder-title { color: rgba(0,0,0,0.4); }
+.ai-refresh-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: transparent; color: rgba(255,255,255,0.5);
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .3s;
+}
+[data-theme="dark"] .ai-refresh-btn { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.4); }
+.ai-refresh-btn.spinning { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-refresh-btn:active { opacity: 0.6; }
+.ai-reminder-body { padding: 0 16px 16px; }
+.ai-reminder-item {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .ai-reminder-item { border-bottom-color: rgba(0,0,0,0.1); }
+.ai-reminder-item:last-child { border-bottom: none; }
+.ai-reminder-tag {
+  font-size: 8px; font-weight: 900; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 6px;
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+}
+.tag-schedule { background: rgba(41,128,185,0.25); color: #74b9ff; }
+.tag-todo     { background: rgba(39,174,96,0.25);  color: #55efc4; }
+.tag-signal   { background: rgba(192,57,43,0.25);  color: #ff7675; }
+[data-theme="dark"] .tag-schedule { background: rgba(41,128,185,0.15); }
+[data-theme="dark"] .tag-todo     { background: rgba(39,174,96,0.15); }
+[data-theme="dark"] .tag-signal   { background: rgba(192,57,43,0.15); }
+.ai-reminder-text {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.82);
+  line-height: 1.55; letter-spacing: -0.01em;
+}
+[data-theme="dark"] .ai-reminder-text { color: rgba(0,0,0,0.75); }
+.ai-reminder-loading {
+  padding: 24px 0; text-align: center;
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+}
+[data-theme="dark"] .ai-reminder-loading { color: rgba(0,0,0,0.3); }
+.ai-reminder-ts {
+  font-size: 9px; color: rgba(255,255,255,0.2);
+  text-align: right; margin-top: 10px; letter-spacing: 0.06em;
+}
+[data-theme="dark"] .ai-reminder-ts { color: rgba(0,0,0,0.2); }
+
+/* ── SYNC STATUS ── */
+.sync-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #27ae60; display: inline-block; margin-right: 4px;
+}
+.sync-dot.offline { background: #e74c3c; }
+.sync-dot.syncing { background: #f39c12; animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.sync-status {
+  font-size: 9px; color: var(--text3);
+  display: flex; align-items: center;
+  padding: 4px max(var(--safe-r),14px) 0 max(var(--safe-l),14px);
+}
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo">Brain Dump</div>
+  <div class="login-title">Welcome Back</div>
+  <div class="login-sub">jasoneye.com</div>
+  <div class="login-field">
+    <input type="email" id="loginEmail" placeholder="이메일" autocomplete="email" value="yhun1542@jasoneye.com">
+  </div>
+  <div class="login-field">
+    <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
+  </div>
+  <button class="login-btn" id="loginBtn">로그인</button>
+  <div class="login-err" id="loginErr"></div>
+</div>
+
 <!-- STICKY HEADER -->
 <div class="sticky-hdr">
   <div class="hdr-top">
@@ -490,6 +631,7 @@ body {
     <div class="hdr-btns">
       <button class="hdr-btn" id="btnToday">📅 Today</button>
       <button class="hdr-btn" id="btnTheme"><span id="themeIco">🌙</span></button>
+      <button class="hdr-btn" id="btnLogout" style="display:none">⏻</button>
     </div>
   </div>
   <div class="date-nav">
@@ -508,6 +650,9 @@ body {
   <a href="galaxy.html" class="ver-link">📱 Galaxy S25 Ultra</a>
   <a href="iphone.html" class="ver-link active"> iPhone 17 Pro</a>
 </div>
+
+<!-- SYNC STATUS -->
+<div class="sync-status"><span class="sync-dot syncing" id="syncDot"></span><span id="syncTxt">연결 중...</span></div>
 
 <!-- DATE POPUP -->
 <div class="popup-overlay hidden" id="popupOverlay">
@@ -544,7 +689,26 @@ body {
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, setDoc, onSnapshot }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
+  authDomain: "braindump-jasoneye.firebaseapp.com",
+  projectId: "braindump-jasoneye",
+  storageBucket: "braindump-jasoneye.firebasestorage.app",
+  messagingSenderId: "931666684955",
+  appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db2  = getFirestore(app);
+
 const CARDS = [
   { id:'work',    title:'Work',           icon:'💼' },
   { id:'personal',title:'Personal',       icon:'🙋' },
@@ -555,12 +719,16 @@ const CARDS = [
 ];
 const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
 
-let curDate = todayStr();
-let db = {};
-let isDark = false;
+let curDate   = todayStr();
+let db        = {};
+let isDark    = false;
 let swipedRow = null;
 let priTarget = null;
-let editTarget = null;
+let editTarget= null;
+let currentUser = null;
+let unsubscribe = null;
+let aiCache   = {};
+let saveTimer = null;
 
 function todayStr() {
   const d=new Date();
@@ -588,16 +756,102 @@ function priClass(p) {
   if(p[0]==='B') return 'pri-B';
   return 'pri-C';
 }
-function load() {
-  try { db=JSON.parse(localStorage.getItem('bd_iphone_v2')||'{}'); } catch { db={}; }
-  try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch { isDark=false; }
+
+function setSyncStatus(state, msg) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  dot.className = 'sync-dot' + (state==='ok'?'':state==='syncing'?' syncing':' offline');
+  txt.textContent = msg;
 }
-function save() { localStorage.setItem('bd_iphone_v2',JSON.stringify(db)); }
-function getItems(dateKey,cardId) {
+
+function getDocRef() {
+  if(!currentUser) return null;
+  return doc(db2, 'users', currentUser.uid, 'braindump', 'data');
+}
+
+async function saveToFirestore() {
+  const ref = getDocRef();
+  if(!ref) return;
+  setSyncStatus('syncing','저장 중...');
+  try {
+    await setDoc(ref, { data: db, updatedAt: Date.now() });
+    setSyncStatus('ok','저장됨 ✓');
+  } catch(e) {
+    setSyncStatus('offline','저장 실패');
+  }
+}
+
+function scheduleSave() {
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToFirestore, 800);
+}
+
+function subscribeFirestore() {
+  if(unsubscribe) unsubscribe();
+  const ref = getDocRef();
+  if(!ref) return;
+  setSyncStatus('syncing','연결 중...');
+  unsubscribe = onSnapshot(ref, snap => {
+    if(snap.exists()) {
+      db = snap.data().data || {};
+      renderCards();
+      setSyncStatus('ok','실시간 동기화');
+    } else {
+      db = {};
+      setSyncStatus('ok','새 데이터');
+    }
+  }, err => {
+    setSyncStatus('offline','오프라인');
+  });
+}
+
+function save() {
+  localStorage.setItem('bd_iphone_v3', JSON.stringify(db));
+  scheduleSave();
+}
+
+function getItems(dateKey, cardId) {
   if(!db[dateKey]) db[dateKey]={};
   if(!db[dateKey][cardId]) db[dateKey][cardId]=[];
   return db[dateKey][cardId];
 }
+
+onAuthStateChanged(auth, user => {
+  if(user) {
+    currentUser = user;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('btnLogout').style.display='flex';
+    try { db = JSON.parse(localStorage.getItem('bd_iphone_v3')||'{}'); } catch {}
+    subscribeFirestore();
+    applyTheme(); renderDate(); renderCards();
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('btnLogout').style.display='none';
+    if(unsubscribe) { unsubscribe(); unsubscribe=null; }
+  }
+});
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const err   = document.getElementById('loginErr');
+  err.textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    err.textContent = '로그인 실패: 이메일 또는 비밀번호를 확인하세요.';
+  }
+});
+
+document.getElementById('loginPw').addEventListener('keydown', e => {
+  if(e.key==='Enter') document.getElementById('loginBtn').click();
+});
+
+document.getElementById('btnLogout').addEventListener('click', async () => {
+  await signOut(auth);
+  toast('로그아웃됨');
+});
 
 function renderDate() {
   const info=fmtDisplay(curDate);
@@ -610,6 +864,7 @@ function renderCards() {
   const body=document.getElementById('scrollBody');
   body.innerHTML='';
   CARDS.forEach(cfg=>body.appendChild(buildCard(cfg)));
+  body.appendChild(buildAIReminderCard());
   swipedRow=null;
 }
 
@@ -622,7 +877,6 @@ function buildCard(cfg) {
   const card=document.createElement('div');
   card.className='card';
   card.dataset.card=cfg.id;
-
   card.innerHTML=`
     <div class="card-hdr">
       <div class="card-hdr-left">
@@ -636,8 +890,6 @@ function buildCard(cfg) {
 
   const listBody=document.createElement('div');
   listBody.className='list-body';
-
-  /* ★ 빈 상태 메시지 제거 */
   items.forEach(item=>listBody.appendChild(buildRow(cfg.id,item)));
 
   const addRow=document.createElement('div');
@@ -705,13 +957,12 @@ function buildRow(cardId,item) {
   inner.appendChild(txt);
   row.appendChild(actions);
   row.appendChild(inner);
-
   addSwipe(row,inner,actions,cardId,item);
   return row;
 }
 
 function addSwipe(row,inner,actions,cardId,item) {
-  const THRESHOLD=68;
+  const THRESHOLD=72;
   let startX=0, startY=0, dragging=false, revealed=false, isHoriz=null;
 
   inner.addEventListener('touchstart',e=>{
@@ -727,8 +978,8 @@ function addSwipe(row,inner,actions,cardId,item) {
     const dx=e.touches[0].clientX-startX;
     const dy=e.touches[0].clientY-startY;
     if(isHoriz===null) {
-      if(Math.abs(dx)>Math.abs(dy)+5) isHoriz=true;
-      else if(Math.abs(dy)>Math.abs(dx)+5) { isHoriz=false; dragging=false; return; }
+      if(Math.abs(dx)>Math.abs(dy)+4) isHoriz=true;
+      else if(Math.abs(dy)>Math.abs(dx)+4) { isHoriz=false; dragging=false; return; }
       else return;
     }
     if(!isHoriz) return;
@@ -770,6 +1021,112 @@ function addSwipe(row,inner,actions,cardId,item) {
 function closeSwipe(row) {
   if(row&&row._closeSwipe) row._closeSwipe();
   if(swipedRow===row) swipedRow=null;
+}
+
+/* ── AI REMINDER CARD ── */
+function buildAIReminderCard() {
+  const card = document.createElement('div');
+  card.className = 'ai-reminder-card';
+  card.id = 'aiReminderCard';
+  card.innerHTML = `
+    <div class="ai-reminder-hdr">
+      <span class="ai-reminder-title">✦ Highlight Reminder of the Day</span>
+      <button class="ai-refresh-btn" id="aiRefreshBtn" title="새로고침">↻</button>
+    </div>
+    <div class="ai-reminder-body" id="aiReminderBody">
+      <div class="ai-reminder-loading">AI 분석 중...</div>
+    </div>
+  `;
+
+  if(aiCache[curDate]) {
+    setTimeout(()=>renderAIReminders(aiCache[curDate]), 0);
+  } else {
+    setTimeout(()=>fetchAIReminders(), 100);
+  }
+
+  card.querySelector('#aiRefreshBtn').addEventListener('click', ()=>{
+    delete aiCache[curDate];
+    fetchAIReminders();
+  });
+  return card;
+}
+
+function renderAIReminders(data) {
+  const body = document.getElementById('aiReminderBody');
+  if(!body) return;
+  const btn = document.getElementById('aiRefreshBtn');
+  if(btn) btn.classList.remove('spinning');
+  if(!data || data.error) {
+    body.innerHTML = `<div class="ai-reminder-loading">${data?.error||'리마인더를 불러올 수 없습니다.'}</div>`;
+    return;
+  }
+  const now = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  body.innerHTML = `
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-schedule">📅 Schedule Reminder</div>
+      <div class="ai-reminder-text">${data.schedule}</div>
+    </div>
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-todo">✅ Todo Reminder</div>
+      <div class="ai-reminder-text">${data.todo}</div>
+    </div>
+    <div class="ai-reminder-item">
+      <div class="ai-reminder-tag tag-signal">⚡ Signal to Action</div>
+      <div class="ai-reminder-text">${data.signal}</div>
+    </div>
+    <div class="ai-reminder-ts">Updated ${now}</div>
+  `;
+}
+
+async function fetchAIReminders() {
+  const body = document.getElementById('aiReminderBody');
+  const btn  = document.getElementById('aiRefreshBtn');
+  if(!body) return;
+  if(btn) btn.classList.add('spinning');
+  body.innerHTML = '<div class="ai-reminder-loading">AI 분석 중...</div>';
+
+  const allTasks = [];
+  CARDS.forEach(cfg => {
+    const items = getItems(curDate, cfg.id);
+    items.forEach(item => {
+      if(!item.done) allTasks.push(`[${cfg.title}] ${item.text}${item.priority?' ('+item.priority+')':''}`);
+    });
+  });
+
+  const dateInfo = fmtDisplay(curDate);
+
+  // Firestore에서 AI 캐시 확인
+  if(currentUser) {
+    try {
+      const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      const aiRef = doc(db2, 'users', currentUser.uid, 'ai_reminders', curDate);
+      const snap = await getDoc(aiRef);
+      if(snap.exists()) {
+        const cached = snap.data();
+        if(cached.schedule && cached.todo && cached.signal) {
+          aiCache[curDate] = cached;
+          renderAIReminders(cached);
+          return;
+        }
+      }
+    } catch(e) {}
+  }
+
+  const fallback = {
+    schedule: `${dateInfo.main} 오늘 하루를 시작합니다. 중요한 약속과 데드라인을 확인하고, 하루 계획을 세워보세요. 정기적인 루틴을 빠뜨리지 않도록 체크하세요.`,
+    todo: allTasks.length > 0
+      ? `현재 ${allTasks.length}개의 할일이 있습니다. 우선순위 A 항목을 먼저 처리하고, 오늘 안에 완료 가능한 것부터 시작하세요.`
+      : `오늘의 할일을 지금 바로 추가해보세요. Brain Dump하면 정신적 부담이 줄어듭니다.`,
+    signal: `지금 이 순간 가장 중요한 한 가지에 집중하세요. 완벽하지 않아도 시작이 중요합니다. 오늘 반드시 완료해야 할 단 하나의 일을 정하고 바로 행동하세요.`
+  };
+  aiCache[curDate] = fallback;
+  renderAIReminders(fallback);
+
+  // Firestore에 저장
+  if(currentUser) {
+    const aiRef = doc(db2, 'users', currentUser.uid, 'ai_reminders', curDate);
+    setDoc(aiRef, { ...fallback, generatedAt: Date.now() }).catch(()=>{});
+  }
 }
 
 function addItem(cardId,text,priority) {
@@ -822,7 +1179,7 @@ function openEdit(cardId,itemId) {
   priRow.innerHTML=PRI_OPTS.map(p=>`<button class="edit-pri-btn${item.priority===p?' sel-'+p[0]:''}" data-p="${p}">${p}</button>`).join('');
   document.getElementById('editTextarea').value=item.text;
   document.getElementById('editOverlay').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('editTextarea').focus(),120);
+  setTimeout(()=>document.getElementById('editTextarea').focus(),100);
 }
 function closeEdit() { document.getElementById('editOverlay').classList.add('hidden'); editTarget=null; }
 
@@ -858,7 +1215,9 @@ function bindEvents() {
     closeDatePopup();
   });
   document.getElementById('btnCancel').addEventListener('click',closeDatePopup);
-  document.getElementById('popupOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('popupOverlay')) closeDatePopup(); });
+  document.getElementById('popupOverlay').addEventListener('click',e=>{
+    if(e.target===document.getElementById('popupOverlay')) closeDatePopup();
+  });
 
   document.getElementById('priPopup').addEventListener('click',e=>{
     const btn=e.target.closest('[data-p]');
@@ -885,7 +1244,9 @@ function bindEvents() {
     save(); renderCards(); closeEdit(); toast('수정됨');
   });
   document.getElementById('editCancel').addEventListener('click',closeEdit);
-  document.getElementById('editOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('editOverlay')) closeEdit(); });
+  document.getElementById('editOverlay').addEventListener('click',e=>{
+    if(e.target===document.getElementById('editOverlay')) closeEdit();
+  });
 
   document.addEventListener('click',e=>{
     if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
@@ -911,8 +1272,10 @@ function bindEvents() {
   });
 }
 
-function init() { load(); applyTheme(); renderDate(); renderCards(); bindEvents(); }
-init();
+try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch {}
+applyTheme();
+renderDate();
+bindEvents();
 </script>
 </body>
 </html>
