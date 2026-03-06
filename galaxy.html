@@ -153,11 +153,22 @@ body {
   flex-shrink: 0;
 }
 .hdr-top {
-  display: flex; align-items: center; justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   margin-bottom: 4px;
+}
+.hdr-logo {
+  font-family: 'GmarketSans', 'Inter', sans-serif;
+  font-weight: 700; font-size: 22px;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: -0.5px; user-select: none;
+  justify-self: start;
 }
 .hdr-date-nav {
   display: flex; align-items: center; gap: 8px;
+  justify-self: center;
 }
 .hdr-date-big {
   font-size: 28px; font-weight: 900; letter-spacing: -1px;
@@ -170,19 +181,15 @@ body {
   color: var(--hdr-text); font-size: 16px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
-.hdr-right { display: flex; align-items: center; gap: 8px; }
-.hdr-today-badge {
-  background: rgba(108,99,255,0.2); color: #a89cff;
-  border: 1px solid rgba(108,99,255,0.3);
-  border-radius: 8px; padding: 4px 10px;
-  font-size: 11px; font-weight: 700; cursor: pointer;
+.hdr-right { display: flex; align-items: center; gap: 8px; justify-self: end; }
+.hdr-logout-btn {
+  background: rgba(128,128,128,0.15); border: none;
+  color: var(--hdr-text); font-size: 11px; font-weight: 600;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font);
 }
-.save-indicator {
-  font-size: 11px; color: #4caf50;
-  display: flex; align-items: center; gap: 4px;
-  padding: 4px 8px;
-}
-.save-dot { width: 6px; height: 6px; border-radius: 50%; background: #4caf50; }
+.save-indicator { display: none; }
+.save-dot { display: none; }
 
 /* ── DEVICE SWITCHER ── */
 .device-bar {
@@ -747,6 +754,7 @@ body {
   <!-- HEADER -->
   <div class="hdr" id="mainHdr">
     <div class="hdr-top">
+      <div class="hdr-logo">JF</div>
       <div class="hdr-date-nav">
         <button class="hdr-nav-btn" id="btnPrev">‹</button>
         <div>
@@ -756,10 +764,7 @@ body {
         <button class="hdr-nav-btn" id="btnNext">›</button>
       </div>
       <div class="hdr-right">
-        <div class="hdr-today-badge" id="btnToday">TODAY</div>
-        <div class="save-indicator" id="saveIndicator">
-          <div class="save-dot"></div>저장됨
-        </div>
+        <button class="hdr-logout-btn" id="hdrLogoutBtn">로그아웃</button>
       </div>
     </div>
   </div>
@@ -777,7 +782,6 @@ body {
     <!-- ── TODAY TAB ── -->
     <div class="tab-pane active" id="pane-today">
       <div class="today-section">
-        <div class="today-date-label" id="todayDateLabel">TODAY</div>
         <div id="todayCards"></div>
       </div>
       <!-- AI Reminder -->
@@ -1173,9 +1177,9 @@ const loginError    = document.getElementById('loginError');
 const rememberMe    = document.getElementById('rememberMe');
 const hdrDateBig    = document.getElementById('hdrDateBig');
 const hdrDateSub    = document.getElementById('hdrDateSub');
-const todayDateLabel= document.getElementById('todayDateLabel');
+const todayDateLabel= null; // removed from header
 const todayCards    = document.getElementById('todayCards');
-const saveIndicator = document.getElementById('saveIndicator');
+const saveIndicator = null; // removed from header
 const calGrid       = document.getElementById('calGrid');
 const calMonthTitle = document.getElementById('calMonthTitle');
 const bdList        = document.getElementById('bdList');
@@ -1278,7 +1282,7 @@ function updateHeader() {
   const d = currentDate;
   hdrDateBig.textContent = `${d.getMonth()+1}월 ${d.getDate()}일`;
   hdrDateSub.textContent = `${d.getFullYear()} · ${DAYS_KO[d.getDay()]}요일`;
-  todayDateLabel.textContent = `TODAY — ${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+  // todayDateLabel removed
 }
 
 /* ── Subscribe Firestore ── */
@@ -1900,6 +1904,9 @@ if(localStorage.getItem('theme')==='dark') {
 document.getElementById('logoutBtn').addEventListener('click', async()=>{
   await signOut(auth);
 });
+document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{
+  await signOut(auth);
+});
 document.getElementById('openAiKeyItem').addEventListener('click', ()=>{
   document.getElementById('openAiKeyInput').value = openAiKey||'';
   document.getElementById('openAiOverlay').classList.remove('hidden');
@@ -1948,9 +1955,7 @@ document.getElementById('btnNext').addEventListener('click', ()=>{
     updateHeader(); resubscribeToday();
   }
 });
-document.getElementById('btnToday').addEventListener('click', ()=>{
-  currentDate = new Date(); updateHeader(); resubscribeToday();
-});
+// btnToday removed from header
 hdrDateBig.addEventListener('click', ()=>{
   document.getElementById('datePickerInput').value = dateStr(currentDate);
   document.getElementById('dateOverlay').classList.remove('hidden');
@@ -1964,8 +1969,7 @@ document.getElementById('datePickerOk').addEventListener('click', ()=>{
 
 /* ── UTILS ── */
 function showSaved() {
-  saveIndicator.style.opacity='1';
-  setTimeout(()=>saveIndicator.style.opacity='0.4', 1500);
+  // saveIndicator removed
 }
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
