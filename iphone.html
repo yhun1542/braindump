@@ -2,1313 +2,1892 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#111111">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Brain Dump — iPhone</title>
+<title>Synapse Brain — iPhone</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
-   BRAIN DUMP — iPHONE 17 PRO  v3.0
-   Firebase + AI Reminder · Dynamic Island
+   SYNAPSE BRAIN — iPhone 17 Pro  v5.0
+   5-Tab Navigation Edition
    ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg:         #f2f2f0;
+  --bg:         #f5f5f1;
   --surface:    #ffffff;
   --hdr-bg:     #111111;
   --hdr-text:   #ffffff;
   --border:     #111111;
-  --border-mid: #d4d4d0;
+  --border-mid: #d0d0cc;
   --line:       #e8e8e4;
   --text:       #111111;
   --text2:      #555555;
-  --text3:      #b0b0aa;
+  --text3:      #aaaaaa;
   --done-color: #c0c0c0;
-  --shadow:     0 2px 20px rgba(0,0,0,0.06);
-  --font:       'Inter', -apple-system, 'SF Pro Display', sans-serif;
-  --pa: #c0392b;
-  --pb: #2980b9;
-  --pc: #27ae60;
-  --safe-top: env(safe-area-inset-top, 54px);
+  --shadow:     0 2px 16px rgba(0,0,0,0.07);
+  --font:       'Inter', -apple-system, sans-serif;
+  --pa: #c0392b; --pb: #2980b9; --pc: #27ae60;
+  --safe-top: env(safe-area-inset-top, 44px);
   --safe-bot: env(safe-area-inset-bottom, 34px);
-  --safe-l:   env(safe-area-inset-left, 0px);
-  --safe-r:   env(safe-area-inset-right, 0px);
+  --tab-h: 64px;
+  --accent: #6c63ff;
+  --grad: linear-gradient(135deg, #6c63ff 0%, #e040fb 100%);
 }
 [data-theme="dark"] {
-  --bg:         #0a0a0a;
-  --surface:    #161616;
-  --hdr-bg:     #f2f2f0;
-  --hdr-text:   #111111;
-  --border:     #f2f2f0;
-  --border-mid: #282828;
-  --line:       #1e1e1e;
-  --text:       #f2f2f0;
-  --text2:      #888888;
-  --text3:      #404040;
-  --done-color: #383838;
-  --shadow:     0 2px 20px rgba(0,0,0,0.5);
+  --bg: #0e0e0e; --surface: #1a1a1a; --hdr-bg: #f0f0ec; --hdr-text: #111111;
+  --border: #f0f0ec; --border-mid: #2c2c2c; --line: #222222;
+  --text: #f0f0ec; --text2: #888888; --text3: #444444;
+  --done-color: #3a3a3a; --shadow: 0 2px 16px rgba(0,0,0,0.4);
 }
-
-html { height: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-body {
-  min-height: 100vh;
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: pan-y;
-  font-size: 15px;
-  overscroll-behavior-y: none;
-  transition: background .2s, color .2s;
-}
-
-/* ── GmarketSans 폰트 ── */
 @font-face {
   font-family: 'GmarketSans';
   src: url('fonts/GmarketSansTTFBold.ttf') format('truetype'),
        url('fonts/GmarketSansBold.otf') format('opentype');
   font-weight: 700;
-  font-style: normal;
 }
 @font-face {
   font-family: 'GmarketSans';
   src: url('fonts/GmarketSansTTFLight.ttf') format('truetype'),
        url('fonts/GmarketSansLight.otf') format('opentype');
   font-weight: 300;
-  font-style: normal;
 }
 @font-face {
   font-family: 'GmarketSans';
   src: url('fonts/GmarketSansMedium.otf') format('opentype');
   font-weight: 500;
-  font-style: normal;
 }
 
-/* ── LOGIN SCREEN ── */
-.login-screen {
-  position: fixed; inset: 0; z-index: 1000;
-  background: #13131f;
+html { height: 100%; overflow-x: hidden; }
+body {
+  min-height: 100vh; height: 100%;
+  font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y; font-size: 16px;
+  padding-top: var(--safe-top);
+}
+
+/* ── LOGIN ── */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #12121e;
   display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: center;
-  padding: max(var(--safe-top),54px) 28px max(var(--safe-bot),80px);
+  align-items: center; justify-content: center;
+  padding: 40px 32px;
 }
-.login-screen.hidden { display: none; }
-
-.login-brand { margin-bottom: 40px; }
-.login-brand-synapse {
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700; font-size: 54px; line-height: 1;
-  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; display: block;
+#loginScreen.hidden { display: none; }
+.login-logo {
+  font-family: 'GmarketSans', 'Inter', sans-serif;
+  font-weight: 700; font-size: 52px;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px; text-align: center;
 }
-.login-brand-brain {
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700; font-size: 54px; line-height: 1;
-  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; display: block;
+.login-sub {
+  font-size: 13px; color: #555577; margin-bottom: 48px; text-align: center;
 }
-.login-tagline {
-  width: 100%; padding: 18px 20px;
-  border: 1.5px solid rgba(108,99,255,0.45);
-  border-radius: 16px; background: rgba(108,99,255,0.06);
-  color: rgba(255,255,255,0.35);
-  font-family: 'GmarketSans', var(--font); font-weight: 300; font-size: 15px;
-  text-align: center; margin-bottom: 32px; line-height: 1.5;
+.login-field {
+  width: 100%; margin-bottom: 14px;
+  background: #1e1e2e; border: 1.5px solid #2a2a4a;
+  border-radius: 14px; padding: 16px 18px;
+  font-size: 16px; color: #e0e0f0; font-family: var(--font);
+  outline: none; transition: border-color 0.2s;
 }
-.login-field { width: 100%; margin-bottom: 12px; }
-.login-field input {
-  width: 100%; padding: 16px 18px;
-  background: rgba(255,255,255,0.05);
-  border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
-  color: #fff; font-family: 'GmarketSans', var(--font); font-size: 16px; font-weight: 300;
-  outline: none; -webkit-appearance: none; transition: border-color .2s;
-}
-.login-field input::placeholder { color: rgba(255,255,255,0.25); }
-.login-field input:focus { border-color: rgba(108,99,255,0.6); }
+.login-field:focus { border-color: #6c63ff; }
+.login-field::placeholder { color: #444466; }
 .login-remember {
   display: flex; align-items: center; gap: 10px;
-  margin: 4px 0 16px; cursor: pointer;
+  width: 100%; margin-bottom: 28px; cursor: pointer;
 }
 .login-remember input[type="checkbox"] {
-  width: 18px; height: 18px; accent-color: #a855f7; cursor: pointer;
+  width: 18px; height: 18px; accent-color: #6c63ff; cursor: pointer;
 }
-.login-remember span {
-  font-family: 'GmarketSans', var(--font); font-size: 13px; font-weight: 300;
-  color: rgba(255,255,255,0.4);
-}
+.login-remember span { font-size: 13px; color: #666688; }
 .login-btn {
-  width: 100%; padding: 17px;
-  background: linear-gradient(90deg, #6c63ff 0%, #a855f7 50%, #ec4899 100%);
-  color: #fff;
-  border: none; border-radius: 14px;
-  font-family: 'GmarketSans', var(--font); font-size: 15px; font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer; margin-top: 4px;
-  -webkit-tap-highlight-color: transparent; transition: opacity .2s;
+  width: 100%; padding: 18px;
+  background: var(--grad); border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 700; color: #fff;
+  cursor: pointer; font-family: var(--font);
+  letter-spacing: 0.5px;
 }
-.login-btn:active { opacity: 0.8; }
-.login-err {
-  font-size: 12px; color: #ff6b6b;
-  margin-top: 12px; text-align: center; min-height: 18px;
-  font-family: 'GmarketSans', var(--font); font-weight: 300;
-}
+.login-error { color: #ff6b6b; font-size: 13px; margin-top: 12px; text-align: center; }
 
-/* ── STICKY HEADER (Dynamic Island aware) ── */
-.sticky-hdr {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--hdr-bg);
-  padding-top: max(var(--safe-top), 54px);
-  padding-left: max(var(--safe-l), 16px);
-  padding-right: max(var(--safe-r), 16px);
-  padding-bottom: 0;
+/* ── APP SHELL ── */
+#app { display: none; flex-direction: column; height: 100vh; }
+#app.visible { display: flex; }
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--hdr-bg); color: var(--hdr-text);
+  padding: 14px 16px 10px;
+  display: flex; flex-direction: column; gap: 0;
+  flex-shrink: 0;
 }
 .hdr-top {
   display: flex; align-items: center; justify-content: space-between;
-  padding-bottom: 12px;
+  margin-bottom: 4px;
 }
-.brand {
-  font-size: 9px; font-weight: 900;
-  letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--hdr-text); opacity: 0.45;
-  user-select: none;
+.hdr-date-nav {
+  display: flex; align-items: center; gap: 8px;
 }
-.hdr-btns { display: flex; gap: 8px; }
-.hdr-btn {
-  height: 30px; padding: 0 12px;
-  border: 1.5px solid rgba(255,255,255,0.18);
-  background: transparent; color: var(--hdr-text);
-  border-radius: 20px; cursor: pointer;
-  font-family: var(--font); font-size: 11px; font-weight: 700;
-  display: flex; align-items: center; gap: 5px;
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
+.hdr-date-big {
+  font-size: 28px; font-weight: 900; letter-spacing: -1px;
+  cursor: pointer;
 }
-[data-theme="dark"] .hdr-btn { border-color: rgba(0,0,0,0.12); }
-.hdr-btn:active { opacity: 0.6; }
-
-/* ── DATE NAV ── */
-.date-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 0 14px;
-}
-.date-nav-btn {
-  width: 42px; height: 42px;
-  border: none; background: rgba(255,255,255,0.1);
-  color: var(--hdr-text); font-size: 26px; font-weight: 200;
-  border-radius: 13px; cursor: pointer;
+.hdr-date-sub { font-size: 12px; opacity: 0.6; margin-top: 1px; }
+.hdr-nav-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(128,128,128,0.15); border: none;
+  color: var(--hdr-text); font-size: 16px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
 }
-[data-theme="dark"] .date-nav-btn { background: rgba(0,0,0,0.1); }
-.date-nav-btn:active { opacity: 0.6; }
-.date-center { flex: 1; text-align: center; padding: 0 6px; cursor: pointer; min-width: 0; }
-.date-main {
-  font-size: 30px; font-weight: 900;
-  letter-spacing: -0.03em; color: var(--hdr-text); line-height: 1;
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+.hdr-today-badge {
+  background: rgba(108,99,255,0.2); color: #a89cff;
+  border: 1px solid rgba(108,99,255,0.3);
+  border-radius: 8px; padding: 4px 10px;
+  font-size: 11px; font-weight: 700; cursor: pointer;
 }
-.date-meta {
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--hdr-text); opacity: 0.5; margin-top: 4px;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
+.save-indicator {
+  font-size: 11px; color: #4caf50;
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px;
 }
-.today-pill {
-  background: var(--hdr-text); color: var(--hdr-bg);
-  font-size: 8px; font-weight: 900; letter-spacing: 0.1em;
-  padding: 2px 8px; border-radius: 20px;
+.save-dot { width: 6px; height: 6px; border-radius: 50%; background: #4caf50; }
+
+/* ── DEVICE SWITCHER ── */
+.device-bar {
+  display: flex; gap: 8px; padding: 10px 16px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  flex-shrink: 0; overflow-x: auto;
+}
+.device-btn {
+  padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border-mid); background: var(--surface);
+  color: var(--text2); cursor: pointer; white-space: nowrap;
+  text-decoration: none; display: inline-block;
+}
+.device-btn.active {
+  background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg);
 }
 
-/* ── VER LINKS ── */
-.ver-links {
-  display: flex; gap: 6px;
-  padding: 10px max(var(--safe-r),14px) 12px max(var(--safe-l),14px);
-  background: var(--bg);
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+/* ── TAB CONTENT AREA ── */
+.tab-content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding-bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+  -webkit-overflow-scrolling: touch;
 }
-.ver-links::-webkit-scrollbar { display: none; }
-.ver-link {
-  padding: 6px 16px; border: 1.5px solid var(--border-mid);
-  border-radius: 20px; font-size: 11px; font-weight: 700;
-  letter-spacing: 0.04em; text-decoration: none; color: var(--text2);
-  white-space: nowrap;
-}
-.ver-link.active { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
 
-/* ── SCROLL BODY ── */
-.scroll-body {
-  padding: 12px max(var(--safe-r),14px) calc(var(--safe-bot) + 40px) max(var(--safe-l),14px);
-  display: flex; flex-direction: column; gap: 14px;
-}
-
-/* ── CARD ── */
-.card {
+/* ── BOTTOM TAB BAR ── */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--tab-h) + var(--safe-bot));
   background: var(--surface);
-  border: 1.5px solid var(--border);
-  overflow: hidden;
+  border-top: 1px solid var(--line);
+  display: flex; align-items: flex-start; justify-content: space-around;
+  padding-top: 8px; z-index: 200;
+  padding-bottom: var(--safe-bot);
+}
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  flex: 1; cursor: pointer; padding: 4px 0;
+  border: none; background: none; color: var(--text3);
+  font-family: var(--font); transition: color 0.2s;
+}
+.tab-item.active { color: var(--accent); }
+.tab-icon { font-size: 20px; line-height: 1; }
+.tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+
+/* ════════════════════════════════════════
+   TODAY TAB
+   ════════════════════════════════════════ */
+.today-section { padding: 16px 16px 0; }
+.today-date-label {
+  font-size: 13px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.card {
+  background: var(--surface); border-radius: 16px;
+  border: 1.5px solid var(--border-mid);
+  margin-bottom: 16px; overflow: hidden;
   box-shadow: var(--shadow);
 }
-
-/* ── CARD HEADER ── */
 .card-hdr {
   background: var(--hdr-bg); color: var(--hdr-text);
   padding: 12px 16px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; gap: 10px;
 }
-.card-hdr-left { display: flex; align-items: center; gap: 9px; }
-.card-hdr-icon { font-size: 17px; line-height: 1; }
-.card-hdr-title {
-  font-size: 10.5px; font-weight: 800;
-  letter-spacing: 0.22em; text-transform: uppercase;
+.card-hdr-icon { font-size: 18px; }
+.card-hdr-title { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; flex: 1; }
+.card-hdr-count { font-size: 12px; opacity: 0.5; }
+.card-hdr-edit {
+  background: none; border: none; color: var(--hdr-text);
+  font-size: 14px; cursor: pointer; opacity: 0.6; padding: 4px;
 }
-.card-hdr-count { font-size: 10px; font-weight: 700; opacity: 0.4; }
-
-/* ── PROGRESS ── */
-.card-prog { height: 2px; background: rgba(255,255,255,0.08); }
-[data-theme="dark"] .card-prog { background: rgba(0,0,0,0.08); }
-.card-prog-fill {
-  height: 100%; background: rgba(255,255,255,0.55);
-  transition: width .4s cubic-bezier(.4,0,.2,1);
-}
-[data-theme="dark"] .card-prog-fill { background: rgba(0,0,0,0.45); }
-
-/* ── LIST ROW ── */
-.list-row {
+.task-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 14px; border-bottom: 1px solid var(--line);
   position: relative; overflow: hidden;
-  border-bottom: 1px solid var(--line);
+  background: var(--surface); transition: background 0.15s;
 }
-.list-row:last-child { border-bottom: none; }
-
-.row-actions {
+.task-row:last-child { border-bottom: none; }
+.task-check {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid var(--border-mid); cursor: pointer;
+  flex-shrink: 0; appearance: none; -webkit-appearance: none;
+  background: var(--surface); transition: all 0.2s;
+}
+.task-check:checked {
+  background: var(--accent); border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 70%;
+}
+.task-text { flex: 1; font-size: 14px; line-height: 1.4; }
+.task-text.done { text-decoration: line-through; color: var(--done-color); }
+.task-pri {
+  font-size: 10px; font-weight: 800; padding: 2px 7px;
+  border-radius: 5px; color: #fff; flex-shrink: 0;
+}
+.pri-a1,.pri-a2,.pri-a3 { background: var(--pa); }
+.pri-b1,.pri-b2,.pri-b3 { background: var(--pb); }
+.pri-c1,.pri-c2,.pri-c3 { background: var(--pc); }
+.task-swipe-actions {
   position: absolute; right: 0; top: 0; bottom: 0;
-  display: flex; z-index: 0;
+  display: flex; transform: translateX(100%); transition: transform 0.2s;
 }
-.row-act-btn {
-  width: 72px; border: none; cursor: pointer;
-  font-size: 10px; font-weight: 800;
-  letter-spacing: 0.05em; text-transform: uppercase;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 3px;
-  -webkit-tap-highlight-color: transparent;
+.task-swipe-actions.open { transform: translateX(0); }
+.swipe-edit-btn, .swipe-del-btn {
+  width: 64px; border: none; font-size: 12px; font-weight: 700;
+  color: #fff; cursor: pointer;
 }
-.row-act-btn:active { opacity: 0.72; }
-.row-act-edit { background: #2563eb; color: #fff; }
-.row-act-del  { background: #dc2626; color: #fff; }
-.row-act-btn .act-ico { font-size: 17px; }
-
-.row-inner {
-  display: flex; align-items: center;
-  background: var(--surface);
-  transition: transform .28s cubic-bezier(.4,0,.2,1);
-  position: relative; z-index: 1;
-  min-height: 50px;
-}
-
-/* ── 체크박스 (iOS 원형) ── */
-.row-chk {
-  width: 46px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.row-chk input[type="checkbox"] {
-  width: 18px; height: 18px;
-  cursor: pointer;
-  -webkit-appearance: none; appearance: none;
-  border: 2px solid var(--border-mid);
-  border-radius: 50%;
-  background: transparent;
-  position: relative;
-  transition: all .15s;
-  flex-shrink: 0;
-}
-.row-chk input[type="checkbox"]:checked {
-  background: var(--text); border-color: var(--text);
-}
-.row-chk input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  left: 3px; top: 1px;
-  width: 5px; height: 8px;
-  border: 2px solid var(--surface);
-  border-top: none; border-left: none;
-  transform: rotate(45deg);
-}
-
-/* ── 우선순위 배지 ── */
-.row-pri {
-  width: 52px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
-}
-.pri-badge {
-  font-size: 10px; font-weight: 800; letter-spacing: 0.04em;
-  padding: 3px 6px; border-radius: 4px;
-  border: none; background: transparent; cursor: pointer;
-  font-family: var(--font);
-  -webkit-tap-highlight-color: transparent;
-  line-height: 1;
-}
-.pri-A { color: var(--pa); background: rgba(192,57,43,0.09); }
-.pri-B { color: var(--pb); background: rgba(41,128,185,0.09); }
-.pri-C { color: var(--pc); background: rgba(39,174,96,0.09); }
-.pri-none { color: var(--text3); font-size: 12px; }
-
-/* ── 텍스트 ── */
-.row-txt {
-  flex: 1; padding: 12px 12px 12px 10px;
-  font-size: max(16px, 14px);
-  font-weight: 400; color: var(--text);
-  line-height: 1.5; word-break: break-word;
-  background: transparent; border: none; outline: none;
-  font-family: var(--font); cursor: text;
-  min-width: 0;
-}
-.row-txt:empty::before {
-  content: attr(data-ph); color: var(--text3);
-  font-style: italic; font-size: 13px; pointer-events: none;
-}
-.row-txt.done { text-decoration: line-through; color: var(--done-color); }
-
-/* ── ADD ROW ── */
+.swipe-edit-btn { background: #2980b9; }
+.swipe-del-btn  { background: #e74c3c; }
 .add-row {
   display: flex; align-items: center;
-  border-top: 1.5px solid var(--border);
-  min-height: 50px; background: var(--bg);
-  overflow: hidden;
+  padding: 12px 14px; background: var(--surface);
 }
-.add-row-input {
-  flex: 1; padding: 13px 16px;
-  font-size: max(16px, 14px);
-  font-family: var(--font);
-  background: transparent; border: none; outline: none;
-  color: var(--text2); font-style: italic;
-  -webkit-appearance: none;
-  min-width: 0; width: 100%;
+.add-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; color: var(--text3); font-family: var(--font);
 }
-.add-row-input::placeholder { color: var(--text3); }
+.add-input::placeholder { color: var(--text3); }
+.progress-bar {
+  height: 3px; background: var(--line); margin: 0;
+}
+.progress-fill {
+  height: 100%; background: var(--accent); transition: width 0.3s;
+}
 
-/* ── PRIORITY POPUP ── */
-.pri-popup {
-  position: fixed; z-index: 300;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 16px 56px rgba(0,0,0,0.24);
-  padding: 10px;
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 6px;
-  width: 200px;
+/* ════════════════════════════════════════
+   SCHEDULE TAB — CALENDAR
+   ════════════════════════════════════════ */
+.cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 16px 8px;
+  background: var(--surface); border-bottom: 1px solid var(--line);
 }
-.pri-popup.hidden { display: none; }
-.pri-opt {
-  padding: 10px 4px; border: none; cursor: pointer;
-  border-radius: 9px;
-  font-family: var(--font); font-size: 12px; font-weight: 800;
-  letter-spacing: 0.04em; text-align: center;
-  -webkit-tap-highlight-color: transparent;
+.cal-month-title {
+  font-size: 20px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
 }
-.pri-opt:active { transform: scale(0.88); }
-.pri-opt-A1,.pri-opt-A2,.pri-opt-A3 { background: rgba(192,57,43,0.1); color: var(--pa); }
-.pri-opt-B1,.pri-opt-B2,.pri-opt-B3 { background: rgba(41,128,185,0.1); color: var(--pb); }
-.pri-opt-C1,.pri-opt-C2,.pri-opt-C3 { background: rgba(39,174,96,0.1); color: var(--pc); }
+.cal-month-arrow { font-size: 12px; opacity: 0.5; }
+.cal-nav { display: flex; gap: 8px; }
+.cal-nav-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--border-mid);
+  color: var(--text); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.cal-weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.cal-wd {
+  text-align: center; padding: 8px 0; font-size: 11px;
+  font-weight: 700; color: var(--text3);
+}
+.cal-wd:first-child { color: #e74c3c; }
+.cal-wd:last-child  { color: #2980b9; }
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  background: var(--line); gap: 1px;
+}
+.cal-cell {
+  background: var(--surface); min-height: 80px;
+  padding: 4px 3px; cursor: pointer; position: relative;
+}
+.cal-cell:hover { background: var(--bg); }
+.cal-cell.other-month .cal-day-num { opacity: 0.3; }
+.cal-cell.today { background: rgba(108,99,255,0.05); }
+.cal-day-num {
+  font-size: 12px; font-weight: 700; margin-bottom: 3px;
+  display: inline-block; width: 22px; height: 22px;
+  border-radius: 50%; text-align: center; line-height: 22px;
+}
+.cal-cell.today .cal-day-num {
+  background: var(--accent); color: #fff;
+}
+.cal-cell.sunday .cal-day-num { color: #e74c3c; }
+.cal-cell.saturday .cal-day-num { color: #2980b9; }
+.cal-events { display: flex; flex-direction: column; gap: 2px; }
+.cal-event-tag {
+  font-size: 10px; font-weight: 600; padding: 2px 5px;
+  border-radius: 4px; color: #fff; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+}
+.cal-more { font-size: 9px; color: var(--text3); padding: 1px 3px; }
+.cal-fab {
+  position: fixed; bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+  right: 20px; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--grad); border: none; color: #fff;
+  font-size: 24px; cursor: pointer; box-shadow: 0 4px 20px rgba(108,99,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.cal-fab.hidden { display: none; }
 
-/* ── DATE POPUP (iOS sheet) ── */
-.popup-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.38);
-  z-index: 200;
-  display: flex; align-items: flex-end; justify-content: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+/* Event colors */
+.ec-0  { background: #e74c3c; }
+.ec-1  { background: #e67e22; }
+.ec-2  { background: #f1c40f; color: #333 !important; }
+.ec-3  { background: #2ecc71; }
+.ec-4  { background: #1abc9c; }
+.ec-5  { background: #3498db; }
+.ec-6  { background: #9b59b6; }
+.ec-7  { background: #e91e63; }
+.ec-8  { background: #ff5722; }
+.ec-9  { background: #607d8b; }
+
+/* ════════════════════════════════════════
+   BRAINDUMP TAB
+   ════════════════════════════════════════ */
+.bd-header {
+  padding: 16px 16px 8px;
+  display: flex; align-items: center; gap: 10px;
 }
-.popup-overlay.hidden { display: none; }
-.popup-box {
-  background: var(--surface);
-  border-radius: 24px 24px 0 0;
-  padding: 0 20px calc(var(--safe-bot) + 20px);
-  width: 100%;
-  box-shadow: 0 -12px 64px rgba(0,0,0,0.2);
+.bd-search {
+  flex: 1; padding: 10px 14px;
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  border-radius: 12px; font-size: 14px; color: var(--text);
+  font-family: var(--font); outline: none;
 }
-.popup-handle {
-  width: 36px; height: 5px; background: var(--border-mid);
-  border-radius: 3px; margin: 14px auto 20px;
+.bd-search::placeholder { color: var(--text3); }
+.bd-input-card {
+  margin: 0 16px 16px;
+  background: var(--surface); border-radius: 14px;
+  border: 1.5px solid var(--border-mid);
+  overflow: hidden; box-shadow: var(--shadow);
 }
-.popup-title {
-  font-size: 10px; font-weight: 800;
-  letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--text2); margin-bottom: 16px;
-}
-.popup-box input[type="date"] {
+.bd-textarea {
   width: 100%; padding: 14px 16px;
-  border: 1.5px solid var(--border-mid); border-radius: 12px;
-  font-family: var(--font); font-size: 17px;
-  background: var(--bg); color: var(--text);
-  outline: none; margin-bottom: 16px; cursor: pointer;
-  -webkit-appearance: none;
+  font-size: 15px; font-family: var(--font);
+  background: transparent; border: none; outline: none;
+  color: var(--text); resize: none; min-height: 90px; line-height: 1.6;
 }
-.popup-btns { display: flex; gap: 10px; }
-.btn-dark {
-  flex: 1; padding: 15px;
+.bd-input-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-top: 1px solid var(--line);
+}
+.bd-char-count { font-size: 11px; color: var(--text3); }
+.bd-add-btn {
+  padding: 8px 18px; background: var(--hdr-bg); color: var(--hdr-text);
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: var(--font);
+}
+.bd-list { padding: 0 16px; }
+.bd-item {
+  background: var(--surface); border-radius: 12px;
+  border: 1.5px solid var(--border-mid);
+  margin-bottom: 10px; padding: 14px 16px;
+}
+.bd-item-text { font-size: 14px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+.bd-item-meta {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; flex-wrap: wrap;
+}
+.bd-item-time { font-size: 11px; color: var(--text3); }
+.bd-item-actions { display: flex; gap: 6px; margin-left: auto; }
+.bd-action-btn {
+  padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; border: none; cursor: pointer;
+}
+.bd-to-today  { background: #e8f4fd; color: #2980b9; }
+.bd-to-sched  { background: #eafaf1; color: #27ae60; }
+.bd-del-btn   { background: #fdf2f2; color: #e74c3c; }
+.bd-highlight { background: #fff3cd; border-radius: 2px; }
+.bd-empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 14px; }
+
+/* ════════════════════════════════════════
+   ARCHIVE TAB
+   ════════════════════════════════════════ */
+.arc-header {
+  padding: 16px 16px 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.arc-search {
+  flex: 1; padding: 10px 14px;
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  border-radius: 12px; font-size: 14px; color: var(--text);
+  font-family: var(--font); outline: none;
+}
+.arc-search::placeholder { color: var(--text3); }
+.arc-upload-btn {
+  width: 40px; height: 40px; border-radius: 12px;
   background: var(--hdr-bg); color: var(--hdr-text);
-  border: none; border-radius: 13px;
-  font-family: var(--font); font-size: 14px; font-weight: 800;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  border: none; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
 }
-.btn-dark:active { opacity: 0.72; }
-.btn-ghost {
-  flex: 1; padding: 15px;
-  background: transparent; color: var(--text2);
-  border: 1.5px solid var(--border-mid); border-radius: 13px;
-  font-family: var(--font); font-size: 14px; font-weight: 700;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.arc-cats {
+  display: flex; gap: 8px; padding: 0 16px 12px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
-.btn-ghost:active { opacity: 0.68; }
-
-/* ── EDIT MODAL (iOS sheet) ── */
-.edit-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.32);
-  z-index: 400;
-  display: flex; align-items: flex-end; justify-content: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+.arc-cat-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border-mid); background: var(--surface);
+  color: var(--text2); cursor: pointer; white-space: nowrap;
 }
-.edit-overlay.hidden { display: none; }
-.edit-box {
-  background: var(--surface);
-  border-radius: 24px 24px 0 0;
-  padding: 0 20px calc(var(--safe-bot) + 20px);
-  width: 100%;
-  box-shadow: 0 -12px 64px rgba(0,0,0,0.22);
+.arc-cat-btn.active {
+  background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg);
 }
-.edit-handle {
-  width: 36px; height: 5px; background: var(--border-mid);
-  border-radius: 3px; margin: 14px auto 20px;
-}
-.edit-title {
-  font-size: 10px; font-weight: 800;
-  letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--text2); margin-bottom: 14px;
-}
-.edit-pri-row {
-  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
-}
-.edit-pri-btn {
-  padding: 7px 12px; border: 1.5px solid var(--border-mid);
-  border-radius: 8px; cursor: pointer;
-  font-family: var(--font); font-size: 11px; font-weight: 800;
-  background: transparent; color: var(--text2);
-  -webkit-tap-highlight-color: transparent;
-}
-.edit-pri-btn.sel-A { border-color: var(--pa); color: var(--pa); background: rgba(192,57,43,0.08); }
-.edit-pri-btn.sel-B { border-color: var(--pb); color: var(--pb); background: rgba(41,128,185,0.08); }
-.edit-pri-btn.sel-C { border-color: var(--pc); color: var(--pc); background: rgba(39,174,96,0.08); }
-.edit-textarea {
-  width: 100%; min-height: 88px;
-  padding: 13px 15px;
-  border: 1.5px solid var(--border-mid); border-radius: 12px;
-  font-family: var(--font); font-size: 16px;
-  background: var(--bg); color: var(--text);
-  outline: none; resize: none; margin-bottom: 16px; line-height: 1.5;
-  -webkit-appearance: none;
-}
-.edit-textarea:focus { border-color: var(--border); }
-.edit-btns { display: flex; gap: 10px; }
-
-/* ── TOAST ── */
-.toast-wrap {
-  position: fixed; bottom: calc(var(--safe-bot) + 28px); left: 50%;
-  transform: translateX(-50%);
-  z-index: 500; display: flex; flex-direction: column; gap: 8px;
-  pointer-events: none;
-}
-.toast {
-  background: var(--hdr-bg); color: var(--hdr-text);
-  padding: 11px 26px; border-radius: 28px;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-  white-space: nowrap;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.2);
-  animation: tIn .22s ease, tOut .28s ease 1.72s forwards;
-}
-@keyframes tIn  { from { opacity:0; transform:translateY(12px) scale(.93); } to { opacity:1; transform:none; } }
-@keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(-8px) scale(.96); } }
-
-/* ── AI REMINDER CARD ── */
-.ai-reminder-card {
-  background: var(--hdr-bg);
-  border: 1.5px solid var(--border);
-  overflow: hidden;
+.arc-grid { padding: 0 16px; }
+.arc-item {
+  background: var(--surface); border-radius: 14px;
+  border: 1.5px solid var(--border-mid);
+  margin-bottom: 12px; overflow: hidden;
   box-shadow: var(--shadow);
 }
-.ai-reminder-hdr {
-  padding: 14px 16px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+.arc-item-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
 }
-[data-theme="dark"] .ai-reminder-hdr { border-bottom-color: rgba(0,0,0,0.15); }
-.ai-reminder-title {
-  font-size: 9px; font-weight: 900;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-}
-[data-theme="dark"] .ai-reminder-title { color: rgba(0,0,0,0.4); }
-.ai-refresh-btn {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: transparent; color: rgba(255,255,255,0.5);
-  font-size: 14px; cursor: pointer;
+.arc-type-icon {
+  width: 36px; height: 36px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform .3s;
+  font-size: 18px; flex-shrink: 0;
 }
-[data-theme="dark"] .ai-refresh-btn { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.4); }
-.ai-refresh-btn.spinning { animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.ai-refresh-btn:active { opacity: 0.6; }
-.ai-reminder-body { padding: 0 16px 16px; }
-.ai-reminder-item {
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+.arc-type-note   { background: #fff3e0; }
+.arc-type-url    { background: #e3f2fd; }
+.arc-type-image  { background: #fce4ec; }
+.arc-type-video  { background: #f3e5f5; }
+.arc-type-file   { background: #e8f5e9; }
+.arc-item-info { flex: 1; min-width: 0; }
+.arc-item-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-[data-theme="dark"] .ai-reminder-item { border-bottom-color: rgba(0,0,0,0.1); }
-.ai-reminder-item:last-child { border-bottom: none; }
-.ai-reminder-tag {
-  font-size: 8px; font-weight: 900; letter-spacing: 0.2em;
-  text-transform: uppercase; margin-bottom: 6px;
-  display: inline-block; padding: 2px 8px; border-radius: 4px;
+.arc-item-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.arc-ai-tag {
+  font-size: 10px; padding: 3px 8px; border-radius: 6px;
+  background: rgba(108,99,255,0.1); color: var(--accent);
+  font-weight: 700; flex-shrink: 0;
 }
-.tag-schedule { background: rgba(41,128,185,0.25); color: #74b9ff; }
-.tag-todo     { background: rgba(39,174,96,0.25);  color: #55efc4; }
-.tag-signal   { background: rgba(192,57,43,0.25);  color: #ff7675; }
-[data-theme="dark"] .tag-schedule { background: rgba(41,128,185,0.15); }
-[data-theme="dark"] .tag-todo     { background: rgba(39,174,96,0.15); }
-[data-theme="dark"] .tag-signal   { background: rgba(192,57,43,0.15); }
-.ai-reminder-text {
-  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.82);
-  line-height: 1.55; letter-spacing: -0.01em;
+.arc-item-preview {
+  padding: 0 14px 12px; font-size: 13px; color: var(--text2);
+  line-height: 1.5;
 }
-[data-theme="dark"] .ai-reminder-text { color: rgba(0,0,0,0.75); }
-.ai-reminder-loading {
-  padding: 24px 0; text-align: center;
-  font-size: 12px; color: rgba(255,255,255,0.3);
-  letter-spacing: 0.1em;
+.arc-item-preview img {
+  width: 100%; border-radius: 8px; max-height: 160px; object-fit: cover;
 }
-[data-theme="dark"] .ai-reminder-loading { color: rgba(0,0,0,0.3); }
-.ai-reminder-ts {
-  font-size: 9px; color: rgba(255,255,255,0.2);
-  text-align: right; margin-top: 10px; letter-spacing: 0.06em;
+.arc-item-actions {
+  display: flex; border-top: 1px solid var(--line);
 }
-[data-theme="dark"] .ai-reminder-ts { color: rgba(0,0,0,0.2); }
+.arc-action-btn {
+  flex: 1; padding: 10px; border: none; background: transparent;
+  font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer;
+  border-right: 1px solid var(--line);
+}
+.arc-action-btn:last-child { border-right: none; }
+.arc-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+.arc-empty-icon { font-size: 48px; margin-bottom: 12px; }
 
-/* ── SYNC STATUS ── */
-.sync-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #27ae60; display: inline-block; margin-right: 4px;
+/* ════════════════════════════════════════
+   SETTING TAB
+   ════════════════════════════════════════ */
+.setting-section { padding: 16px; }
+.setting-group {
+  background: var(--surface); border-radius: 14px;
+  border: 1.5px solid var(--border-mid);
+  margin-bottom: 16px; overflow: hidden;
 }
-.sync-dot.offline { background: #e74c3c; }
-.sync-dot.syncing { background: #f39c12; animation: pulse .8s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-.sync-status {
-  font-size: 9px; color: var(--text3);
-  display: flex; align-items: center;
-  padding: 4px max(var(--safe-r),14px) 0 max(var(--safe-l),14px);
+.setting-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-bottom: 1px solid var(--line);
+  cursor: pointer;
 }
+.setting-item:last-child { border-bottom: none; }
+.setting-icon { font-size: 20px; width: 28px; text-align: center; }
+.setting-label { flex: 1; font-size: 14px; font-weight: 500; }
+.setting-value { font-size: 13px; color: var(--text3); }
+.setting-arrow { font-size: 12px; color: var(--text3); }
+.setting-toggle {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: var(--border-mid); border: none; cursor: pointer;
+  position: relative; transition: background 0.2s;
+}
+.setting-toggle.on { background: var(--accent); }
+.setting-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px; border-radius: 50%; background: #fff;
+  transition: transform 0.2s;
+}
+.setting-toggle.on::after { transform: translateX(20px); }
+.setting-profile {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 16px;
+}
+.setting-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--grad); display: flex; align-items: center;
+  justify-content: center; font-size: 24px; font-weight: 700; color: #fff;
+  font-family: 'GmarketSans', sans-serif;
+}
+.setting-profile-info { flex: 1; }
+.setting-profile-name { font-size: 16px; font-weight: 700; }
+.setting-profile-email { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.setting-logout-btn {
+  width: 100%; padding: 16px; margin-top: 8px;
+  background: #fdf2f2; border: 1.5px solid #fcc; border-radius: 14px;
+  color: #e74c3c; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: var(--font);
+}
+
+/* ════════════════════════════════════════
+   AI REMINDER CARD
+   ════════════════════════════════════════ */
+.ai-reminder-card {
+  margin: 16px; background: var(--hdr-bg); color: var(--hdr-text);
+  border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
+}
+.ai-reminder-hdr {
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.ai-reminder-title { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; flex: 1; }
+.ai-refresh-btn {
+  background: none; border: none; color: inherit; opacity: 0.6;
+  font-size: 14px; cursor: pointer; padding: 4px;
+}
+.ai-reminder-items { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.ai-item {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ai-item-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+}
+.ai-dot-schedule { background: #f39c12; }
+.ai-dot-todo     { background: #3498db; }
+.ai-dot-signal   { background: #e74c3c; }
+.ai-item-content { flex: 1; }
+.ai-item-label { font-size: 10px; font-weight: 700; opacity: 0.5; letter-spacing: 1px; margin-bottom: 2px; }
+.ai-item-text  { font-size: 13px; line-height: 1.4; }
+.ai-loading { padding: 20px; text-align: center; font-size: 13px; opacity: 0.5; }
+
+/* ════════════════════════════════════════
+   MODALS & OVERLAYS
+   ════════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-end;
+}
+.overlay.hidden { display: none; }
+.sheet {
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px calc(20px + var(--safe-bot));
+  width: 100%; max-height: 90vh; overflow-y: auto;
+}
+.sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--border-mid); margin: 0 auto 16px;
+}
+.sheet-title { font-size: 17px; font-weight: 800; margin-bottom: 16px; }
+.sheet-field { margin-bottom: 14px; }
+.sheet-label { font-size: 12px; font-weight: 700; color: var(--text3); margin-bottom: 6px; }
+.sheet-input, .sheet-select, .sheet-textarea {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border-mid); border-radius: 10px;
+  font-size: 15px; font-family: var(--font);
+  background: var(--bg); color: var(--text); outline: none;
+}
+.sheet-input:focus, .sheet-select:focus, .sheet-textarea:focus {
+  border-color: var(--accent);
+}
+.sheet-textarea { resize: none; min-height: 80px; }
+.sheet-colors {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.color-dot {
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+  border: 3px solid transparent; transition: border-color 0.15s;
+}
+.color-dot.selected { border-color: var(--text); }
+.sheet-btns { display: flex; gap: 10px; margin-top: 4px; }
+.sheet-cancel {
+  flex: 1; padding: 14px; border-radius: 12px;
+  background: var(--bg); border: 1.5px solid var(--border-mid);
+  font-size: 15px; font-weight: 700; color: var(--text2); cursor: pointer;
+  font-family: var(--font);
+}
+.sheet-save {
+  flex: 2; padding: 14px; border-radius: 12px;
+  background: var(--grad); border: none;
+  font-size: 15px; font-weight: 700; color: #fff; cursor: pointer;
+  font-family: var(--font);
+}
+.sheet-del {
+  flex: 1; padding: 14px; border-radius: 12px;
+  background: #fdf2f2; border: 1.5px solid #fcc;
+  font-size: 15px; font-weight: 700; color: #e74c3c; cursor: pointer;
+  font-family: var(--font);
+}
+
+/* Move modal */
+.move-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-end;
+}
+.move-overlay.hidden { display: none; }
+
+/* Archive upload overlay */
+.arc-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-end;
+}
+.arc-overlay.hidden { display: none; }
+
+/* Date picker overlay */
+.date-overlay {
+  position: fixed; inset: 0; z-index: 700;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+.date-overlay.hidden { display: none; }
+.date-box {
+  background: var(--surface); border-radius: 16px;
+  padding: 20px; width: 300px;
+}
+.date-box input[type="date"] {
+  width: 100%; padding: 12px; border: 1.5px solid var(--border-mid);
+  border-radius: 10px; font-size: 16px; background: var(--bg);
+  color: var(--text); outline: none; font-family: var(--font);
+}
+
+/* Swipe gesture */
+.task-row { user-select: none; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-brand">
-    <span class="login-brand-synapse">Synapse</span>
-    <span class="login-brand-brain">Brain</span>
-  </div>
-  <div class="login-tagline">생각을 정리하고,<br>오늘을 설계하는 나만의 공간</div>
-  <div class="login-field">
-    <input type="email" id="loginEmail" placeholder="이메일" autocomplete="email" value="yhun1542@jasoneye.com">
-  </div>
-  <div class="login-field">
-    <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
-  </div>
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-logo">Synapse Brain</div>
+  <div class="login-sub">최고의 답을 찾기 위한 여정을 시작하세요</div>
+  <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
+  <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
   <label class="login-remember">
     <input type="checkbox" id="rememberMe" checked>
     <span>자동 로그인</span>
   </label>
   <button class="login-btn" id="loginBtn">로그인</button>
-  <div class="login-err" id="loginErr"></div>
+  <div class="login-error hidden" id="loginError"></div>
 </div>
 
-<!-- STICKY HEADER -->
-<div class="sticky-hdr">
-  <div class="date-nav">
-    <button class="date-nav-btn" id="btnPrev">‹</button>
-    <div class="date-center" id="dateCenter">
-      <div class="date-main" id="dateMain">—</div>
-      <div class="date-meta" id="dateMeta">—</div>
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- HEADER -->
+  <div class="hdr" id="mainHdr">
+    <div class="hdr-top">
+      <div class="hdr-date-nav">
+        <button class="hdr-nav-btn" id="btnPrev">‹</button>
+        <div>
+          <div class="hdr-date-big" id="hdrDateBig">3월 6일</div>
+          <div class="hdr-date-sub" id="hdrDateSub">2026 · 금요일</div>
+        </div>
+        <button class="hdr-nav-btn" id="btnNext">›</button>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-today-badge" id="btnToday">TODAY</div>
+        <div class="save-indicator" id="saveIndicator">
+          <div class="save-dot"></div>저장됨
+        </div>
+      </div>
     </div>
-    <button class="date-nav-btn" id="btnNext">›</button>
+  </div>
+
+  <!-- DEVICE SWITCHER -->
+  <div class="device-bar">
+    <a class="device-btn" href="index.html">🖥 PC</a>
+    <a class="device-btn" href="galaxy.html">📱 Galaxy S25 Ultra</a>
+    <a class="device-btn active" href="iphone.html"> iPhone 17 Pro</a>
+  </div>
+
+  <!-- TAB CONTENT -->
+  <div class="tab-content">
+
+    <!-- ── TODAY TAB ── -->
+    <div class="tab-pane active" id="pane-today">
+      <div class="today-section">
+        <div class="today-date-label" id="todayDateLabel">TODAY</div>
+        <div id="todayCards"></div>
+      </div>
+      <!-- AI Reminder -->
+      <div class="ai-reminder-card" id="aiReminderCard">
+        <div class="ai-reminder-hdr">
+          <span>✨</span>
+          <span class="ai-reminder-title">HIGHLIGHT REMINDER OF THE DAY</span>
+          <button class="ai-refresh-btn" id="aiRefreshBtn" title="새로고침">↻</button>
+        </div>
+        <div class="ai-reminder-items" id="aiReminderItems">
+          <div class="ai-loading">AI 분석 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCHEDULE TAB ── -->
+    <div class="tab-pane" id="pane-schedule">
+      <div class="cal-header">
+        <div class="cal-month-title" id="calMonthTitle">
+          2026년 3월 <span class="cal-month-arrow">▼</span>
+        </div>
+        <div class="cal-nav">
+          <button class="cal-nav-btn" id="calPrev">‹</button>
+          <button class="cal-nav-btn" id="calNext">›</button>
+        </div>
+      </div>
+      <div class="cal-weekdays">
+        <div class="cal-wd">일</div><div class="cal-wd">월</div>
+        <div class="cal-wd">화</div><div class="cal-wd">수</div>
+        <div class="cal-wd">목</div><div class="cal-wd">금</div>
+        <div class="cal-wd">토</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <button class="cal-fab" id="calFab">+</button>
+    </div>
+
+    <!-- ── BRAINDUMP TAB ── -->
+    <div class="tab-pane" id="pane-braindump">
+      <div class="bd-header">
+        <input class="bd-search" id="bdSearch" placeholder="🔍 BrainDump 검색...">
+      </div>
+      <div class="bd-input-card">
+        <textarea class="bd-textarea" id="bdTextarea" placeholder="지금 머릿속에 있는 모든 것을 적어보세요...&#10;생각, 아이디어, 할 일, 메모 — 무엇이든 OK"></textarea>
+        <div class="bd-input-footer">
+          <span class="bd-char-count" id="bdCharCount">0자</span>
+          <button class="bd-add-btn" id="bdAddBtn">저장</button>
+        </div>
+      </div>
+      <div class="bd-list" id="bdList"></div>
+    </div>
+
+    <!-- ── ARCHIVE TAB ── -->
+    <div class="tab-pane" id="pane-archive">
+      <div class="arc-header">
+        <input class="arc-search" id="arcSearch" placeholder="🔍 아카이브 검색...">
+        <button class="arc-upload-btn" id="arcUploadBtn">+</button>
+      </div>
+      <div class="arc-cats">
+        <button class="arc-cat-btn active" data-cat="all">전체</button>
+        <button class="arc-cat-btn" data-cat="note">노트</button>
+        <button class="arc-cat-btn" data-cat="url">링크</button>
+        <button class="arc-cat-btn" data-cat="image">사진</button>
+        <button class="arc-cat-btn" data-cat="video">동영상</button>
+        <button class="arc-cat-btn" data-cat="file">파일</button>
+      </div>
+      <div class="arc-grid" id="arcGrid"></div>
+    </div>
+
+    <!-- ── SETTING TAB ── -->
+    <div class="tab-pane" id="pane-setting">
+      <div class="setting-section">
+        <div class="setting-group">
+          <div class="setting-profile">
+            <div class="setting-avatar" id="settingAvatar">J</div>
+            <div class="setting-profile-info">
+              <div class="setting-profile-name" id="settingName">Jason</div>
+              <div class="setting-profile-email" id="settingEmail">yhun1542@jasoneye.com</div>
+            </div>
+          </div>
+        </div>
+        <div class="setting-group">
+          <div class="setting-item" id="settingTheme">
+            <span class="setting-icon">🌙</span>
+            <span class="setting-label">다크 모드</span>
+            <button class="setting-toggle" id="themeToggle"></button>
+          </div>
+          <div class="setting-item">
+            <span class="setting-icon">🔔</span>
+            <span class="setting-label">알림</span>
+            <button class="setting-toggle on" id="notiToggle"></button>
+          </div>
+        </div>
+        <div class="setting-group">
+          <div class="setting-item" onclick="switchTab('today')">
+            <span class="setting-icon">📅</span>
+            <span class="setting-label">Today 바로가기</span>
+            <span class="setting-arrow">›</span>
+          </div>
+          <div class="setting-item" onclick="switchTab('schedule')">
+            <span class="setting-icon">🗓</span>
+            <span class="setting-label">Schedule 바로가기</span>
+            <span class="setting-arrow">›</span>
+          </div>
+          <div class="setting-item" onclick="switchTab('archive')">
+            <span class="setting-icon">🗂</span>
+            <span class="setting-label">Archive 바로가기</span>
+            <span class="setting-arrow">›</span>
+          </div>
+        </div>
+        <div class="setting-group">
+          <div class="setting-item" id="openAiKeyItem">
+            <span class="setting-icon">🤖</span>
+            <span class="setting-label">OpenAI API Key</span>
+            <span class="setting-value" id="openAiKeyStatus">설정됨</span>
+            <span class="setting-arrow">›</span>
+          </div>
+        </div>
+        <button class="setting-logout-btn" id="logoutBtn">로그아웃</button>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+
+  <!-- BOTTOM TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-item active" data-tab="today">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Today</span>
+    </button>
+    <button class="tab-item" data-tab="schedule">
+      <span class="tab-icon">🗓</span>
+      <span class="tab-label">Schedule</span>
+    </button>
+    <button class="tab-item" data-tab="braindump">
+      <span class="tab-icon">🧠</span>
+      <span class="tab-label">BrainDump</span>
+    </button>
+    <button class="tab-item" data-tab="archive">
+      <span class="tab-icon">🗂</span>
+      <span class="tab-label">Archive</span>
+    </button>
+    <button class="tab-item" data-tab="setting">
+      <span class="tab-icon">⚙️</span>
+      <span class="tab-label">Setting</span>
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ══ OVERLAYS ══ -->
+
+<!-- Task Edit Sheet -->
+<div class="overlay hidden" id="taskOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="taskSheetTitle">항목 추가</div>
+    <div class="sheet-field">
+      <div class="sheet-label">내용</div>
+      <input class="sheet-input" id="taskEditText" placeholder="할 일 입력...">
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">우선순위</div>
+      <select class="sheet-select" id="taskEditPri">
+        <option value="">없음</option>
+        <option value="A1">A1 — 긴급/중요</option>
+        <option value="A2">A2 — 긴급</option>
+        <option value="A3">A3 — 중요</option>
+        <option value="B1">B1 — 보통/중요</option>
+        <option value="B2">B2 — 보통</option>
+        <option value="B3">B3 — 낮음</option>
+        <option value="C1">C1 — 나중에</option>
+        <option value="C2">C2 — 언젠가</option>
+        <option value="C3">C3 — 참고</option>
+      </select>
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-cancel" id="taskCancel">취소</button>
+      <button class="sheet-del hidden" id="taskDel">삭제</button>
+      <button class="sheet-save" id="taskSave">저장</button>
+    </div>
   </div>
 </div>
 
-<!-- VER LINKS -->
-<div class="ver-links">
-  <a href="index.html" class="ver-link">🖥 PC</a>
-  <a href="galaxy.html" class="ver-link">📱 Galaxy S25 Ultra</a>
-  <a href="iphone.html" class="ver-link active"> iPhone 17 Pro</a>
-</div>
-
-<!-- SYNC STATUS -->
-<div class="sync-status"><span class="sync-dot syncing" id="syncDot"></span><span id="syncTxt">연결 중...</span></div>
-
-<!-- DATE POPUP -->
-<div class="popup-overlay hidden" id="popupOverlay">
-  <div class="popup-box">
-    <div class="popup-handle"></div>
-    <div class="popup-title">날짜 선택</div>
-    <input type="date" id="dateInput">
-    <div class="popup-btns">
-      <button class="btn-dark" id="btnConfirm">이동</button>
-      <button class="btn-ghost" id="btnCancel">취소</button>
+<!-- Schedule Event Sheet -->
+<div class="overlay hidden" id="eventOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="eventSheetTitle">일정 추가</div>
+    <div class="sheet-field">
+      <div class="sheet-label">제목</div>
+      <input class="sheet-input" id="eventTitle" placeholder="일정 제목...">
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">날짜</div>
+      <input class="sheet-input" type="date" id="eventDate">
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">시간 (선택)</div>
+      <input class="sheet-input" type="time" id="eventTime">
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">메모</div>
+      <textarea class="sheet-textarea" id="eventNote" placeholder="메모..."></textarea>
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">색상</div>
+      <div class="sheet-colors" id="eventColors">
+        <div class="color-dot ec-0 selected" data-ci="0"></div>
+        <div class="color-dot ec-1" data-ci="1"></div>
+        <div class="color-dot ec-2" data-ci="2"></div>
+        <div class="color-dot ec-3" data-ci="3"></div>
+        <div class="color-dot ec-4" data-ci="4"></div>
+        <div class="color-dot ec-5" data-ci="5"></div>
+        <div class="color-dot ec-6" data-ci="6"></div>
+        <div class="color-dot ec-7" data-ci="7"></div>
+        <div class="color-dot ec-8" data-ci="8"></div>
+        <div class="color-dot ec-9" data-ci="9"></div>
+      </div>
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-cancel" id="eventCancel">취소</button>
+      <button class="sheet-del hidden" id="eventDel">삭제</button>
+      <button class="sheet-save" id="eventSave">저장</button>
     </div>
   </div>
 </div>
 
-<!-- PRIORITY POPUP -->
-<div class="pri-popup hidden" id="priPopup"></div>
-
-<!-- EDIT MODAL -->
-<div class="edit-overlay hidden" id="editOverlay">
-  <div class="edit-box">
-    <div class="edit-handle"></div>
-    <div class="edit-title">항목 수정</div>
-    <div class="edit-pri-row" id="editPriRow"></div>
-    <textarea class="edit-textarea" id="editTextarea" rows="3"></textarea>
-    <div class="edit-btns">
-      <button class="btn-dark" id="editSave">저장</button>
-      <button class="btn-ghost" id="editCancel">취소</button>
+<!-- BrainDump Move Sheet -->
+<div class="move-overlay hidden" id="moveOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">이동하기</div>
+    <div class="move-preview" id="movePreview"></div>
+    <div class="sheet-field">
+      <div class="sheet-label">이동할 곳</div>
+      <select class="sheet-select" id="moveDest">
+        <option value="today">Today (할 일)</option>
+        <option value="schedule">Schedule (일정)</option>
+      </select>
+    </div>
+    <div class="sheet-field" id="moveCardField">
+      <div class="sheet-label">카드 선택</div>
+      <select class="sheet-select" id="moveCard"></select>
+    </div>
+    <div class="sheet-field" id="moveDateField" style="display:none">
+      <div class="sheet-label">날짜</div>
+      <input class="sheet-input" type="date" id="moveDate">
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-cancel" id="moveCancel">취소</button>
+      <button class="sheet-save" id="moveConfirm">이동</button>
     </div>
   </div>
 </div>
 
-<!-- SCROLL BODY -->
-<div class="scroll-body" id="scrollBody"></div>
+<!-- Archive Upload Sheet -->
+<div class="arc-overlay hidden" id="arcOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">아카이브에 추가</div>
+    <div class="sheet-field">
+      <div class="sheet-label">유형</div>
+      <select class="sheet-select" id="arcType">
+        <option value="note">📝 노트</option>
+        <option value="url">🔗 URL 링크</option>
+        <option value="image">🖼 사진</option>
+        <option value="video">🎬 동영상</option>
+        <option value="file">📄 파일</option>
+      </select>
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">제목</div>
+      <input class="sheet-input" id="arcTitle" placeholder="제목...">
+    </div>
+    <div class="sheet-field" id="arcContentField">
+      <div class="sheet-label">내용 / URL</div>
+      <textarea class="sheet-textarea" id="arcContent" placeholder="내용이나 URL을 입력하세요..."></textarea>
+    </div>
+    <div class="sheet-field" id="arcFileField" style="display:none">
+      <div class="sheet-label">파일 선택</div>
+      <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border-mid);border-radius:10px;color:var(--text);">
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-cancel" id="arcCancel">취소</button>
+      <button class="sheet-save" id="arcSave">저장 + AI 분류</button>
+    </div>
+  </div>
+</div>
 
-<div class="toast-wrap" id="toastWrap"></div>
+<!-- Date Picker -->
+<div class="date-overlay hidden" id="dateOverlay">
+  <div class="date-box">
+    <input type="date" id="datePickerInput">
+    <div class="sheet-btns" style="margin-top:12px">
+      <button class="sheet-cancel" id="datePickerCancel">취소</button>
+      <button class="sheet-save" id="datePickerOk">확인</button>
+    </div>
+  </div>
+</div>
 
-<!-- Firebase SDK -->
+<!-- OpenAI Key Sheet -->
+<div class="overlay hidden" id="openAiOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">OpenAI API Key</div>
+    <div class="sheet-field">
+      <div class="sheet-label">API Key</div>
+      <input class="sheet-input" type="password" id="openAiKeyInput" placeholder="sk-proj-...">
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-cancel" id="openAiCancel">취소</button>
+      <button class="sheet-save" id="openAiSave">저장</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence }
-  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, onSnapshot }
-  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  browserLocalPersistence, browserSessionPersistence, setPersistence
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import {
+  getFirestore, collection, doc, setDoc, getDoc, getDocs,
+  deleteDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
-const firebaseConfig = {
+/* ── Firebase Init ── */
+const fbApp = initializeApp({
   apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
   authDomain: "braindump-jasoneye.firebaseapp.com",
   projectId: "braindump-jasoneye",
   storageBucket: "braindump-jasoneye.firebasestorage.app",
   messagingSenderId: "931666684955",
   appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
-};
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db2  = getFirestore(app);
+});
+const auth    = getAuth(fbApp);
+const db      = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+
+/* ── State ── */
+let currentUser = null;
+let currentDate = new Date();
+let calYear = currentDate.getFullYear();
+let calMonth = currentDate.getMonth();
+let openAiKey = '';
+let activeTab = 'today';
+let editingTaskId = null;
+let editingCardId = null;
+let editingEventId = null;
+let movingBdId = null;
+let selectedColorIdx = 0;
+let currentArcCat = 'all';
+let bdItems = [];
+let scheduleEvents = [];
+let todayTasks = {};
+let arcItems = [];
+let unsubListeners = [];
 
 const CARDS = [
-  { id:'work',    title:'Work',           icon:'💼' },
-  { id:'personal',title:'Personal',       icon:'🙋' },
-  { id:'family',  title:'Family',         icon:'🏠' },
-  { id:'people',  title:'People to Meet', icon:'🤝' },
-  { id:'call',    title:'People to Call', icon:'📞' },
-  { id:'buy',     title:'Things to Buy',  icon:'🛒' },
+  { id:'work',        icon:'💼', title:'WORK' },
+  { id:'personal',    icon:'🧑', title:'PERSONAL' },
+  { id:'family',      icon:'🏠', title:'FAMILY' },
+  { id:'people',      icon:'🤝', title:'PEOPLE TO MEET' },
+  { id:'health',      icon:'💪', title:'HEALTH' },
+  { id:'finance',     icon:'💰', title:'FINANCE' },
 ];
-const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
 
-let curDate   = todayStr();
-let db        = {};
-let isDark    = false;
-let swipedRow = null;
-let priTarget = null;
-let editTarget= null;
-let currentUser = null;
-let unsubscribe = null;
-let aiCache   = {};
-let saveTimer = null;
+/* ── DOM refs ── */
+const loginScreen   = document.getElementById('loginScreen');
+const appEl         = document.getElementById('app');
+const loginEmail    = document.getElementById('loginEmail');
+const loginPw       = document.getElementById('loginPw');
+const loginBtn      = document.getElementById('loginBtn');
+const loginError    = document.getElementById('loginError');
+const rememberMe    = document.getElementById('rememberMe');
+const hdrDateBig    = document.getElementById('hdrDateBig');
+const hdrDateSub    = document.getElementById('hdrDateSub');
+const todayDateLabel= document.getElementById('todayDateLabel');
+const todayCards    = document.getElementById('todayCards');
+const saveIndicator = document.getElementById('saveIndicator');
+const calGrid       = document.getElementById('calGrid');
+const calMonthTitle = document.getElementById('calMonthTitle');
+const bdList        = document.getElementById('bdList');
+const bdTextarea    = document.getElementById('bdTextarea');
+const bdCharCount   = document.getElementById('bdCharCount');
+const bdSearch      = document.getElementById('bdSearch');
+const arcGrid       = document.getElementById('arcGrid');
+const arcSearch     = document.getElementById('arcSearch');
+const aiItems       = document.getElementById('aiReminderItems');
 
-function todayStr() {
-  const d=new Date();
-  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
-}
-function p2(n) { return String(n).padStart(2,'0'); }
-function parseDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
-function offsetDate(s,delta) {
-  const d=parseDate(s); d.setDate(d.getDate()+delta);
-  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
-}
-function fmtDisplay(s) {
-  const d=parseDate(s);
-  const DAYS=['일','월','화','수','목','금','토'];
-  return {
-    main:`${d.getMonth()+1}월 ${d.getDate()}일`,
-    meta:`${d.getFullYear()} · ${DAYS[d.getDay()]}요일`,
-    isToday: s===todayStr()
-  };
-}
-function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function priClass(p) {
-  if(!p) return 'pri-none';
-  if(p[0]==='A') return 'pri-A';
-  if(p[0]==='B') return 'pri-B';
-  return 'pri-C';
-}
-
-function setSyncStatus(state, msg) {
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncTxt');
-  dot.className = 'sync-dot' + (state==='ok'?'':state==='syncing'?' syncing':' offline');
-  txt.textContent = msg;
-}
-
-function getDocRef() {
-  if(!currentUser) return null;
-  return doc(db2, 'users', currentUser.uid, 'braindump', 'data');
-}
-
-async function saveToFirestore() {
-  const ref = getDocRef();
-  if(!ref) return;
-  setSyncStatus('syncing','저장 중...');
+/* ── Login ── */
+loginBtn.addEventListener('click', async () => {
+  const email = loginEmail.value.trim();
+  const pw    = loginPw.value;
+  loginError.classList.add('hidden');
+  loginBtn.textContent = '로그인 중...';
   try {
-    await setDoc(ref, { data: db, updatedAt: Date.now() });
-    setSyncStatus('ok','저장됨 ✓');
-  } catch(e) {
-    setSyncStatus('offline','저장 실패');
-  }
-}
-
-function scheduleSave() {
-  if(saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveToFirestore, 800);
-}
-
-function subscribeFirestore() {
-  if(unsubscribe) unsubscribe();
-  const ref = getDocRef();
-  if(!ref) return;
-  setSyncStatus('syncing','연결 중...');
-  unsubscribe = onSnapshot(ref, snap => {
-    if(snap.exists()) {
-      db = snap.data().data || {};
-      renderCards();
-      setSyncStatus('ok','실시간 동기화');
-    } else {
-      db = {};
-      setSyncStatus('ok','새 데이터');
-    }
-  }, err => {
-    setSyncStatus('offline','오프라인');
-  });
-}
-
-function save() {
-  localStorage.setItem('bd_iphone_v3', JSON.stringify(db));
-  scheduleSave();
-}
-
-function getItems(dateKey, cardId) {
-  if(!db[dateKey]) db[dateKey]={};
-  if(!db[dateKey][cardId]) db[dateKey][cardId]=[];
-  return db[dateKey][cardId];
-}
-
-onAuthStateChanged(auth, user => {
-  if(user) {
-    currentUser = user;
-    document.getElementById('loginScreen').classList.add('hidden');
-    // logout btn removed
-    // Firestore에서 OpenAI 키 로드
-    getDoc(doc(db2,'config','openai')).then(snap=>{
-      if(snap.exists()) window.__OPENAI_KEY__ = snap.data().key || '';
-    }).catch(()=>{});
-    try { db = JSON.parse(localStorage.getItem('bd_iphone_v3')||'{}'); } catch {}
-    subscribeFirestore();
-    applyTheme(); renderDate(); renderCards();
-  } else {
-    currentUser = null;
-    document.getElementById('loginScreen').classList.remove('hidden');
-    // logout btn removed
-    if(unsubscribe) { unsubscribe(); unsubscribe=null; }
-  }
-});
-
-document.getElementById('loginBtn').addEventListener('click', async () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pw    = document.getElementById('loginPw').value;
-  const remember = document.getElementById('rememberMe').checked;
-  const err   = document.getElementById('loginErr');
-  err.textContent = '';
-  try {
-    await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+    const persistence = rememberMe.checked ? browserLocalPersistence : browserSessionPersistence;
+    await setPersistence(auth, persistence);
     await signInWithEmailAndPassword(auth, email, pw);
   } catch(e) {
-    err.textContent = '로그인 실패: 이메일 또는 비밀번호를 확인하세요.';
+    loginError.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+    loginError.classList.remove('hidden');
+    loginBtn.textContent = '로그인';
   }
 });
+loginPw.addEventListener('keydown', e => { if(e.key==='Enter') loginBtn.click(); });
 
-document.getElementById('loginPw').addEventListener('keydown', e => {
-  if(e.key==='Enter') document.getElementById('loginBtn').click();
-});
-
-
-
-function renderDate() {
-  const info=fmtDisplay(curDate);
-  document.getElementById('dateMain').textContent=info.main;
-  const meta=document.getElementById('dateMeta');
-  meta.innerHTML=info.meta+(info.isToday?' <span class="today-pill">TODAY</span>':'');
-}
-
-function renderCards() {
-  const body=document.getElementById('scrollBody');
-  body.innerHTML='';
-  CARDS.forEach(cfg=>body.appendChild(buildCard(cfg)));
-  body.appendChild(buildAIReminderCard());
-  swipedRow=null;
-}
-
-function buildCard(cfg) {
-  const items=getItems(curDate,cfg.id);
-  const total=items.length;
-  const done=items.filter(i=>i.done).length;
-  const pct=total>0?Math.round((done/total)*100):0;
-
-  const card=document.createElement('div');
-  card.className='card';
-  card.dataset.card=cfg.id;
-  card.innerHTML=`
-    <div class="card-hdr">
-      <div class="card-hdr-left">
-        <span class="card-hdr-icon">${cfg.icon}</span>
-        <span class="card-hdr-title">${cfg.title}</span>
-      </div>
-      <span class="card-hdr-count">${done}/${total}</span>
-    </div>
-    <div class="card-prog"><div class="card-prog-fill" style="width:${pct}%"></div></div>
-  `;
-
-  const listBody=document.createElement('div');
-  listBody.className='list-body';
-  items.forEach(item=>listBody.appendChild(buildRow(cfg.id,item)));
-
-  const addRow=document.createElement('div');
-  addRow.className='add-row';
-  addRow.innerHTML=`
-    <input class="add-row-input" placeholder="새 항목 입력 후 Enter..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
-  `;
-  listBody.appendChild(addRow);
-  card.appendChild(listBody);
-  return card;
-}
-
-function buildRow(cardId,item) {
-  const row=document.createElement('div');
-  row.className='list-row';
-  row.dataset.item=item.id;
-  row.dataset.card=cardId;
-
-  const actions=document.createElement('div');
-  actions.className='row-actions';
-  actions.innerHTML=`
-    <button class="row-act-btn row-act-edit" data-act="edit"><span class="act-ico">✏️</span>수정</button>
-    <button class="row-act-btn row-act-del" data-act="del"><span class="act-ico">🗑</span>삭제</button>
-  `;
-
-  const inner=document.createElement('div');
-  inner.className='row-inner';
-
-  const chkWrap=document.createElement('div');
-  chkWrap.className='row-chk';
-  const cb=document.createElement('input');
-  cb.type='checkbox'; cb.checked=item.done;
-  cb.addEventListener('change',()=>checkItem(cardId,item.id));
-  chkWrap.appendChild(cb);
-
-  const priWrap=document.createElement('div');
-  priWrap.className='row-pri';
-  const priBadge=document.createElement('button');
-  priBadge.className=`pri-badge ${priClass(item.priority)}`;
-  priBadge.textContent=item.priority||'—';
-  priBadge.addEventListener('click',e=>openPriPopup(e,cardId,item.id,priBadge));
-  priWrap.appendChild(priBadge);
-
-  const txt=document.createElement('div');
-  txt.className='row-txt'+(item.done?' done':'');
-  txt.contentEditable='true';
-  txt.textContent=item.text;
-  txt.dataset.ph='내용 입력...';
-  txt.spellcheck=false;
-  txt.addEventListener('blur',()=>{
-    const v=txt.textContent.trim();
-    if(v!==item.text){ item.text=v||item.text; save(); }
-  });
-
-  inner.appendChild(chkWrap);
-  inner.appendChild(priWrap);
-  inner.appendChild(txt);
-  row.appendChild(actions);
-  row.appendChild(inner);
-  addSwipe(row,inner,actions,cardId,item);
-  return row;
-}
-
-function addSwipe(row,inner,actions,cardId,item) {
-  const THRESHOLD=72;
-  let startX=0, startY=0, dragging=false, revealed=false, isHoriz=null;
-
-  inner.addEventListener('touchstart',e=>{
-    if(swipedRow && swipedRow!==row) closeSwipe(swipedRow);
-    startX=e.touches[0].clientX;
-    startY=e.touches[0].clientY;
-    dragging=true; isHoriz=null;
-    inner.style.transition='none';
-  },{passive:true});
-
-  inner.addEventListener('touchmove',e=>{
-    if(!dragging) return;
-    const dx=e.touches[0].clientX-startX;
-    const dy=e.touches[0].clientY-startY;
-    if(isHoriz===null) {
-      if(Math.abs(dx)>Math.abs(dy)+4) isHoriz=true;
-      else if(Math.abs(dy)>Math.abs(dx)+4) { isHoriz=false; dragging=false; return; }
-      else return;
-    }
-    if(!isHoriz) return;
-    e.preventDefault();
-    const base=revealed?-144:0;
-    const offset=Math.max(-144,Math.min(0,base+dx));
-    inner.style.transform=`translateX(${offset}px)`;
-  },{passive:false});
-
-  inner.addEventListener('touchend',e=>{
-    if(!dragging||!isHoriz) { dragging=false; return; }
-    dragging=false;
-    const dx=e.changedTouches[0].clientX-startX;
-    inner.style.transition='transform .28s cubic-bezier(.4,0,.2,1)';
-    if(!revealed && dx<-THRESHOLD) {
-      inner.style.transform='translateX(-144px)';
-      revealed=true; swipedRow=row;
-    } else if(revealed && dx>THRESHOLD/2) {
-      inner.style.transform='none';
-      revealed=false; swipedRow=null;
-    } else {
-      inner.style.transform=revealed?'translateX(-144px)':'none';
-    }
-  });
-
-  actions.querySelector('[data-act="edit"]').addEventListener('click',()=>{
-    closeSwipe(row); openEdit(cardId,item.id);
-  });
-  actions.querySelector('[data-act="del"]').addEventListener('click',()=>{
-    closeSwipe(row); deleteItem(cardId,item.id);
-  });
-
-  row._closeSwipe=()=>{
-    inner.style.transition='transform .28s cubic-bezier(.4,0,.2,1)';
-    inner.style.transform='none'; revealed=false;
-  };
-}
-
-function closeSwipe(row) {
-  if(row&&row._closeSwipe) row._closeSwipe();
-  if(swipedRow===row) swipedRow=null;
-}
-
-/* ── AI REMINDER CARD ── */
-function buildAIReminderCard() {
-  const card = document.createElement('div');
-  card.className = 'ai-reminder-card';
-  card.id = 'aiReminderCard';
-  card.innerHTML = `
-    <div class="ai-reminder-hdr">
-      <span class="ai-reminder-title">✦ Highlight Reminder of the Day</span>
-      <button class="ai-refresh-btn" id="aiRefreshBtn" title="새로고침">↻</button>
-    </div>
-    <div class="ai-reminder-body" id="aiReminderBody">
-      <div class="ai-reminder-loading">AI 분석 중...</div>
-    </div>
-  `;
-
-  if(aiCache[curDate]) {
-    setTimeout(()=>renderAIReminders(aiCache[curDate]), 0);
+/* ── Auth State ── */
+onAuthStateChanged(auth, async user => {
+  if(user) {
+    currentUser = user;
+    loginScreen.classList.add('hidden');
+    appEl.classList.add('visible');
+    // Load OpenAI key from Firestore
+    try {
+      const cfgDoc = await getDoc(doc(db,'config','openai'));
+      if(cfgDoc.exists()) openAiKey = cfgDoc.data().key || '';
+    } catch(e) {}
+    // Update profile
+    document.getElementById('settingEmail').textContent = user.email || '';
+    const nm = (user.email||'').split('@')[0];
+    document.getElementById('settingName').textContent = nm;
+    document.getElementById('settingAvatar').textContent = nm[0]?.toUpperCase()||'U';
+    // Init
+    updateHeader();
+    subscribeAll();
+    renderCalendar();
+    setTimeout(loadAiReminder, 1500);
   } else {
-    setTimeout(()=>fetchAIReminders(), 100);
+    currentUser = null;
+    loginScreen.classList.remove('hidden');
+    appEl.classList.remove('visible');
+    unsubListeners.forEach(u=>u());
+    unsubListeners = [];
+    loginBtn.textContent = '로그인';
   }
+});
 
-  card.querySelector('#aiRefreshBtn').addEventListener('click', ()=>{
-    delete aiCache[curDate];
-    fetchAIReminders();
+/* ── Firestore paths ── */
+const uid = () => currentUser.uid;
+const todayPath  = (dateStr, cardId) => doc(db,`users/${uid()}/today/${dateStr}/cards/${cardId}`);
+const taskPath   = (dateStr, cardId, taskId) => doc(db,`users/${uid()}/today/${dateStr}/cards/${cardId}/tasks/${taskId}`);
+const eventsCol  = () => collection(db,`users/${uid()}/events`);
+const eventPath  = (id) => doc(db,`users/${uid()}/events/${id}`);
+const bdCol      = () => collection(db,`users/${uid()}/braindump`);
+const bdPath     = (id) => doc(db,`users/${uid()}/braindump/${id}`);
+const arcCol     = () => collection(db,`users/${uid()}/archive`);
+const arcPath    = (id) => doc(db,`users/${uid()}/archive/${id}`);
+
+/* ── Date helpers ── */
+const dateStr = (d) => {
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+};
+const DAYS_KO = ['일','월','화','수','목','금','토'];
+const MONTHS_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+function updateHeader() {
+  const d = currentDate;
+  hdrDateBig.textContent = `${d.getMonth()+1}월 ${d.getDate()}일`;
+  hdrDateSub.textContent = `${d.getFullYear()} · ${DAYS_KO[d.getDay()]}요일`;
+  todayDateLabel.textContent = `TODAY — ${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+}
+
+/* ── Subscribe Firestore ── */
+function subscribeAll() {
+  const ds = dateStr(currentDate);
+  // Today tasks
+  CARDS.forEach(card => {
+    const colRef = collection(db,`users/${uid()}/today/${ds}/cards/${card.id}/tasks`);
+    const unsub = onSnapshot(query(colRef, orderBy('createdAt')), snap => {
+      if(!todayTasks[card.id]) todayTasks[card.id] = {};
+      snap.docChanges().forEach(ch => {
+        if(ch.type==='removed') delete todayTasks[card.id][ch.doc.id];
+        else todayTasks[card.id][ch.doc.id] = { id: ch.doc.id, ...ch.doc.data() };
+      });
+      renderTodayCards();
+    });
+    unsubListeners.push(unsub);
   });
-  return card;
+  // Events
+  const evUnsub = onSnapshot(query(eventsCol(), orderBy('date')), snap => {
+    scheduleEvents = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCalendar();
+    renderTodaySchedule();
+  });
+  unsubListeners.push(evUnsub);
+  // BrainDump
+  const bdUnsub = onSnapshot(query(bdCol(), orderBy('createdAt','desc')), snap => {
+    bdItems = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderBdList();
+  });
+  unsubListeners.push(bdUnsub);
+  // Archive
+  const arcUnsub = onSnapshot(query(arcCol(), orderBy('createdAt','desc')), snap => {
+    arcItems = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderArcGrid();
+  });
+  unsubListeners.push(arcUnsub);
 }
 
-function renderAIReminders(data) {
-  const body = document.getElementById('aiReminderBody');
-  if(!body) return;
-  const btn = document.getElementById('aiRefreshBtn');
-  if(btn) btn.classList.remove('spinning');
-  if(!data || data.error) {
-    body.innerHTML = `<div class="ai-reminder-loading">${data?.error||'리마인더를 불러올 수 없습니다.'}</div>`;
-    return;
-  }
-  const now = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  body.innerHTML = `
-    <div class="ai-reminder-item">
-      <div class="ai-reminder-tag tag-schedule">📅 Schedule Reminder</div>
-      <div class="ai-reminder-text">${data.schedule}</div>
-    </div>
-    <div class="ai-reminder-item">
-      <div class="ai-reminder-tag tag-todo">✅ Todo Reminder</div>
-      <div class="ai-reminder-text">${data.todo}</div>
-    </div>
-    <div class="ai-reminder-item">
-      <div class="ai-reminder-tag tag-signal">⚡ Signal to Action</div>
-      <div class="ai-reminder-text">${data.signal}</div>
-    </div>
-    <div class="ai-reminder-ts">Updated ${now}</div>
-  `;
+function resubscribeToday() {
+  // Unsubscribe old today listeners (first CARDS.length)
+  const old = unsubListeners.splice(0, CARDS.length);
+  old.forEach(u=>u());
+  todayTasks = {};
+  const ds = dateStr(currentDate);
+  CARDS.forEach(card => {
+    const colRef = collection(db,`users/${uid()}/today/${ds}/cards/${card.id}/tasks`);
+    const unsub = onSnapshot(query(colRef, orderBy('createdAt')), snap => {
+      if(!todayTasks[card.id]) todayTasks[card.id] = {};
+      snap.docChanges().forEach(ch => {
+        if(ch.type==='removed') delete todayTasks[card.id][ch.doc.id];
+        else todayTasks[card.id][ch.doc.id] = { id: ch.doc.id, ...ch.doc.data() };
+      });
+      renderTodayCards();
+    });
+    unsubListeners.unshift(unsub);
+  });
 }
 
-async function fetchAIReminders() {
-  const body = document.getElementById('aiReminderBody');
-  const btn  = document.getElementById('aiRefreshBtn');
-  if(!body) return;
-  if(btn) btn.classList.add('spinning');
-  body.innerHTML = '<div class="ai-reminder-loading">AI 분석 중...</div>';
-
-  const allTasks = [];
-  CARDS.forEach(cfg => {
-    const items = getItems(curDate, cfg.id);
-    items.forEach(item => {
-      if(!item.done) allTasks.push(`[${cfg.title}] ${item.text}${item.priority?' ('+item.priority+')':''}`);
+/* ── TODAY RENDER ── */
+function renderTodayCards() {
+  // Schedule events for today
+  renderTodaySchedule();
+  todayCards.innerHTML = '';
+  CARDS.forEach(card => {
+    const tasks = Object.values(todayTasks[card.id]||{});
+    const done = tasks.filter(t=>t.done).length;
+    const pct  = tasks.length ? Math.round(done/tasks.length*100) : 0;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="card-hdr">
+        <span class="card-hdr-icon">${card.icon}</span>
+        <span class="card-hdr-title">${card.title}</span>
+        <span class="card-hdr-count">${done}/${tasks.length}</span>
+        <button class="card-hdr-edit" data-cid="${card.id}">✏️</button>
+      </div>
+      <div class="task-list" id="tl-${card.id}">
+        ${tasks.map(t=>buildTaskRow(t, card.id)).join('')}
+      </div>
+      <div class="add-row">
+        <input class="add-input" placeholder="새 항목 입력 후 Enter..." data-cid="${card.id}">
+      </div>`;
+    todayCards.appendChild(div);
+    // Swipe events
+    div.querySelectorAll('.task-row').forEach(row => attachSwipe(row));
+    // Add input
+    const inp = div.querySelector('.add-input');
+    inp.addEventListener('keydown', e => {
+      if(e.key==='Enter' && inp.value.trim()) {
+        addTask(card.id, inp.value.trim());
+        inp.value = '';
+      }
+    });
+    // Check
+    div.querySelectorAll('.task-check').forEach(cb => {
+      cb.addEventListener('change', () => toggleTask(card.id, cb.dataset.tid, cb.checked));
+    });
+    // Edit card header
+    div.querySelector('.card-hdr-edit').addEventListener('click', () => {
+      editingCardId = card.id;
+      openTaskSheet(null, card.id);
     });
   });
+}
 
-  const dateInfo = fmtDisplay(curDate);
+function buildTaskRow(t, cardId) {
+  const priClass = t.priority ? `pri-${t.priority.toLowerCase()}` : '';
+  const priHtml  = t.priority ? `<span class="task-pri ${priClass}">${t.priority}</span>` : '';
+  return `
+    <div class="task-row" data-tid="${t.id}" data-cid="${cardId}">
+      <input type="checkbox" class="task-check" data-tid="${t.id}" ${t.done?'checked':''}>
+      <span class="task-text ${t.done?'done':''}">${escHtml(t.text)}</span>
+      ${priHtml}
+      <div class="task-swipe-actions">
+        <button class="swipe-edit-btn" data-tid="${t.id}" data-cid="${cardId}">수정</button>
+        <button class="swipe-del-btn"  data-tid="${t.id}" data-cid="${cardId}">삭제</button>
+      </div>
+    </div>`;
+}
 
-  // Firestore에서 AI 캐시 확인
-  if(currentUser) {
-    try {
-      const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-      const aiRef = doc(db2, 'users', currentUser.uid, 'ai_reminders', curDate);
-      const snap = await getDoc(aiRef);
-      if(snap.exists()) {
-        const cached = snap.data();
-        if(cached.schedule && cached.todo && cached.signal) {
-          aiCache[curDate] = cached;
-          renderAIReminders(cached);
-          return;
+/* ── TODAY SCHEDULE SECTION ── */
+function renderTodaySchedule() {
+  const ds = dateStr(currentDate);
+  const todayEvs = scheduleEvents.filter(e => e.date === ds);
+  let el = document.getElementById('todayScheduleCard');
+  if(!el) {
+    el = document.createElement('div');
+    el.id = 'todayScheduleCard';
+    el.className = 'card';
+    el.style.marginBottom = '16px';
+    const section = document.querySelector('.today-section');
+    section.insertBefore(el, section.firstChild.nextSibling);
+  }
+  if(todayEvs.length === 0) { el.style.display='none'; return; }
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="card-hdr">
+      <span class="card-hdr-icon">🗓</span>
+      <span class="card-hdr-title">TODAY'S SCHEDULE</span>
+      <span class="card-hdr-count">${todayEvs.length}개</span>
+    </div>
+    ${todayEvs.map(ev=>`
+      <div class="task-row" style="cursor:pointer" onclick="openEventEdit('${ev.id}')">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--ec-${ev.colorIdx||0},#6c63ff);flex-shrink:0;display:inline-block"></span>
+        <span class="task-text">${ev.time?ev.time+' ':''}<strong>${escHtml(ev.title)}</strong></span>
+      </div>`).join('')}`;
+}
+
+/* ── Task CRUD ── */
+async function addTask(cardId, text) {
+  const ds = dateStr(currentDate);
+  const ref = doc(collection(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks`));
+  await setDoc(ref, { text, done:false, priority:'', createdAt: serverTimestamp() });
+  showSaved();
+}
+async function toggleTask(cardId, taskId, done) {
+  const ds = dateStr(currentDate);
+  await setDoc(doc(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks/${taskId}`), { done }, { merge:true });
+  if(done) setTimeout(()=>deleteTask(cardId,taskId), 600);
+  showSaved();
+}
+async function deleteTask(cardId, taskId) {
+  const ds = dateStr(currentDate);
+  await deleteDoc(doc(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks/${taskId}`));
+  showSaved();
+}
+async function saveTask(cardId, taskId, text, priority) {
+  const ds = dateStr(currentDate);
+  if(taskId) {
+    await setDoc(doc(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks/${taskId}`), { text, priority }, { merge:true });
+  } else {
+    const ref = doc(collection(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks`));
+    await setDoc(ref, { text, done:false, priority, createdAt: serverTimestamp() });
+  }
+  showSaved();
+}
+
+/* ── Task Sheet ── */
+function openTaskSheet(taskId, cardId) {
+  editingTaskId = taskId;
+  editingCardId = cardId;
+  document.getElementById('taskSheetTitle').textContent = taskId ? '항목 수정' : '항목 추가';
+  document.getElementById('taskDel').classList.toggle('hidden', !taskId);
+  if(taskId) {
+    const t = todayTasks[cardId]?.[taskId];
+    document.getElementById('taskEditText').value = t?.text||'';
+    document.getElementById('taskEditPri').value  = t?.priority||'';
+  } else {
+    document.getElementById('taskEditText').value = '';
+    document.getElementById('taskEditPri').value  = '';
+  }
+  document.getElementById('taskOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('taskEditText').focus(), 100);
+}
+document.getElementById('taskCancel').addEventListener('click', ()=>document.getElementById('taskOverlay').classList.add('hidden'));
+document.getElementById('taskDel').addEventListener('click', async()=>{
+  if(editingTaskId && editingCardId) await deleteTask(editingCardId, editingTaskId);
+  document.getElementById('taskOverlay').classList.add('hidden');
+});
+document.getElementById('taskSave').addEventListener('click', async()=>{
+  const text = document.getElementById('taskEditText').value.trim();
+  if(!text) return;
+  await saveTask(editingCardId, editingTaskId, text, document.getElementById('taskEditPri').value);
+  document.getElementById('taskOverlay').classList.add('hidden');
+});
+
+/* ── Swipe ── */
+function attachSwipe(row) {
+  let startX=0, dx=0, swiping=false;
+  row.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; swiping=true; }, {passive:true});
+  row.addEventListener('touchmove', e=>{
+    if(!swiping) return;
+    dx = e.touches[0].clientX - startX;
+    if(dx < -20) {
+      row.querySelector('.task-swipe-actions')?.classList.add('open');
+    } else if(dx > 10) {
+      row.querySelector('.task-swipe-actions')?.classList.remove('open');
+    }
+  }, {passive:true});
+  row.addEventListener('touchend', ()=>{ swiping=false; });
+  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{
+    openTaskSheet(row.dataset.tid, row.dataset.cid);
+    row.querySelector('.task-swipe-actions')?.classList.remove('open');
+  });
+  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{
+    deleteTask(row.dataset.cid, row.dataset.tid);
+  });
+}
+
+/* ── CALENDAR ── */
+function renderCalendar() {
+  calMonthTitle.innerHTML = `${calYear}년 ${MONTHS_KO[calMonth]} <span class="cal-month-arrow">▼</span>`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+  calGrid.innerHTML = '';
+  let cells = [];
+  for(let i=firstDay-1; i>=0; i--) cells.push({ day: daysInPrev-i, other:true });
+  for(let i=1; i<=daysInMonth; i++) cells.push({ day:i, other:false });
+  while(cells.length % 7 !== 0) cells.push({ day: cells.length-daysInMonth-firstDay+1, other:true });
+
+  cells.forEach(cell => {
+    const d = document.createElement('div');
+    d.className = 'cal-cell';
+    const cellDate = cell.other ? null : new Date(calYear, calMonth, cell.day);
+    const cellStr  = cellDate ? dateStr(cellDate) : null;
+    const isToday  = cellDate && cellDate.toDateString()===today.toDateString();
+    const dow      = cellDate ? cellDate.getDay() : -1;
+    if(cell.other) d.classList.add('other-month');
+    if(isToday)    d.classList.add('today');
+    if(dow===0)    d.classList.add('sunday');
+    if(dow===6)    d.classList.add('saturday');
+    const evs = cellStr ? scheduleEvents.filter(e=>e.date===cellStr) : [];
+    const maxShow = 3;
+    d.innerHTML = `
+      <div class="cal-day-num">${cell.day}</div>
+      <div class="cal-events">
+        ${evs.slice(0,maxShow).map(ev=>`<div class="cal-event-tag ec-${ev.colorIdx||0}" data-eid="${ev.id}">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
+        ${evs.length>maxShow?`<div class="cal-more">+${evs.length-maxShow}개</div>`:''}
+      </div>`;
+    if(!cell.other) {
+      d.addEventListener('click', e => {
+        if(e.target.classList.contains('cal-event-tag')) {
+          openEventEdit(e.target.dataset.eid);
+        } else {
+          openEventSheet(null, cellStr);
         }
-      }
+      });
+    }
+    calGrid.appendChild(d);
+  });
+}
+
+document.getElementById('calPrev').addEventListener('click', ()=>{
+  calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', ()=>{
+  calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar();
+});
+document.getElementById('calFab').addEventListener('click', ()=>{
+  openEventSheet(null, dateStr(new Date()));
+});
+calMonthTitle.addEventListener('click', ()=>{
+  calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCalendar();
+});
+
+/* ── Event Sheet ── */
+function openEventSheet(eventId, defaultDate) {
+  editingEventId = eventId;
+  document.getElementById('eventSheetTitle').textContent = eventId ? '일정 수정' : '일정 추가';
+  document.getElementById('eventDel').classList.toggle('hidden', !eventId);
+  selectedColorIdx = 0;
+  if(eventId) {
+    const ev = scheduleEvents.find(e=>e.id===eventId);
+    if(ev) {
+      document.getElementById('eventTitle').value = ev.title||'';
+      document.getElementById('eventDate').value  = ev.date||'';
+      document.getElementById('eventTime').value  = ev.time||'';
+      document.getElementById('eventNote').value  = ev.note||'';
+      selectedColorIdx = ev.colorIdx||0;
+    }
+  } else {
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDate').value  = defaultDate||dateStr(new Date());
+    document.getElementById('eventTime').value  = '';
+    document.getElementById('eventNote').value  = '';
+  }
+  document.querySelectorAll('.color-dot').forEach(d=>{
+    d.classList.toggle('selected', parseInt(d.dataset.ci)===selectedColorIdx);
+  });
+  document.getElementById('eventOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('eventTitle').focus(), 100);
+}
+window.openEventEdit = (id) => openEventSheet(id, null);
+
+document.querySelectorAll('.color-dot').forEach(dot=>{
+  dot.addEventListener('click', ()=>{
+    selectedColorIdx = parseInt(dot.dataset.ci);
+    document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('selected', d===dot));
+  });
+});
+document.getElementById('eventCancel').addEventListener('click', ()=>document.getElementById('eventOverlay').classList.add('hidden'));
+document.getElementById('eventDel').addEventListener('click', async()=>{
+  if(editingEventId) await deleteDoc(eventPath(editingEventId));
+  document.getElementById('eventOverlay').classList.add('hidden');
+  showSaved();
+});
+document.getElementById('eventSave').addEventListener('click', async()=>{
+  const title = document.getElementById('eventTitle').value.trim();
+  if(!title) return;
+  const data = {
+    title,
+    date:     document.getElementById('eventDate').value,
+    time:     document.getElementById('eventTime').value,
+    note:     document.getElementById('eventNote').value,
+    colorIdx: selectedColorIdx,
+    updatedAt: serverTimestamp()
+  };
+  if(editingEventId) {
+    await setDoc(eventPath(editingEventId), data, {merge:true});
+  } else {
+    await addDoc(eventsCol(), { ...data, createdAt: serverTimestamp() });
+  }
+  document.getElementById('eventOverlay').classList.add('hidden');
+  showSaved();
+});
+
+/* ── BRAINDUMP ── */
+bdTextarea.addEventListener('input', ()=>{
+  bdCharCount.textContent = bdTextarea.value.length + '자';
+  bdTextarea.style.height = 'auto';
+  bdTextarea.style.height = bdTextarea.scrollHeight + 'px';
+});
+document.getElementById('bdAddBtn').addEventListener('click', async()=>{
+  const text = bdTextarea.value.trim();
+  if(!text) return;
+  await addDoc(bdCol(), { text, createdAt: serverTimestamp() });
+  bdTextarea.value = ''; bdCharCount.textContent = '0자';
+  bdTextarea.style.height = 'auto';
+  showSaved();
+});
+
+function renderBdList(filter='') {
+  const kw = filter.toLowerCase();
+  const filtered = kw ? bdItems.filter(i=>i.text.toLowerCase().includes(kw)) : bdItems;
+  if(!filtered.length) {
+    bdList.innerHTML = `<div class="bd-empty">${kw?'검색 결과가 없습니다':'아직 아무것도 없어요. 머릿속을 비워보세요!'}</div>`;
+    return;
+  }
+  bdList.innerHTML = filtered.map(item=>{
+    const txt = kw ? item.text.replace(new RegExp(escReg(kw),'gi'), m=>`<mark class="bd-highlight">${m}</mark>`) : escHtml(item.text);
+    const ts  = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+    return `
+      <div class="bd-item" data-bid="${item.id}">
+        <div class="bd-item-text">${txt}</div>
+        <div class="bd-item-meta">
+          <span class="bd-item-time">${ts}</span>
+          <div class="bd-item-actions">
+            <button class="bd-action-btn bd-to-today"  data-bid="${item.id}">Today↗</button>
+            <button class="bd-action-btn bd-to-sched"  data-bid="${item.id}">일정↗</button>
+            <button class="bd-action-btn bd-del-btn"   data-bid="${item.id}">삭제</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>openMoveSheet(btn.dataset.bid,'today')));
+  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>openMoveSheet(btn.dataset.bid,'schedule')));
+  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+    await deleteDoc(bdPath(btn.dataset.bid)); showSaved();
+  }));
+}
+bdSearch.addEventListener('input', ()=>renderBdList(bdSearch.value));
+
+/* ── Move Sheet ── */
+function openMoveSheet(bdId, dest) {
+  movingBdId = bdId;
+  const item = bdItems.find(i=>i.id===bdId);
+  document.getElementById('movePreview').textContent = item?.text?.slice(0,100)||'';
+  document.getElementById('moveDest').value = dest;
+  updateMoveFields(dest);
+  document.getElementById('moveOverlay').classList.remove('hidden');
+}
+function updateMoveFields(dest) {
+  const cardField = document.getElementById('moveCardField');
+  const dateField = document.getElementById('moveDateField');
+  if(dest==='today') {
+    cardField.style.display=''; dateField.style.display='none';
+    const sel = document.getElementById('moveCard');
+    sel.innerHTML = CARDS.map(c=>`<option value="${c.id}">${c.icon} ${c.title}</option>`).join('');
+  } else {
+    cardField.style.display='none'; dateField.style.display='';
+    document.getElementById('moveDate').value = dateStr(new Date());
+  }
+}
+document.getElementById('moveDest').addEventListener('change', e=>updateMoveFields(e.target.value));
+document.getElementById('moveCancel').addEventListener('click', ()=>document.getElementById('moveOverlay').classList.add('hidden'));
+document.getElementById('moveConfirm').addEventListener('click', async()=>{
+  const item = bdItems.find(i=>i.id===movingBdId);
+  if(!item) return;
+  const dest = document.getElementById('moveDest').value;
+  if(dest==='today') {
+    const cardId = document.getElementById('moveCard').value;
+    await addTask(cardId, item.text);
+  } else {
+    const date = document.getElementById('moveDate').value || dateStr(new Date());
+    await addDoc(eventsCol(), { title: item.text.slice(0,50), date, time:'', note: item.text, colorIdx:5, createdAt: serverTimestamp() });
+  }
+  document.getElementById('moveOverlay').classList.add('hidden');
+  showSaved();
+});
+
+/* ── ARCHIVE ── */
+function renderArcGrid(filter='') {
+  const kw = filter.toLowerCase();
+  let items = currentArcCat==='all' ? arcItems : arcItems.filter(i=>i.type===currentArcCat);
+  if(kw) items = items.filter(i=>(i.title+i.content).toLowerCase().includes(kw));
+  if(!items.length) {
+    arcGrid.innerHTML = `<div class="arc-empty"><div class="arc-empty-icon">🗂</div><div>아직 저장된 항목이 없습니다</div></div>`;
+    return;
+  }
+  const typeIcon = { note:'📝', url:'🔗', image:'🖼', video:'🎬', file:'📄' };
+  const typeClass= { note:'arc-type-note', url:'arc-type-url', image:'arc-type-image', video:'arc-type-video', file:'arc-type-file' };
+  arcGrid.innerHTML = items.map(item=>{
+    const ts = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString('ko-KR',{month:'short',day:'numeric'}) : '';
+    let preview = '';
+    if(item.type==='image' && item.url) preview = `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
+    else if(item.content) preview = `<div class="arc-item-preview">${escHtml(item.content.slice(0,120))}${item.content.length>120?'...':''}</div>`;
+    return `
+      <div class="arc-item">
+        <div class="arc-item-header">
+          <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${typeIcon[item.type]||'📝'}</div>
+          <div class="arc-item-info">
+            <div class="arc-item-title">${escHtml(item.title)}</div>
+            <div class="arc-item-meta">${ts} · ${item.aiTag||item.type}</div>
+          </div>
+          ${item.aiTag?`<div class="arc-ai-tag">🤖 ${escHtml(item.aiTag)}</div>`:''}
+        </div>
+        ${preview}
+        <div class="arc-item-actions">
+          ${item.type==='url'?`<button class="arc-action-btn" onclick="window.open('${item.content}','_blank')">열기</button>`:''}
+          <button class="arc-action-btn" onclick="arcToToday('${item.id}')">Today↗</button>
+          <button class="arc-action-btn" style="color:#e74c3c" onclick="arcDel('${item.id}')">삭제</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+arcSearch.addEventListener('input', ()=>renderArcGrid(arcSearch.value));
+document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.arc-cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentArcCat = btn.dataset.cat;
+    renderArcGrid(arcSearch.value);
+  });
+});
+window.arcDel = async(id)=>{ await deleteDoc(arcPath(id)); showSaved(); };
+window.arcToToday = (id)=>{
+  const item = arcItems.find(i=>i.id===id);
+  if(item) openMoveSheet(item.id, 'today');
+};
+
+/* ── Archive Upload ── */
+document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
+  document.getElementById('arcType').value = 'note';
+  document.getElementById('arcTitle').value = '';
+  document.getElementById('arcContent').value = '';
+  document.getElementById('arcContentField').style.display = '';
+  document.getElementById('arcFileField').style.display = 'none';
+  document.getElementById('arcOverlay').classList.remove('hidden');
+});
+document.getElementById('arcType').addEventListener('change', e=>{
+  const t = e.target.value;
+  document.getElementById('arcContentField').style.display = ['image','video','file'].includes(t) ? 'none' : '';
+  document.getElementById('arcFileField').style.display    = ['image','video','file'].includes(t) ? '' : 'none';
+});
+document.getElementById('arcCancel').addEventListener('click', ()=>document.getElementById('arcOverlay').classList.add('hidden'));
+document.getElementById('arcSave').addEventListener('click', async()=>{
+  const type    = document.getElementById('arcType').value;
+  const title   = document.getElementById('arcTitle').value.trim();
+  const content = document.getElementById('arcContent').value.trim();
+  const file    = document.getElementById('arcFile').files[0];
+  if(!title) return;
+  let url = '', aiTag = '';
+  // AI classify
+  if(openAiKey) {
+    try {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+        body: JSON.stringify({ model:'gpt-4o-mini', max_tokens:20,
+          messages:[{role:'user',content:`다음 항목을 한 단어 카테고리로 분류해줘 (예: 업무, 개인, 건강, 재정, 학습, 여행, 쇼핑): "${title} ${content.slice(0,100)}"`}]
+        })
+      });
+      const j = await r.json();
+      aiTag = j.choices?.[0]?.message?.content?.trim().slice(0,10)||'';
     } catch(e) {}
   }
-
-  // OpenAI API 호웉 시도
-  const OPENAI_API_KEY = window.__OPENAI_KEY__ || '';
-  if(OPENAI_API_KEY) {
-    const prompt = `오늘 날짜: ${dateInfo.main} (${dateInfo.meta})
-
-현재 Brain Dump 할일 목록:
-${allTasks.length > 0 ? allTasks.join('\n') : '(등록된 할일 없음)'}
-
-위 정보를 바탕으로 다음 3가지 리마인더를 한국어로 작성해주세요:
-1. Schedule Reminder: 오늘 날짜/요일 기반 루틴 리마인더
-2. Todo Reminder: 할일 목록에서 가장 중요한 것
-3. Signal to Action: 지금 즉시 행동해야 할 신호
-
-JSON으로만 응답: {"schedule":"...","todo":"...","signal":"..."}`;
+  // File upload
+  if(file && ['image','video','file'].includes(type)) {
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENAI_API_KEY}`},
-        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],temperature:0.7,max_tokens:500,response_format:{type:'json_object'}})
-      });
-      if(res.ok) {
-        const json = await res.json();
-        const data = JSON.parse(json.choices[0].message.content);
-        aiCache[curDate] = data;
-        renderAIReminders(data);
-        if(currentUser) {
-          const aiRef = doc(db2,'users',currentUser.uid,'ai_reminders',curDate);
-          setDoc(aiRef,{...data,generatedAt:Date.now()}).catch(()=>{});
-        }
-        return;
-      }
-    } catch(e) { console.error(e); }
+      const sRef = storageRef(storage, `users/${uid()}/archive/${Date.now()}_${file.name}`);
+      await uploadBytes(sRef, file);
+      url = await getDownloadURL(sRef);
+    } catch(e) { url=''; }
   }
+  await addDoc(arcCol(), { type, title, content, url, aiTag, createdAt: serverTimestamp() });
+  document.getElementById('arcOverlay').classList.add('hidden');
+  showSaved();
+});
 
-  const fallback = {
-    schedule: `${dateInfo.main} 오늘 하루를 시작합니다. 중요한 약속과 데드라인을 확인하고, 하루 계획을 세워보세요. 정기적인 루틴을 빠뜨리지 않도록 체크하세요.`,
-    todo: allTasks.length > 0
-      ? `현재 ${allTasks.length}개의 할일이 있습니다. 우선순위 A 항목을 먼저 처리하고, 오늘 안에 완료 가능한 것부터 시작하세요.`
-      : `오늘의 할일을 지금 바로 추가해보세요. Brain Dump하면 정신적 부담이 줄어듭니다.`,
-    signal: `지금 이 순간 가장 중요한 한 가지에 집중하세요. 완벽하지 않아도 시작이 중요합니다. 오늘 반드시 완료해야 할 단 하나의 일을 정하고 바로 행동하세요.`
-  };
-  aiCache[curDate] = fallback;
-  renderAIReminders(fallback);
-  if(currentUser) {
-    const aiRef = doc(db2,'users',currentUser.uid,'ai_reminders',curDate);
-    setDoc(aiRef,{...fallback,generatedAt:Date.now()}).catch(()=>{});
+/* ── AI REMINDER ── */
+async function loadAiReminder() {
+  if(!openAiKey || !currentUser) {
+    aiItems.innerHTML = `<div class="ai-loading">AI 키가 설정되지 않았습니다. Setting에서 설정해주세요.</div>`;
+    return;
+  }
+  aiItems.innerHTML = `<div class="ai-loading">✨ AI 분석 중...</div>`;
+  const ds = dateStr(currentDate);
+  const todayEvsList = scheduleEvents.filter(e=>e.date===ds).map(e=>`${e.time||''} ${e.title}`).join(', ') || '없음';
+  const allTasks = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>!t.done).map(t=>t.text));
+  const tasksList = allTasks.slice(0,10).join(', ') || '없음';
+  const bdRecent  = bdItems.slice(0,5).map(i=>i.text.slice(0,50)).join('; ') || '없음';
+  const prompt = `당신은 개인 AI 어시스턴트입니다. 오늘(${ds}) 사용자의 상황을 분석하여 3가지 리마인더를 제공해주세요.
+
+오늘 일정: ${todayEvsList}
+미완료 할일: ${tasksList}
+최근 BrainDump: ${bdRecent}
+
+다음 JSON 형식으로 응답하세요:
+{
+  "schedule": "스케줄 리마인더 (한 문장)",
+  "todo": "할일 리마인더 (한 문장)",
+  "signal": "지금 즉시 행동해야 할 신호 (한 문장, 구체적으로)"
+}`;
+  try {
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+      body: JSON.stringify({ model:'gpt-4o-mini', max_tokens:300, response_format:{type:'json_object'},
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const j = await r.json();
+    const data = JSON.parse(j.choices?.[0]?.message?.content||'{}');
+    aiItems.innerHTML = `
+      <div class="ai-item">
+        <div class="ai-item-dot ai-dot-schedule"></div>
+        <div class="ai-item-content">
+          <div class="ai-item-label">SCHEDULE REMINDER</div>
+          <div class="ai-item-text">${escHtml(data.schedule||'오늘 일정을 확인하세요.')}</div>
+        </div>
+      </div>
+      <div class="ai-item">
+        <div class="ai-item-dot ai-dot-todo"></div>
+        <div class="ai-item-content">
+          <div class="ai-item-label">TODO REMINDER</div>
+          <div class="ai-item-text">${escHtml(data.todo||'미완료 할일을 처리하세요.')}</div>
+        </div>
+      </div>
+      <div class="ai-item">
+        <div class="ai-item-dot ai-dot-signal"></div>
+        <div class="ai-item-content">
+          <div class="ai-item-label">SIGNAL TO ACTION</div>
+          <div class="ai-item-text">${escHtml(data.signal||'지금 가장 중요한 한 가지에 집중하세요.')}</div>
+        </div>
+      </div>`;
+  } catch(e) {
+    aiItems.innerHTML = `<div class="ai-loading">AI 분석 실패. 잠시 후 다시 시도해주세요.</div>`;
   }
 }
+document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder);
 
-function addItem(cardId,text,priority) {
-  if(!text.trim()) return;
-  getItems(curDate,cardId).push({id:uid(),text:text.trim(),done:false,priority:priority||''});
-  save(); renderCards(); toast('추가됨');
-  setTimeout(()=>{
-    const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
-    if(inp) inp.focus();
-  },40);
+/* ── SETTING ── */
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  themeToggle.classList.toggle('on', !isDark);
+  localStorage.setItem('theme', isDark?'light':'dark');
+});
+if(localStorage.getItem('theme')==='dark') {
+  document.documentElement.setAttribute('data-theme','dark');
+  themeToggle.classList.add('on');
 }
+document.getElementById('logoutBtn').addEventListener('click', async()=>{
+  await signOut(auth);
+});
+document.getElementById('openAiKeyItem').addEventListener('click', ()=>{
+  document.getElementById('openAiKeyInput').value = openAiKey||'';
+  document.getElementById('openAiOverlay').classList.remove('hidden');
+});
+document.getElementById('openAiCancel').addEventListener('click', ()=>document.getElementById('openAiOverlay').classList.add('hidden'));
+document.getElementById('openAiSave').addEventListener('click', async()=>{
+  const key = document.getElementById('openAiKeyInput').value.trim();
+  openAiKey = key;
+  await setDoc(doc(db,'config','openai'), { key }, {merge:true});
+  document.getElementById('openAiKeyStatus').textContent = key ? '설정됨' : '미설정';
+  document.getElementById('openAiOverlay').classList.add('hidden');
+  showSaved();
+});
 
-function checkItem(cardId,itemId) {
-  const items=getItems(curDate,cardId);
-  const item=items.find(i=>i.id===itemId);
-  if(!item) return;
-  item.done=true; save();
-  const row=document.querySelector(`.list-row[data-item="${itemId}"]`);
-  if(row) {
-    row.style.transition='opacity .35s, max-height .35s';
-    row.style.opacity='0'; row.style.maxHeight='0'; row.style.overflow='hidden';
-    setTimeout(()=>{ items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓'); },360);
+/* ── TAB SWITCHING ── */
+function switchTab(tabName) {
+  activeTab = tabName;
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`pane-${tabName}`)?.classList.add('active');
+  document.querySelector(`.tab-item[data-tab="${tabName}"]`)?.classList.add('active');
+  // Show/hide FAB
+  document.getElementById('calFab').classList.toggle('hidden', tabName!=='schedule');
+  // Show/hide header date nav (only for today)
+  document.getElementById('mainHdr').style.display = ['today','schedule'].includes(tabName) ? '' : 'none';
+  if(tabName==='schedule') {
+    calYear = currentDate.getFullYear(); calMonth = currentDate.getMonth();
+    renderCalendar();
   }
 }
+document.querySelectorAll('.tab-item').forEach(btn=>{
+  btn.addEventListener('click', ()=>switchTab(btn.dataset.tab));
+});
+window.switchTab = switchTab;
 
-function deleteItem(cardId,itemId) {
-  const items=getItems(curDate,cardId);
-  items.splice(items.findIndex(i=>i.id===itemId),1);
-  save(); renderCards(); toast('삭제됨');
+/* ── DATE NAV ── */
+document.getElementById('btnPrev').addEventListener('click', ()=>{
+  if(activeTab==='today') {
+    currentDate.setDate(currentDate.getDate()-1);
+    updateHeader(); resubscribeToday();
+  }
+});
+document.getElementById('btnNext').addEventListener('click', ()=>{
+  if(activeTab==='today') {
+    currentDate.setDate(currentDate.getDate()+1);
+    updateHeader(); resubscribeToday();
+  }
+});
+document.getElementById('btnToday').addEventListener('click', ()=>{
+  currentDate = new Date(); updateHeader(); resubscribeToday();
+});
+hdrDateBig.addEventListener('click', ()=>{
+  document.getElementById('datePickerInput').value = dateStr(currentDate);
+  document.getElementById('dateOverlay').classList.remove('hidden');
+});
+document.getElementById('datePickerCancel').addEventListener('click', ()=>document.getElementById('dateOverlay').classList.add('hidden'));
+document.getElementById('datePickerOk').addEventListener('click', ()=>{
+  const val = document.getElementById('datePickerInput').value;
+  if(val) { currentDate = new Date(val+'T00:00:00'); updateHeader(); resubscribeToday(); }
+  document.getElementById('dateOverlay').classList.add('hidden');
+});
+
+/* ── UTILS ── */
+function showSaved() {
+  saveIndicator.style.opacity='1';
+  setTimeout(()=>saveIndicator.style.opacity='0.4', 1500);
 }
-
-function openPriPopup(e,cardId,itemId,anchorEl) {
-  e.stopPropagation();
-  const popup=document.getElementById('priPopup');
-  popup.innerHTML=PRI_OPTS.map(p=>`<button class="pri-opt pri-opt-${p}" data-p="${p}">${p}</button>`).join('');
-  popup.classList.remove('hidden');
-  priTarget={cardId,itemId,anchorEl};
-  const rect=anchorEl.getBoundingClientRect();
-  const top=rect.bottom+6;
-  const left=Math.max(8,Math.min(window.innerWidth-208,rect.left-60));
-  popup.style.top=top+'px'; popup.style.left=left+'px';
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function closePriPopup() { document.getElementById('priPopup').classList.add('hidden'); priTarget=null; }
+function escReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 
-function openEdit(cardId,itemId) {
-  const item=getItems(curDate,cardId).find(i=>i.id===itemId);
-  if(!item) return;
-  editTarget={cardId,itemId};
-  const priRow=document.getElementById('editPriRow');
-  priRow.innerHTML=PRI_OPTS.map(p=>`<button class="edit-pri-btn${item.priority===p?' sel-'+p[0]:''}" data-p="${p}">${p}</button>`).join('');
-  document.getElementById('editTextarea').value=item.text;
-  document.getElementById('editOverlay').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('editTextarea').focus(),100);
-}
-function closeEdit() { document.getElementById('editOverlay').classList.add('hidden'); editTarget=null; }
-
-function goDate(s) { curDate=s; renderDate(); renderCards(); }
-function openDatePopup() {
-  document.getElementById('dateInput').value=curDate;
-  document.getElementById('popupOverlay').classList.remove('hidden');
-}
-function closeDatePopup() { document.getElementById('popupOverlay').classList.add('hidden'); }
-
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
-  document.getElementById('themeIco').textContent=isDark?'☀️':'🌙';
-  localStorage.setItem('bd_theme',JSON.stringify(isDark));
-}
-
-function toast(msg) {
-  const el=document.createElement('div');
-  el.className='toast'; el.textContent=msg;
-  document.getElementById('toastWrap').appendChild(el);
-  setTimeout(()=>el.remove(),2100);
-}
-
-function bindEvents() {
-  document.getElementById('btnPrev').addEventListener('click',()=>goDate(offsetDate(curDate,-1)));
-  document.getElementById('btnNext').addEventListener('click',()=>goDate(offsetDate(curDate,+1)));
-  document.getElementById('dateCenter').addEventListener('click',openDatePopup);
-
-  document.getElementById('btnConfirm').addEventListener('click',()=>{
-    const v=document.getElementById('dateInput').value;
-    if(v){ goDate(v); toast('날짜 이동'); }
-    closeDatePopup();
-  });
-  document.getElementById('btnCancel').addEventListener('click',closeDatePopup);
-  document.getElementById('popupOverlay').addEventListener('click',e=>{
-    if(e.target===document.getElementById('popupOverlay')) closeDatePopup();
-  });
-
-  document.getElementById('priPopup').addEventListener('click',e=>{
-    const btn=e.target.closest('[data-p]');
-    if(!btn||!priTarget) return;
-    const item=getItems(curDate,priTarget.cardId).find(i=>i.id===priTarget.itemId);
-    if(item){ item.priority=btn.dataset.p; save(); renderCards(); toast(`우선순위 ${btn.dataset.p}`); }
-    closePriPopup();
-  });
-
-  document.getElementById('editPriRow').addEventListener('click',e=>{
-    const btn=e.target.closest('[data-p]');
-    if(!btn) return;
-    document.querySelectorAll('.edit-pri-btn').forEach(b=>b.className='edit-pri-btn');
-    btn.className=`edit-pri-btn sel-${btn.dataset.p[0]}`;
-    btn.dataset.selected='true';
-  });
-  document.getElementById('editSave').addEventListener('click',()=>{
-    if(!editTarget) return;
-    const item=getItems(curDate,editTarget.cardId).find(i=>i.id===editTarget.itemId);
-    if(!item) return;
-    item.text=document.getElementById('editTextarea').value.trim()||item.text;
-    const selBtn=document.querySelector('.edit-pri-btn[data-selected="true"]');
-    if(selBtn) item.priority=selBtn.dataset.p;
-    save(); renderCards(); closeEdit(); toast('수정됨');
-  });
-  document.getElementById('editCancel').addEventListener('click',closeEdit);
-  document.getElementById('editOverlay').addEventListener('click',e=>{
-    if(e.target===document.getElementById('editOverlay')) closeEdit();
-  });
-
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
-    if(!e.target.closest('.list-row')&&swipedRow) closeSwipe(swipedRow);
-
-  });
-
-  document.addEventListener('keydown',e=>{
-    if(e.target.classList.contains('add-row-input')&&e.key==='Enter'){
-      e.preventDefault();
-      const cardId=e.target.dataset.card;
-      addItem(cardId,e.target.value,'');
-      e.target.value='';
-    }
-    if(e.key==='Escape'){ closeDatePopup(); closePriPopup(); closeEdit(); }
-  });
-}
-
-try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch {}
-applyTheme();
-renderDate();
-bindEvents();
+// Init FAB visibility
+document.getElementById('calFab').classList.add('hidden');
 </script>
 </body>
 </html>
