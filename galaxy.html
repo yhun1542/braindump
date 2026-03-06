@@ -363,6 +363,10 @@ body {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   max-width: 45px; display: inline-block;
 }
+.cal-event-tag.gcal-event {
+  background: #4285f4 !important;
+  opacity: 0.9;
+}
 .cal-cell.today .cal-day-num > span:first-child {
   background: var(--accent); color: #fff;
 }
@@ -888,6 +892,12 @@ body {
             <span class="setting-icon">📆</span>
             <span class="setting-label">구글 캘린더 연동</span>
             <span class="setting-value" id="gcalStatus">미연동</span>
+            <span class="setting-arrow">›</span>
+          </div>
+          <div class="setting-item" id="gcalSyncItem" style="display:none">
+            <span class="setting-icon">🔄</span>
+            <span class="setting-label">지금 동기화</span>
+            <span class="setting-value" id="gcalSyncStatus"></span>
             <span class="setting-arrow">›</span>
           </div>
         </div>
@@ -1526,12 +1536,24 @@ function renderCalendar() {
     if(dow===0 || holiday) d.classList.add('sunday');
     if(dow===6)    d.classList.add('saturday');
     const evs = cellStr ? scheduleEvents.filter(e=>e.date===cellStr) : [];
+    // 구글 캘린더 이벤트 (공휴일 제외 일반 이벤트)
+    const gcalEvs = cellStr ? gcalImportedEvents.filter(e => e.date===cellStr && !e.isHoliday) : [];
+    // 구글 캘린더 공휴일
+    const gcalHolidays = cellStr ? gcalImportedEvents.filter(e => e.date===cellStr && e.isHoliday) : [];
+    // 공휴일: 하드코딩 우선, 없으면 구글 캘린더 공휴일
+    const holidayName = holiday || (gcalHolidays.length > 0 ? gcalHolidays[0].title : null);
+    if (!holiday && gcalHolidays.length > 0) d.classList.add('sunday');
+    // 앱 일정의 gcalEventId 목록 (중복 방지)
+    const appGcalIds = new Set(evs.map(e => e.gcalEventId).filter(Boolean));
+    const uniqueGcalEvs = gcalEvs.filter(e => !appGcalIds.has(e.gcalId));
+    const allEvs = [...evs, ...uniqueGcalEvs];
     const maxShow = 3;
     d.innerHTML = `
-      <div class="cal-day-num"><span>${cell.day}</span>${holiday?`<span class="cal-holiday-name">${holiday}</span>`:''}</div>
+      <div class="cal-day-num"><span>${cell.day}</span>${holidayName?`<span class="cal-holiday-name">${escHtml(holidayName)}</span>`:''}</div>
       <div class="cal-events">
         ${evs.slice(0,maxShow).map(ev=>`<div class="cal-event-tag ec-${ev.colorIdx||0}" data-eid="${ev.id}">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
-        ${evs.length>maxShow?`<div class="cal-more">+${evs.length-maxShow}개</div>`:''}
+        ${uniqueGcalEvs.slice(0, Math.max(0, maxShow - evs.length)).map(ev=>`<div class="cal-event-tag gcal-event" title="구글 캘린더">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
+        ${allEvs.length>maxShow?`<div class="cal-more">+${allEvs.length-maxShow}개</div>`:''}
       </div>`;
     if(!cell.other) {
       d.addEventListener('click', e => {
@@ -1962,6 +1984,7 @@ const GCAL_CLIENT_ID = '931666684955-dae922jfsrh5d099v1dbjgmn21d8hu09.apps.googl
 const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar';
 let gcalTokenClient = null;
 let gcalAccessToken = null;
+let gcalImportedEvents = []; // 구글 캘린더에서 가져온 이벤트
 
 // GIS 라이브러리 로드
 function loadGIS() {
@@ -1983,7 +2006,9 @@ function initGIS() {
       localStorage.setItem('gcal_token', gcalAccessToken);
       document.getElementById('gcalStatus').textContent = '연동됨 ✓';
       document.getElementById('gcalStatus').style.color = '#27ae60';
-      showToast('구글 캘린더 연동 완료!');
+      document.getElementById('gcalSyncItem').style.display = '';
+      showToast('구글 캘린더 연동 완료! 동기화 중...');
+      syncFromGCal();
     }
   });
   // 저장된 토큰 복원
@@ -1992,6 +2017,9 @@ function initGIS() {
     gcalAccessToken = saved;
     document.getElementById('gcalStatus').textContent = '연동됨 ✓';
     document.getElementById('gcalStatus').style.color = '#27ae60';
+    document.getElementById('gcalSyncItem').style.display = '';
+    // 앱 로드 시 자동 동기화
+    setTimeout(() => syncFromGCal(), 1500);
   }
 }
 
@@ -2004,9 +2032,13 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => {
   if (gcalAccessToken) {
     if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
       gcalAccessToken = null;
+      gcalImportedEvents = [];
       localStorage.removeItem('gcal_token');
+      localStorage.removeItem('gcal_imported');
       document.getElementById('gcalStatus').textContent = '미연동';
       document.getElementById('gcalStatus').style.color = '';
+      document.getElementById('gcalSyncItem').style.display = 'none';
+      renderCalendar();
       showToast('구글 캘린더 연동 해제');
     }
   } else {
@@ -2014,6 +2046,71 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => {
     else showToast('Google OAuth 클라이언트 초기화 중...');
   }
 });
+
+// 구글 캘린더 동기화 버튼
+document.getElementById('gcalSyncItem').addEventListener('click', () => {
+  if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
+  syncFromGCal();
+});
+
+// 구글 캘린더에서 이벤트 가져오기 (양방향 동기화 - import)
+async function syncFromGCal() {
+  if (!gcalAccessToken) return;
+  const statusEl = document.getElementById('gcalSyncStatus');
+  if (statusEl) statusEl.textContent = '동기화 중...';
+  try {
+    const now = new Date();
+    const timeMin = new Date(now.getFullYear(), now.getMonth() - 2, 1).toISOString();
+    const timeMax = new Date(now.getFullYear(), now.getMonth() + 3, 0).toISOString();
+    // primary 캘린더 + 한국 공휴일 캘린더
+    const calendarIds = [
+      'primary',
+      'ko.south_korea#holiday@group.v.calendar.google.com'
+    ];
+    let allEvents = [];
+    for (const calId of calendarIds) {
+      try {
+        const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?` +
+          `timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}` +
+          `&singleEvents=true&orderBy=startTime&maxResults=500`;
+        const res = await fetch(url, { headers: { 'Authorization': `Bearer ${gcalAccessToken}` } });
+        if (res.status === 401) {
+          gcalAccessToken = null; localStorage.removeItem('gcal_token');
+          document.getElementById('gcalStatus').textContent = '재연동 필요';
+          document.getElementById('gcalStatus').style.color = '#e74c3c';
+          if (statusEl) statusEl.textContent = '토큰 만료';
+          return;
+        }
+        if (!res.ok) continue;
+        const data = await res.json();
+        const isHoliday = calId.includes('holiday');
+        (data.items || []).forEach(item => {
+          const startDate = item.start?.date || item.start?.dateTime?.slice(0, 10);
+          const startTime = item.start?.dateTime ? item.start.dateTime.slice(11, 16) : null;
+          if (!startDate) return;
+          allEvents.push({
+            gcalId: item.id,
+            title: item.summary || '(제목 없음)',
+            date: startDate,
+            time: startTime,
+            isHoliday,
+            calendarId: calId
+          });
+        });
+      } catch(e) { /* 개별 캘린더 실패 무시 */ }
+    }
+    gcalImportedEvents = allEvents;
+    try { localStorage.setItem('gcal_imported', JSON.stringify(allEvents)); } catch(e) {}
+    renderCalendar();
+    const cnt = allEvents.filter(e => !e.isHoliday).length;
+    const hcnt = allEvents.filter(e => e.isHoliday).length;
+    if (statusEl) statusEl.textContent = `일정 ${cnt}개 · 공휴일 ${hcnt}개`;
+    showToast(`동기화 완료 (일정 ${cnt}개, 공휴일 ${hcnt}개)`);
+  } catch(e) {
+    console.error('GCal sync error', e);
+    if (statusEl) statusEl.textContent = '동기화 실패';
+  }
+}
 
 // 구글 캘린더에 이벤트 추가
 async function addToGCal(ev) {
@@ -2056,6 +2153,12 @@ async function deleteFromGCal(gcalEventId) {
     });
   } catch(e) { console.error('GCal delete error', e); }
 }
+
+// 캐시된 구글 캘린더 이벤트 복원 (오프라인에서도 표시)
+try {
+  const cached = localStorage.getItem('gcal_imported');
+  if (cached) gcalImportedEvents = JSON.parse(cached);
+} catch(e) {}
 
 // 앱 로드 시 GIS 초기화
 loadGIS();
