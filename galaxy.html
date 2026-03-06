@@ -183,7 +183,7 @@ body {
   font-size: 28px; font-weight: 900; letter-spacing: -1px;
   cursor: pointer;
 }
-.hdr-date-sub { font-size: 12px; opacity: 0.6; margin-top: 1px; }
+.hdr-date-sub { font-size: 12px; opacity: 0.6; margin-top: 1px; text-align: center; width: 100%; display: block; }
 .hdr-nav-btn {
   width: 36px; height: 36px; border-radius: 10px;
   background: rgba(128,128,128,0.15); border: none;
@@ -772,7 +772,7 @@ window.__hideSplash = function () {
     <div class="login-logo">
       <img src="/images/jf_os_header_dark_1x.png"
            srcset="/images/jf_os_header_dark_1x.png 1x, /images/jf_os_header_dark_2x.png 2x, /images/jf_os_header_dark_3x.png 3x"
-           alt="JF OS" height="56">
+           alt="JF OS" height="56" id="loginLogoImg">
     </div>
     <div class="login-sub">최고의 답을 찾기 위한 여정을 시작하세요</div>
     <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
@@ -793,9 +793,9 @@ window.__hideSplash = function () {
   <div class="hdr" id="mainHdr">
     <div class="hdr-top">
       <div class="hdr-logo">
-        <img src="/images/jf_os_header_dark_1x.png"
-             srcset="/images/jf_os_header_dark_1x.png 1x, /images/jf_os_header_dark_2x.png 2x, /images/jf_os_header_dark_3x.png 3x"
-             alt="JF OS" height="28">
+        <img src="/images/jf_os_header_light_1x.png"
+             srcset="/images/jf_os_header_light_1x.png 1x, /images/jf_os_header_light_2x.png 2x, /images/jf_os_header_light_3x.png 3x"
+             alt="JF OS" height="28" data-logo="header" id="hdrLogoImg">
       </div>
       <div class="hdr-date-nav">
         <button class="hdr-nav-btn" id="btnPrev">‹</button>
@@ -810,14 +810,6 @@ window.__hideSplash = function () {
       </div>
     </div>
   </div>
-
-  <!-- DEVICE SWITCHER -->
-  <div class="device-bar">
-    <a class="device-btn" href="index.html">🖥 PC</a>
-    <a class="device-btn active" href="galaxy.html">📱 Galaxy S25 Ultra</a>
-    <a class="device-btn" href="iphone.html"> iPhone 17 Pro</a>
-  </div>
-
   <!-- TAB CONTENT -->
   <div class="tab-content">
 
@@ -1941,10 +1933,23 @@ themeToggle.addEventListener('click', ()=>{
   themeToggle.classList.toggle('on', !isDark);
   localStorage.setItem('theme', isDark?'light':'dark');
 });
+// 라이트 모드 디폴트: 저장된 값이 'dark'일 때만 다크 적용
 if(localStorage.getItem('theme')==='dark') {
   document.documentElement.setAttribute('data-theme','dark');
   themeToggle.classList.add('on');
 }
+// 테마별 헤더 로고 자동 전환
+function updateLogoTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  const variant = isDark ? 'dark' : 'light';
+  const hdrLogo = document.getElementById('hdrLogoImg');
+  if(hdrLogo) {
+    hdrLogo.src = `/images/jf_os_header_${variant}_1x.png`;
+    hdrLogo.srcset = `/images/jf_os_header_${variant}_1x.png 1x, /images/jf_os_header_${variant}_2x.png 2x, /images/jf_os_header_${variant}_3x.png 3x`;
+  }
+}
+updateLogoTheme();
+themeToggle.addEventListener('change', ()=>{ setTimeout(updateLogoTheme, 50); });
 document.getElementById('logoutBtn').addEventListener('click', async()=>{
   await signOut(auth);
 });
