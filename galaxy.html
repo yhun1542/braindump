@@ -5,7 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#111111">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Synapse Brain — Galaxy</title>
+<title>Synapse Brain</title>
+<script>
+/* ══ DEVICE AUTO-REDIRECT ══ */
+(function() {
+  // ?device=android 파라미터가 있으면 강제 유지
+  if (window.location.search.indexOf('device=android') !== -1) return;
+
+  var ua = navigator.userAgent || navigator.vendor || window.opera;
+
+  // iPhone / iPad → iphone.html
+  if (/iPhone|iPad|iPod/i.test(ua)) {
+    window.location.replace('/iphone.html');
+    return;
+  }
+
+  // PC/Mac (모바일 아님) → index.html
+  if (!/Android|windows phone/i.test(ua)) {
+    window.location.replace('/?device=pc');
+    return;
+  }
+  // Android → 현재 페이지 유지
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
@@ -75,40 +97,45 @@ body {
   background: #12121e;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 40px 32px;
+  padding: 24px 20px;
+}
+.login-card {
+  width: 100%; max-width: 340px;
+  display: flex; flex-direction: column;
+  align-items: stretch;
 }
 #loginScreen.hidden { display: none; }
 .login-logo {
   font-family: 'GmarketSans', 'Inter', sans-serif;
-  font-weight: 700; font-size: 52px;
+  font-weight: 700; font-size: 48px;
   background: var(--grad); -webkit-background-clip: text;
   -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 8px; text-align: center;
+  margin-bottom: 6px; text-align: center;
 }
 .login-sub {
-  font-size: 13px; color: #555577; margin-bottom: 48px; text-align: center;
+  font-size: 12px; color: #555577; margin-bottom: 36px; text-align: center;
 }
 .login-field {
-  width: 100%; margin-bottom: 14px;
+  width: 100%; margin-bottom: 12px;
   background: #1e1e2e; border: 1.5px solid #2a2a4a;
-  border-radius: 14px; padding: 16px 18px;
-  font-size: 16px; color: #e0e0f0; font-family: var(--font);
-  outline: none; transition: border-color 0.2s;
+  border-radius: 12px; padding: 14px 16px;
+  font-size: 15px; color: #e0e0f0; font-family: var(--font);
+  outline: none; transition: border-color 0.2s; box-sizing: border-box;
 }
 .login-field:focus { border-color: #6c63ff; }
 .login-field::placeholder { color: #444466; }
 .login-remember {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; margin-bottom: 28px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; margin-bottom: 20px; cursor: pointer;
 }
 .login-remember input[type="checkbox"] {
   width: 18px; height: 18px; accent-color: #6c63ff; cursor: pointer;
 }
 .login-remember span { font-size: 13px; color: #666688; }
 .login-btn {
-  width: 100%; padding: 18px;
-  background: var(--grad); border: none; border-radius: 14px;
-  font-size: 16px; font-weight: 700; color: #fff;
+  width: 100%; padding: 15px;
+  background: var(--grad); border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700; color: #fff;
   cursor: pointer; font-family: var(--font);
   letter-spacing: 0.5px;
 }
@@ -325,14 +352,22 @@ body {
 .cal-cell.today { background: rgba(108,99,255,0.05); }
 .cal-day-num {
   font-size: 12px; font-weight: 700; margin-bottom: 3px;
-  display: inline-block; width: 22px; height: 22px;
-  border-radius: 50%; text-align: center; line-height: 22px;
+  display: flex; align-items: center; gap: 3px;
 }
-.cal-cell.today .cal-day-num {
+.cal-day-num > span:first-child {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+}
+.cal-holiday-name {
+  font-size: 8px; font-weight: 500; color: #e74c3c;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 45px; display: inline-block;
+}
+.cal-cell.today .cal-day-num > span:first-child {
   background: var(--accent); color: #fff;
 }
-.cal-cell.sunday .cal-day-num { color: #e74c3c; }
-.cal-cell.saturday .cal-day-num { color: #2980b9; }
+.cal-cell.sunday .cal-day-num > span:first-child { color: #e74c3c; }
+.cal-cell.saturday .cal-day-num > span:first-child { color: #2980b9; }
 .cal-events { display: flex; flex-direction: column; gap: 2px; }
 .cal-event-tag {
   font-size: 10px; font-weight: 600; padding: 2px 5px;
@@ -688,16 +723,18 @@ body {
 
 <!-- ══ LOGIN SCREEN ══ -->
 <div id="loginScreen">
-  <div class="login-logo">Synapse Brain</div>
-  <div class="login-sub">최고의 답을 찾기 위한 여정을 시작하세요</div>
-  <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
-  <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
-  <label class="login-remember">
-    <input type="checkbox" id="rememberMe" checked>
-    <span>자동 로그인</span>
-  </label>
-  <button class="login-btn" id="loginBtn">로그인</button>
-  <div class="login-error hidden" id="loginError"></div>
+  <div class="login-card">
+    <div class="login-logo">Synapse Brain</div>
+    <div class="login-sub">최고의 답을 찾기 위한 여정을 시작하세요</div>
+    <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
+    <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
+    <label class="login-remember">
+      <input type="checkbox" id="rememberMe" checked>
+      <span>자동 로그인</span>
+    </label>
+    <button class="login-btn" id="loginBtn">로그인</button>
+    <div class="login-error hidden" id="loginError"></div>
+  </div>
 </div>
 
 <!-- ══ APP ══ -->
@@ -843,6 +880,14 @@ body {
           <div class="setting-item" onclick="switchTab('archive')">
             <span class="setting-icon">🗂</span>
             <span class="setting-label">Archive 바로가기</span>
+            <span class="setting-arrow">›</span>
+          </div>
+        </div>
+        <div class="setting-group">
+          <div class="setting-item" id="gcalConnectItem">
+            <span class="setting-icon">📆</span>
+            <span class="setting-label">구글 캘린더 연동</span>
+            <span class="setting-value" id="gcalStatus">미연동</span>
             <span class="setting-arrow">›</span>
           </div>
         </div>
@@ -1199,6 +1244,26 @@ const dateStr = (d) => {
 const DAYS_KO = ['일','월','화','수','목','금','토'];
 const MONTHS_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
+/* ── 한국 공휴일 ── */
+const KR_HOLIDAYS = {
+  // 2025
+  '2025-01-01':'신정','2025-01-28':'설날 연휴','2025-01-29':'설날','2025-01-30':'설날 연휴',
+  '2025-03-01':'삼일절','2025-05-05':'어린이날','2025-05-06':'대체공휴일','2025-05-15':'부처님오신날',
+  '2025-06-06':'현충일','2025-08-15':'광복절','2025-10-03':'개천절','2025-10-05':'추석 연휴',
+  '2025-10-06':'추석','2025-10-07':'추석 연휴','2025-10-08':'대체공휴일','2025-10-09':'한글날',
+  '2025-12-25':'성탄절',
+  // 2026
+  '2026-01-01':'신정','2026-02-16':'설날 연휴','2026-02-17':'설날','2026-02-18':'설날 연휴',
+  '2026-03-01':'삼일절','2026-05-05':'어린이날','2026-05-24':'부처님오신날',
+  '2026-06-06':'현충일','2026-08-15':'광복절','2026-09-24':'추석 연휴','2026-09-25':'추석',
+  '2026-09-26':'추석 연휴','2026-10-03':'개천절','2026-10-09':'한글날','2026-12-25':'성탄절',
+  // 2027
+  '2027-01-01':'신정','2027-02-06':'설날 연휴','2027-02-07':'설날','2027-02-08':'설날 연휴',
+  '2027-03-01':'삼일절','2027-05-05':'어린이날','2027-05-13':'부처님오신날',
+  '2027-06-06':'현충일','2027-08-15':'광복절','2027-09-14':'추석 연휴','2027-09-15':'추석',
+  '2027-09-16':'추석 연휴','2027-10-03':'개천절','2027-10-09':'한글날','2027-12-25':'성탄절'
+};
+
 function updateHeader() {
   const d = currentDate;
   hdrDateBig.textContent = `${d.getMonth()+1}월 ${d.getDate()}일`;
@@ -1455,14 +1520,15 @@ function renderCalendar() {
     const cellStr  = cellDate ? dateStr(cellDate) : null;
     const isToday  = cellDate && cellDate.toDateString()===today.toDateString();
     const dow      = cellDate ? cellDate.getDay() : -1;
+    const holiday = cellStr ? KR_HOLIDAYS[cellStr] : null;
     if(cell.other) d.classList.add('other-month');
     if(isToday)    d.classList.add('today');
-    if(dow===0)    d.classList.add('sunday');
+    if(dow===0 || holiday) d.classList.add('sunday');
     if(dow===6)    d.classList.add('saturday');
     const evs = cellStr ? scheduleEvents.filter(e=>e.date===cellStr) : [];
     const maxShow = 3;
     d.innerHTML = `
-      <div class="cal-day-num">${cell.day}</div>
+      <div class="cal-day-num"><span>${cell.day}</span>${holiday?`<span class="cal-holiday-name">${holiday}</span>`:''}</div>
       <div class="cal-events">
         ${evs.slice(0,maxShow).map(ev=>`<div class="cal-event-tag ec-${ev.colorIdx||0}" data-eid="${ev.id}">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
         ${evs.length>maxShow?`<div class="cal-more">+${evs.length-maxShow}개</div>`:''}
@@ -1886,6 +1952,113 @@ function escReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 
 // Init FAB visibility
 document.getElementById('calFab').classList.add('hidden');
+
+/* ══ GOOGLE CALENDAR OAUTH ══
+   1. Google Cloud Console에서 OAuth 2.0 클라이언트 ID 생성
+   2. 아래 GCAL_CLIENT_ID 값을 교체하면 즉시 작동
+   https://console.cloud.google.com/auth/clients?project=braindump-jasoneye
+*/
+const GCAL_CLIENT_ID = ''; // TODO: Google Cloud Console에서 발급한 OAuth 2.0 클라이언트 ID 입력
+const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar';
+let gcalTokenClient = null;
+let gcalAccessToken = null;
+
+// GIS 라이브러리 로드
+function loadGIS() {
+  if (!GCAL_CLIENT_ID) return;
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.onload = initGIS;
+  document.head.appendChild(s);
+}
+
+function initGIS() {
+  if (!window.google || !GCAL_CLIENT_ID) return;
+  gcalTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GCAL_CLIENT_ID,
+    scope: GCAL_SCOPES,
+    callback: (resp) => {
+      if (resp.error) { console.error('GCal auth error', resp); return; }
+      gcalAccessToken = resp.access_token;
+      localStorage.setItem('gcal_token', gcalAccessToken);
+      document.getElementById('gcalStatus').textContent = '연동됨 ✓';
+      document.getElementById('gcalStatus').style.color = '#27ae60';
+      showToast('구글 캘린더 연동 완료!');
+    }
+  });
+  // 저장된 토큰 복원
+  const saved = localStorage.getItem('gcal_token');
+  if (saved) {
+    gcalAccessToken = saved;
+    document.getElementById('gcalStatus').textContent = '연동됨 ✓';
+    document.getElementById('gcalStatus').style.color = '#27ae60';
+  }
+}
+
+// 구글 캘린더 연동 버튼 클릭
+document.getElementById('gcalConnectItem').addEventListener('click', () => {
+  if (!GCAL_CLIENT_ID) {
+    showToast('Setting에서 Google OAuth Client ID를 먼저 설정하세요');
+    return;
+  }
+  if (gcalAccessToken) {
+    if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
+      gcalAccessToken = null;
+      localStorage.removeItem('gcal_token');
+      document.getElementById('gcalStatus').textContent = '미연동';
+      document.getElementById('gcalStatus').style.color = '';
+      showToast('구글 캘린더 연동 해제');
+    }
+  } else {
+    if (gcalTokenClient) gcalTokenClient.requestAccessToken();
+    else showToast('Google OAuth 클라이언트 초기화 중...');
+  }
+});
+
+// 구글 캘린더에 이벤트 추가
+async function addToGCal(ev) {
+  if (!gcalAccessToken || !ev) return;
+  try {
+    const start = ev.time
+      ? { dateTime: `${ev.date}T${ev.time}:00`, timeZone: 'Asia/Seoul' }
+      : { date: ev.date };
+    const end = ev.time
+      ? { dateTime: `${ev.date}T${ev.endTime||ev.time}:00`, timeZone: 'Asia/Seoul' }
+      : { date: ev.date };
+    const body = JSON.stringify({ summary: ev.title, description: ev.memo||'', start, end });
+    const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${gcalAccessToken}`, 'Content-Type': 'application/json' },
+      body
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // Firestore에 gcalEventId 저장
+      if (ev.id) {
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        await updateDoc(doc(db, 'users', currentUser.uid, 'scheduleEvents', ev.id), { gcalEventId: data.id });
+      }
+      showToast('구글 캘린더에 추가됨 ✓');
+    } else if (res.status === 401) {
+      gcalAccessToken = null; localStorage.removeItem('gcal_token');
+      document.getElementById('gcalStatus').textContent = '재연동 필요';
+    }
+  } catch(e) { console.error('GCal add error', e); }
+}
+
+// 구글 캘린더에서 이벤트 삭제
+async function deleteFromGCal(gcalEventId) {
+  if (!gcalAccessToken || !gcalEventId) return;
+  try {
+    await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${gcalEventId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${gcalAccessToken}` }
+    });
+  } catch(e) { console.error('GCal delete error', e); }
+}
+
+// 앱 로드 시 GIS 초기화
+loadGIS();
 </script>
 </body>
 </html>
