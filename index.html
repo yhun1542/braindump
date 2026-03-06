@@ -48,6 +48,32 @@
 
   // PC/Mac → 현재 페이지 유지
 })();
+
+// ═══════════════════════════════════════════════════════
+// HAPTIC FEEDBACK UTILITY
+// ═══════════════════════════════════════════════════════
+const haptic = (() => {
+  // iOS Safari: DeviceMotionEvent / navigator.vibrate 모두 시도
+  const canVibrate = () => !!navigator.vibrate;
+
+  return {
+    // 가벼운 탭 (버튼 탭, 탭 전환 등)
+    light:   () => canVibrate() && navigator.vibrate(10),
+    // 중간 (항목 선택, 토글, 저장 등)
+    medium:  () => canVibrate() && navigator.vibrate(25),
+    // 강한 (삭제, 오류, 경고 등)
+    heavy:   () => canVibrate() && navigator.vibrate(50),
+    // 성공 패턴 (저장 완료, 연동 완료 등)
+    success: () => canVibrate() && navigator.vibrate([15, 50, 15]),
+    // 오류 패턴 (실패, 삭제 확인 등)
+    error:   () => canVibrate() && navigator.vibrate([30, 30, 30]),
+    // 더블 탭 (달력 날짜 선택, 드럼롤 확인 등)
+    double:  () => canVibrate() && navigator.vibrate([12, 40, 12]),
+    // 롱프레스 패턴 (스와이프 오픈 등)
+    longpress: () => canVibrate() && navigator.vibrate(40),
+  };
+})();
+
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -500,6 +526,10 @@ body {
 /* ════════════════════════════════════════
    ARCHIVE TAB
    ════════════════════════════════════════ */
+
+/* ════════════════════════════════════════
+   ARCHIVE TAB — UPGRADED v2
+   ════════════════════════════════════════ */
 .arc-header {
   padding: 16px 16px 8px;
   display: flex; align-items: center; gap: 10px;
@@ -511,39 +541,73 @@ body {
   font-family: var(--font); outline: none;
 }
 .arc-search::placeholder { color: var(--text3); }
+.arc-header-actions { display: flex; gap: 8px; align-items: center; }
 .arc-upload-btn {
   width: 40px; height: 40px; border-radius: 12px;
   background: var(--hdr-bg); color: var(--hdr-text);
   border: none; font-size: 18px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.arc-sort-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  color: var(--text2); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
 .arc-cats {
   display: flex; gap: 8px; padding: 0 16px 12px;
   overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.arc-cats::-webkit-scrollbar { display: none; }
 .arc-cat-btn {
   padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
   border: 1.5px solid var(--border-mid); background: var(--surface);
   color: var(--text2); cursor: pointer; white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
 }
 .arc-cat-btn.active {
   background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg);
 }
-.arc-grid { padding: 0 16px; }
+.arc-cat-count {
+  background: rgba(0,0,0,0.12); border-radius: 8px;
+  padding: 1px 5px; font-size: 10px; font-weight: 700;
+}
+.arc-cat-btn.active .arc-cat-count { background: rgba(255,255,255,0.25); }
+.arc-grid { padding: 0 16px 80px; }
+
+/* ── 아카이브 카드 ── */
 .arc-item {
-  background: var(--surface); border-radius: 14px;
+  background: var(--surface); border-radius: 16px;
   border: 1.5px solid var(--border-mid);
   margin-bottom: 12px; overflow: hidden;
   box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
 }
+.arc-item.pinned {
+  border-color: #f59e0b;
+  box-shadow: 0 2px 12px rgba(245,158,11,0.18);
+}
+.arc-item:active { transform: scale(0.985); }
+
+/* 핀 배지 */
+.arc-pin-badge {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 14px; line-height: 1; z-index: 2;
+}
+
+/* 헤더 */
 .arc-item-header {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
+  padding: 12px 14px 8px;
 }
 .arc-type-icon {
-  width: 36px; height: 36px; border-radius: 10px;
+  width: 38px; height: 38px; border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+  font-size: 19px; flex-shrink: 0;
 }
 .arc-type-note   { background: #fff3e0; }
 .arc-type-url    { background: #e3f2fd; }
@@ -552,33 +616,136 @@ body {
 .arc-type-file   { background: #e8f5e9; }
 .arc-item-info { flex: 1; min-width: 0; }
 .arc-item-title {
-  font-size: 14px; font-weight: 600; color: var(--text);
+  font-size: 14px; font-weight: 700; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding-right: 24px;
 }
-.arc-item-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.arc-item-meta { font-size: 11px; color: var(--text3); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
 .arc-ai-tag {
   font-size: 10px; padding: 3px 8px; border-radius: 6px;
   background: rgba(108,99,255,0.1); color: var(--accent);
-  font-weight: 700; flex-shrink: 0;
+  font-weight: 700; flex-shrink: 0; white-space: nowrap;
 }
+
+/* ── URL 링크 미리보기 카드 ── */
+.arc-link-card {
+  margin: 0 14px 12px;
+  border: 1.5px solid var(--border-mid);
+  border-radius: 12px; overflow: hidden;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex; align-items: stretch;
+  background: var(--bg);
+  text-decoration: none;
+}
+.arc-link-card:active { background: var(--line); }
+.arc-link-accent {
+  width: 4px; flex-shrink: 0;
+  background: linear-gradient(180deg, #3b82f6, #6366f1);
+}
+.arc-link-body {
+  flex: 1; padding: 10px 12px; min-width: 0;
+}
+.arc-link-domain {
+  font-size: 11px; color: var(--accent); font-weight: 600;
+  display: flex; align-items: center; gap: 5px; margin-bottom: 3px;
+}
+.arc-link-favicon {
+  width: 14px; height: 14px; border-radius: 3px;
+  object-fit: contain;
+}
+.arc-link-url {
+  font-size: 12px; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.4;
+}
+.arc-link-open-icon {
+  padding: 0 12px; display: flex; align-items: center;
+  color: var(--text3); font-size: 16px; flex-shrink: 0;
+}
+
+/* ── 노트 미리보기 ── */
 .arc-item-preview {
   padding: 0 14px 12px; font-size: 13px; color: var(--text2);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .arc-item-preview img {
-  width: 100%; border-radius: 8px; max-height: 160px; object-fit: cover;
+  width: 100%; border-radius: 10px; max-height: 180px; object-fit: cover;
 }
+
+/* ── 액션 버튼 ── */
 .arc-item-actions {
   display: flex; border-top: 1px solid var(--line);
 }
 .arc-action-btn {
-  flex: 1; padding: 10px; border: none; background: transparent;
+  flex: 1; padding: 11px 6px; border: none; background: transparent;
   font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer;
   border-right: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  transition: background 0.12s;
 }
+.arc-action-btn:active { background: var(--line); }
 .arc-action-btn:last-child { border-right: none; }
+.arc-action-btn.danger { color: #e74c3c; }
+.arc-action-btn.primary { color: var(--accent); }
+
+/* ── 빈 상태 ── */
 .arc-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
 .arc-empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+/* ── 컨텍스트 메뉴 ── */
+.arc-ctx-menu {
+  position: fixed; z-index: 9999;
+  background: var(--surface); border-radius: 14px;
+  border: 1.5px solid var(--border-mid);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  min-width: 180px; overflow: hidden;
+  animation: ctxFadeIn 0.15s ease;
+}
+@keyframes ctxFadeIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.arc-ctx-item {
+  padding: 13px 18px; font-size: 14px; font-weight: 500;
+  color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.1s;
+}
+.arc-ctx-item:last-child { border-bottom: none; }
+.arc-ctx-item:active { background: var(--line); }
+.arc-ctx-item.danger { color: #e74c3c; }
+.arc-ctx-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: transparent;
+}
+
+/* ── 편집 오버레이 ── */
+.arc-edit-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.45); display: flex;
+  align-items: flex-end; justify-content: center;
+}
+.arc-edit-overlay.hidden { display: none; }
+
+/* ── 정렬 드롭다운 ── */
+.arc-sort-menu {
+  position: absolute; right: 16px; top: 60px;
+  background: var(--surface); border-radius: 12px;
+  border: 1.5px solid var(--border-mid);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 500; min-width: 150px; overflow: hidden;
+  animation: ctxFadeIn 0.15s ease;
+}
+.arc-sort-item {
+  padding: 12px 16px; font-size: 13px; font-weight: 500;
+  color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.arc-sort-item:last-child { border-bottom: none; }
+.arc-sort-item.active { color: var(--accent); font-weight: 700; }
+.arc-sort-item:active { background: var(--line); }
+
 
 /* ════════════════════════════════════════
    SETTING TAB
@@ -1102,15 +1269,19 @@ window.__hideSplash = function () {
     <div class="tab-pane" id="pane-archive">
       <div class="arc-header">
         <input class="arc-search" id="arcSearch" placeholder="🔍 아카이브 검색...">
-        <button class="arc-upload-btn" id="arcUploadBtn">+</button>
+        <div class="arc-header-actions">
+          <button class="arc-sort-btn" id="arcSortBtn" title="정렬">⇅</button>
+          <button class="arc-upload-btn" id="arcUploadBtn">+</button>
+        </div>
       </div>
       <div class="arc-cats">
-        <button class="arc-cat-btn active" data-cat="all">전체</button>
-        <button class="arc-cat-btn" data-cat="note">노트</button>
-        <button class="arc-cat-btn" data-cat="url">링크</button>
-        <button class="arc-cat-btn" data-cat="image">사진</button>
-        <button class="arc-cat-btn" data-cat="video">동영상</button>
-        <button class="arc-cat-btn" data-cat="file">파일</button>
+        <button class="arc-cat-btn active" data-cat="all">전체 <span class="arc-cat-count" id="cnt-all">0</span></button>
+        <button class="arc-cat-btn" data-cat="note">📝 노트 <span class="arc-cat-count" id="cnt-note">0</span></button>
+        <button class="arc-cat-btn" data-cat="url">🔗 링크 <span class="arc-cat-count" id="cnt-url">0</span></button>
+        <button class="arc-cat-btn" data-cat="image">🖼 사진 <span class="arc-cat-count" id="cnt-image">0</span></button>
+        <button class="arc-cat-btn" data-cat="video">🎬 동영상 <span class="arc-cat-count" id="cnt-video">0</span></button>
+        <button class="arc-cat-btn" data-cat="file">📄 파일 <span class="arc-cat-count" id="cnt-file">0</span></button>
+        <button class="arc-cat-btn" data-cat="pinned">⭐ 즐겨찾기 <span class="arc-cat-count" id="cnt-pinned">0</span></button>
       </div>
       <div class="arc-grid" id="arcGrid"></div>
     </div>
@@ -1263,7 +1434,7 @@ window.__hideSplash = function () {
       <div class="sheet-label">메모</div>
       <textarea class="sheet-textarea" id="eventNote" placeholder="메모..."></textarea>
     </div>
-        <div class="sheet-field alarm-row" id="alarmRow" onclick="openAlarmSheet()">
+        <div class="sheet-field alarm-row" id="alarmRow" onclick="haptic.light(); openAlarmSheet()">
       <span class="alarm-label">알림</span>
       <span style="display:flex;align-items:center;gap:2px">
         <span class="alarm-value" id="alarmValueText">없음</span>
@@ -1378,7 +1549,7 @@ window.__hideSplash = function () {
 <div class="arc-overlay hidden" id="arcOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">아카이브에 추가</div>
+    <div class="sheet-title" id="arcOverlayTitle">아카이브에 추가</div>
     <div class="sheet-field">
       <div class="sheet-label">유형</div>
       <select class="sheet-select" id="arcType">
@@ -1395,17 +1566,28 @@ window.__hideSplash = function () {
     </div>
     <div class="sheet-field" id="arcContentField">
       <div class="sheet-label">내용 / URL</div>
-      <textarea class="sheet-textarea" id="arcContent" placeholder="내용이나 URL을 입력하세요..."></textarea>
+      <textarea class="sheet-textarea" id="arcContent" rows="3" placeholder="내용이나 URL을 입력하세요...&#10;URL을 붙여넣으면 자동으로 링크로 저장됩니다"></textarea>
     </div>
     <div class="sheet-field" id="arcFileField" style="display:none">
       <div class="sheet-label">파일 선택</div>
       <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border-mid);border-radius:10px;color:var(--text);">
     </div>
+    <input type="hidden" id="arcEditId" value="">
     <div class="sheet-btns">
       <button class="sheet-cancel" id="arcCancel">취소</button>
       <button class="sheet-save" id="arcSave">저장 + AI 분류</button>
     </div>
   </div>
+</div>
+
+<!-- Archive Context Menu -->
+<div class="arc-ctx-overlay hidden" id="arcCtxOverlay"></div>
+<div class="arc-ctx-menu hidden" id="arcCtxMenu">
+  <div class="arc-ctx-item" id="arcCtxOpen">🔗 링크 열기</div>
+  <div class="arc-ctx-item" id="arcCtxPin">⭐ 즐겨찾기 추가</div>
+  <div class="arc-ctx-item" id="arcCtxEdit">✏️ 편집</div>
+  <div class="arc-ctx-item" id="arcCtxToday">📅 Today로 이동</div>
+  <div class="arc-ctx-item danger" id="arcCtxDel">🗑 삭제</div>
 </div>
 
 <!-- Custom Date Picker -->
@@ -1467,7 +1649,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
   getFirestore, collection, doc, setDoc, getDoc, getDocs,
-  deleteDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
+  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL
@@ -1538,7 +1720,7 @@ const arcSearch     = document.getElementById('arcSearch');
 const aiItems       = document.getElementById('aiReminderItems');
 
 /* ── Login ── */
-loginBtn.addEventListener('click', async () => {
+loginBtn.addEventListener('click', async () => { haptic.medium();
   const email = loginEmail.value.trim();
   const pw    = loginPw.value;
   loginError.classList.add('hidden');
@@ -1745,7 +1927,7 @@ function renderTodayCards() {
       cb.addEventListener('change', () => toggleTask(card.id, cb.dataset.tid, cb.checked));
     });
     // Edit card header
-    div.querySelector('.card-hdr-edit').addEventListener('click', () => {
+    div.querySelector('.card-hdr-edit').addEventListener('click', () => { haptic.light();
       editingCardId = card.id;
       openTaskSheet(null, card.id);
     });
@@ -1841,12 +2023,12 @@ function openTaskSheet(taskId, cardId) {
   document.getElementById('taskOverlay').classList.remove('hidden');
   setTimeout(()=>document.getElementById('taskEditText').focus(), 100);
 }
-document.getElementById('taskCancel').addEventListener('click', ()=>document.getElementById('taskOverlay').classList.add('hidden'));
-document.getElementById('taskDel').addEventListener('click', async()=>{
+document.getElementById('taskCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('taskOverlay').classList.add('hidden'); });
+document.getElementById('taskDel').addEventListener('click', async()=>{ haptic.error();
   if(editingTaskId && editingCardId) await deleteTask(editingCardId, editingTaskId);
   document.getElementById('taskOverlay').classList.add('hidden');
 });
-document.getElementById('taskSave').addEventListener('click', async()=>{
+document.getElementById('taskSave').addEventListener('click', async()=>{ haptic.success();
   const text = document.getElementById('taskEditText').value.trim();
   if(!text) return;
   await saveTask(editingCardId, editingTaskId, text, document.getElementById('taskEditPri').value);
@@ -1866,12 +2048,12 @@ function attachSwipe(row) {
       row.querySelector('.task-swipe-actions')?.classList.remove('open');
     }
   }, {passive:true});
-  row.addEventListener('touchend', ()=>{ swiping=false; });
-  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{
+  row.addEventListener('touchend', ()=>{ if(swiping) haptic.longpress(); swiping=false; });
+  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{ haptic.medium();
     openTaskSheet(row.dataset.tid, row.dataset.cid);
     row.querySelector('.task-swipe-actions')?.classList.remove('open');
   });
-  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{
+  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{ haptic.error();
     deleteTask(row.dataset.cid, row.dataset.tid);
   });
 }
@@ -1918,7 +2100,7 @@ function renderCalendar() {
         ${allEvs.length>maxShow?`<div class="cal-more">+${allEvs.length-maxShow}개</div>`:''}
       </div>`;
     if(!cell.other) {
-      d.addEventListener('click', e => {
+      d.addEventListener('click', e => { haptic.light();
         if(e.target.classList.contains('cal-event-tag')) {
           openEventEdit(e.target.dataset.eid);
         } else {
@@ -1930,16 +2112,16 @@ function renderCalendar() {
   });
 }
 
-document.getElementById('calPrev').addEventListener('click', ()=>{
+document.getElementById('calPrev').addEventListener('click', ()=>{ haptic.light();
   calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar();
 });
-document.getElementById('calNext').addEventListener('click', ()=>{
+document.getElementById('calNext').addEventListener('click', ()=>{ haptic.light();
   calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar();
 });
-document.getElementById('calFab').addEventListener('click', ()=>{
+document.getElementById('calFab').addEventListener('click', ()=>{ haptic.medium();
   openEventSheet(null, dateStr(new Date()));
 });
-calMonthTitle.addEventListener('click', ()=>{
+calMonthTitle.addEventListener('click', ()=>{ haptic.light();
   calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCalendar();
 });
 
@@ -1975,18 +2157,18 @@ function openEventSheet(eventId, defaultDate) {
 window.openEventEdit = (id) => openEventSheet(id, null);
 
 document.querySelectorAll('.color-dot').forEach(dot=>{
-  dot.addEventListener('click', ()=>{
+  dot.addEventListener('click', ()=>{ haptic.light();
     selectedColorIdx = parseInt(dot.dataset.ci);
     document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('selected', d===dot));
   });
 });
-document.getElementById('eventCancel').addEventListener('click', ()=>document.getElementById('eventOverlay').classList.add('hidden'));
-document.getElementById('eventDel').addEventListener('click', async()=>{
+document.getElementById('eventCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('eventOverlay').classList.add('hidden'); });
+document.getElementById('eventDel').addEventListener('click', async()=>{ haptic.error();
   if(editingEventId) await deleteDoc(eventPath(editingEventId));
   document.getElementById('eventOverlay').classList.add('hidden');
   showSaved();
 });
-document.getElementById('eventSave').addEventListener('click', async()=>{
+document.getElementById('eventSave').addEventListener('click', async()=>{ haptic.success();
   const title = document.getElementById('eventTitle').value.trim();
   if(!title) return;
 
@@ -2016,7 +2198,7 @@ bdTextarea.addEventListener('input', ()=>{
   bdTextarea.style.height = 'auto';
   bdTextarea.style.height = bdTextarea.scrollHeight + 'px';
 });
-document.getElementById('bdAddBtn').addEventListener('click', async()=>{
+document.getElementById('bdAddBtn').addEventListener('click', async()=>{ haptic.success();
   const text = bdTextarea.value.trim();
   if(!text) return;
   await addDoc(bdCol(), { text, createdAt: serverTimestamp() });
@@ -2048,9 +2230,9 @@ function renderBdList(filter='') {
         </div>
       </div>`;
   }).join('');
-  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>openMoveSheet(btn.dataset.bid,'today')));
-  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>openMoveSheet(btn.dataset.bid,'schedule')));
-  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'today'); }));
+  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'schedule'); }));
+  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{ haptic.error();
     await deleteDoc(bdPath(btn.dataset.bid)); showSaved();
   }));
 }
@@ -2078,8 +2260,8 @@ function updateMoveFields(dest) {
   }
 }
 document.getElementById('moveDest').addEventListener('change', e=>updateMoveFields(e.target.value));
-document.getElementById('moveCancel').addEventListener('click', ()=>document.getElementById('moveOverlay').classList.add('hidden'));
-document.getElementById('moveConfirm').addEventListener('click', async()=>{
+document.getElementById('moveCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('moveOverlay').classList.add('hidden'); });
+document.getElementById('moveConfirm').addEventListener('click', async()=>{ haptic.success();
   const item = bdItems.find(i=>i.id===movingBdId);
   if(!item) return;
   const dest = document.getElementById('moveDest').value;
@@ -2095,50 +2277,255 @@ document.getElementById('moveConfirm').addEventListener('click', async()=>{
 });
 
 /* ── ARCHIVE ── */
+// ═══════════════════════════════════════════════════════
+// ARCHIVE v2 — 업그레이드 로직
+// ═══════════════════════════════════════════════════════
+let arcSortMode = 'newest'; // newest | oldest | pinned
+let arcCtxTargetId = null;
+
+/* ── 도메인 추출 유틸 ── */
+function arcGetDomain(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return url; }
+}
+function arcGetFavicon(url) {
+  try { const u = new URL(url); return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`; } catch(e) { return ''; }
+}
+function arcIsUrl(str) {
+  return /^https?:\/\//i.test(str.trim());
+}
+
+/* ── 카운트 배지 업데이트 ── */
+function updateArcCounts() {
+  const counts = { all: arcItems.length, note:0, url:0, image:0, video:0, file:0, pinned:0 };
+  arcItems.forEach(i => {
+    if(counts[i.type] !== undefined) counts[i.type]++;
+    if(i.pinned) counts.pinned++;
+  });
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById(`cnt-${k}`);
+    if(el) el.textContent = counts[k];
+  });
+}
+
+/* ── 정렬 ── */
+function sortArcItems(items) {
+  if(arcSortMode === 'oldest') return [...items].sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+  if(arcSortMode === 'pinned') return [...items].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  return [...items].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+}
+
+/* ── 렌더 ── */
 function renderArcGrid(filter='') {
   const kw = filter.toLowerCase();
-  let items = currentArcCat==='all' ? arcItems : arcItems.filter(i=>i.type===currentArcCat);
-  if(kw) items = items.filter(i=>(i.title+i.content).toLowerCase().includes(kw));
+  let items;
+  if(currentArcCat === 'pinned') {
+    items = arcItems.filter(i=>i.pinned);
+  } else {
+    items = currentArcCat==='all' ? arcItems : arcItems.filter(i=>i.type===currentArcCat);
+  }
+  if(kw) items = items.filter(i=>(i.title+(i.content||'')).toLowerCase().includes(kw));
+  items = sortArcItems(items);
+  updateArcCounts();
+
   if(!items.length) {
     arcGrid.innerHTML = `<div class="arc-empty"><div class="arc-empty-icon">🗂</div><div>아직 저장된 항목이 없습니다</div></div>`;
     return;
   }
-  const typeIcon = { note:'📝', url:'🔗', image:'🖼', video:'🎬', file:'📄' };
-  const typeClass= { note:'arc-type-note', url:'arc-type-url', image:'arc-type-image', video:'arc-type-video', file:'arc-type-file' };
+  const typeIcon  = { note:'📝', url:'🔗', image:'🖼', video:'🎬', file:'📄' };
+  const typeClass = { note:'arc-type-note', url:'arc-type-url', image:'arc-type-image', video:'arc-type-video', file:'arc-type-file' };
+
   arcGrid.innerHTML = items.map(item=>{
     const ts = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString('ko-KR',{month:'short',day:'numeric'}) : '';
-    let preview = '';
-    if(item.type==='image' && item.url) preview = `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
-    else if(item.content) preview = `<div class="arc-item-preview">${escHtml(item.content.slice(0,120))}${item.content.length>120?'...':''}</div>`;
+    const pinnedClass = item.pinned ? ' pinned' : '';
+    const pinBadge = item.pinned ? `<div class="arc-pin-badge">⭐</div>` : '';
+
+    let bodyHtml = '';
+
+    if(item.type === 'url' && item.content) {
+      // 링크 미리보기 카드
+      const domain  = arcGetDomain(item.content);
+      const favicon = arcGetFavicon(item.content);
+      const safeUrl = escHtml(item.content);
+      bodyHtml = `
+        <div class="arc-link-card" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">
+          <div class="arc-link-accent"></div>
+          <div class="arc-link-body">
+            <div class="arc-link-domain">
+              <img class="arc-link-favicon" src="${favicon}" onerror="this.style.display='none'" loading="lazy">
+              ${escHtml(domain)}
+            </div>
+            <div class="arc-link-url">${safeUrl}</div>
+          </div>
+          <div class="arc-link-open-icon">↗</div>
+        </div>`;
+    } else if(item.type === 'image' && item.url) {
+      bodyHtml = `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
+    } else if(item.content) {
+      const preview = item.content.slice(0,150);
+      bodyHtml = `<div class="arc-item-preview">${escHtml(preview)}${item.content.length>150?'…':''}</div>`;
+    }
+
+    const metaTag = item.aiTag ? `<span class="arc-ai-tag">🤖 ${escHtml(item.aiTag)}</span>` : '';
+
     return `
-      <div class="arc-item">
+      <div class="arc-item${pinnedClass}" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
+        ${pinBadge}
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${typeIcon[item.type]||'📝'}</div>
           <div class="arc-item-info">
             <div class="arc-item-title">${escHtml(item.title)}</div>
-            <div class="arc-item-meta">${ts} · ${item.aiTag||item.type}</div>
+            <div class="arc-item-meta">${ts}${metaTag ? ' · ' : ''}${metaTag || escHtml(item.type)}</div>
           </div>
-          ${item.aiTag?`<div class="arc-ai-tag">🤖 ${escHtml(item.aiTag)}</div>`:''}
         </div>
-        ${preview}
+        ${bodyHtml}
         <div class="arc-item-actions">
-          ${item.type==='url'?`<button class="arc-action-btn" onclick="window.open('${item.content}','_blank')">열기</button>`:''}
-          <button class="arc-action-btn" onclick="arcToToday('${item.id}')">Today↗</button>
-          <button class="arc-action-btn" style="color:#e74c3c" onclick="arcDel('${item.id}')">삭제</button>
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">🔗 열기</button>` : ''}
+          <button class="arc-action-btn" onclick="haptic.light(); arcEdit('${item.id}')">✏️ 편집</button>
+          <button class="arc-action-btn" onclick="haptic.medium(); arcTogglePin('${item.id}')">${item.pinned ? '★ 핀해제' : '☆ 핀'}</button>
+          <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">📅</button>
+          <button class="arc-action-btn danger" onclick="haptic.error(); arcDel('${item.id}')">🗑</button>
         </div>
       </div>`;
   }).join('');
 }
+
+/* ── URL 열기 ── */
+window.arcOpenUrl = (url) => {
+  if(!url) return;
+  const u = url.trim();
+  if(arcIsUrl(u)) window.open(u, '_blank');
+};
+
+/* ── 핀 토글 ── */
+window.arcTogglePin = async(id) => {
+  const item = arcItems.find(i=>i.id===id);
+  if(!item) return;
+  await updateDoc(arcPath(id), { pinned: !item.pinned });
+  showSaved();
+};
+
+/* ── 편집 ── */
+window.arcEdit = (id) => {
+  const item = arcItems.find(i=>i.id===id);
+  if(!item) return;
+  document.getElementById('arcOverlayTitle').textContent = '아카이브 편집';
+  document.getElementById('arcEditId').value = id;
+  document.getElementById('arcType').value = item.type;
+  document.getElementById('arcTitle').value = item.title;
+  document.getElementById('arcContent').value = item.content || '';
+  const isFile = ['image','video','file'].includes(item.type);
+  document.getElementById('arcContentField').style.display = isFile ? 'none' : '';
+  document.getElementById('arcFileField').style.display = isFile ? '' : 'none';
+  document.getElementById('arcOverlay').classList.remove('hidden');
+};
+
+/* ── 컨텍스트 메뉴 ── */
+let arcLongPressTimer = null;
+window.arcTouchStart = (e, id) => {
+  arcLongPressTimer = setTimeout(()=>{
+    haptic.longpress();
+    arcShowCtx(e.touches[0], id);
+  }, 550);
+};
+window.arcTouchEnd = (e) => {
+  clearTimeout(arcLongPressTimer);
+};
+window.arcShowCtx = (e, id) => {
+  arcCtxTargetId = id;
+  const item = arcItems.find(i=>i.id===id);
+  const menu = document.getElementById('arcCtxMenu');
+  const overlay = document.getElementById('arcCtxOverlay');
+  // 링크 열기 항목 표시 여부
+  document.getElementById('arcCtxOpen').style.display = (item && item.type==='url') ? '' : 'none';
+  // 핀 텍스트
+  document.getElementById('arcCtxPin').textContent = (item && item.pinned) ? '★ 즐겨찾기 해제' : '⭐ 즐겨찾기 추가';
+  // 위치
+  const x = e.clientX || e.pageX || window.innerWidth/2;
+  const y = e.clientY || e.pageY || window.innerHeight/2;
+  menu.style.left = Math.min(x, window.innerWidth-200)+'px';
+  menu.style.top  = Math.min(y, window.innerHeight-220)+'px';
+  menu.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+};
+function closeArcCtx() {
+  document.getElementById('arcCtxMenu').classList.add('hidden');
+  document.getElementById('arcCtxOverlay').classList.add('hidden');
+  arcCtxTargetId = null;
+}
+document.getElementById('arcCtxOverlay').addEventListener('click', closeArcCtx);
+document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
+  haptic.medium();
+  const item = arcItems.find(i=>i.id===arcCtxTargetId);
+  if(item) arcOpenUrl(item.content);
+  closeArcCtx();
+});
+document.getElementById('arcCtxPin').addEventListener('click', ()=>{
+  haptic.medium();
+  if(arcCtxTargetId) arcTogglePin(arcCtxTargetId);
+  closeArcCtx();
+});
+document.getElementById('arcCtxEdit').addEventListener('click', ()=>{
+  haptic.light();
+  if(arcCtxTargetId) arcEdit(arcCtxTargetId);
+  closeArcCtx();
+});
+document.getElementById('arcCtxToday').addEventListener('click', ()=>{
+  haptic.medium();
+  if(arcCtxTargetId) arcToToday(arcCtxTargetId);
+  closeArcCtx();
+});
+document.getElementById('arcCtxDel').addEventListener('click', ()=>{
+  haptic.error();
+  if(arcCtxTargetId) arcDel(arcCtxTargetId);
+  closeArcCtx();
+});
+
+/* ── 정렬 버튼 ── */
+document.getElementById('arcSortBtn').addEventListener('click', (e)=>{
+  haptic.light();
+  const existing = document.getElementById('arcSortMenu');
+  if(existing) { existing.remove(); return; }
+  const menu = document.createElement('div');
+  menu.id = 'arcSortMenu';
+  menu.className = 'arc-sort-menu';
+  const opts = [
+    { key:'newest', label:'🕐 최신순' },
+    { key:'oldest', label:'🕰 오래된순' },
+    { key:'pinned', label:'⭐ 즐겨찾기 우선' },
+  ];
+  opts.forEach(o=>{
+    const el = document.createElement('div');
+    el.className = 'arc-sort-item' + (arcSortMode===o.key ? ' active' : '');
+    el.textContent = o.label;
+    el.addEventListener('click', ()=>{
+      haptic.light();
+      arcSortMode = o.key;
+      menu.remove();
+      renderArcGrid(arcSearch.value);
+    });
+    menu.appendChild(el);
+  });
+  document.getElementById('pane-archive').style.position = 'relative';
+  document.getElementById('pane-archive').appendChild(menu);
+  // 외부 클릭 닫기
+  setTimeout(()=>{
+    document.addEventListener('click', function handler(ev){
+      if(!menu.contains(ev.target)) { menu.remove(); document.removeEventListener('click', handler); }
+    });
+  }, 50);
+});
+
 arcSearch.addEventListener('input', ()=>renderArcGrid(arcSearch.value));
 document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
+    haptic.light();
     document.querySelectorAll('.arc-cat-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentArcCat = btn.dataset.cat;
     renderArcGrid(arcSearch.value);
   });
 });
-window.arcDel = async(id)=>{ await deleteDoc(arcPath(id)); showSaved(); };
+window.arcDel = async(id)=>{ if(confirm('삭제하시겠습니까?')) { await deleteDoc(arcPath(id)); showSaved(); } };
 window.arcToToday = (id)=>{
   const item = arcItems.find(i=>i.id===id);
   if(item) openMoveSheet(item.id, 'today');
@@ -2146,6 +2533,9 @@ window.arcToToday = (id)=>{
 
 /* ── Archive Upload ── */
 document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
+  haptic.medium();
+  document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
+  document.getElementById('arcEditId').value = '';
   document.getElementById('arcType').value = 'note';
   document.getElementById('arcTitle').value = '';
   document.getElementById('arcContent').value = '';
@@ -2153,18 +2543,32 @@ document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
   document.getElementById('arcFileField').style.display = 'none';
   document.getElementById('arcOverlay').classList.remove('hidden');
 });
+// URL 자동 감지 (내용 입력 시)
+document.getElementById('arcContent').addEventListener('input', ()=>{
+  const val = document.getElementById('arcContent').value.trim();
+  if(arcIsUrl(val)) {
+    document.getElementById('arcType').value = 'url';
+    // 제목이 비어있으면 도메인으로 자동 채우기
+    if(!document.getElementById('arcTitle').value.trim()) {
+      document.getElementById('arcTitle').value = arcGetDomain(val);
+    }
+  }
+});
 document.getElementById('arcType').addEventListener('change', e=>{
   const t = e.target.value;
   document.getElementById('arcContentField').style.display = ['image','video','file'].includes(t) ? 'none' : '';
   document.getElementById('arcFileField').style.display    = ['image','video','file'].includes(t) ? '' : 'none';
 });
-document.getElementById('arcCancel').addEventListener('click', ()=>document.getElementById('arcOverlay').classList.add('hidden'));
-document.getElementById('arcSave').addEventListener('click', async()=>{
-  const type    = document.getElementById('arcType').value;
+document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
+document.getElementById('arcSave').addEventListener('click', async()=>{ haptic.success();
+  let type    = document.getElementById('arcType').value;
   const title   = document.getElementById('arcTitle').value.trim();
-  const content = document.getElementById('arcContent').value.trim();
+  let content = document.getElementById('arcContent').value.trim();
   const file    = document.getElementById('arcFile').files[0];
-  if(!title) return;
+  const editId  = document.getElementById('arcEditId').value;
+  if(!title) { alert('제목을 입력해주세요'); return; }
+  // URL 자동 감지
+  if(arcIsUrl(content) && type === 'note') type = 'url';
   let url = '', aiTag = '';
   // AI classify
   if(openAiKey) {
@@ -2187,7 +2591,15 @@ document.getElementById('arcSave').addEventListener('click', async()=>{
       url = await getDownloadURL(sRef);
     } catch(e) { url=''; }
   }
-  await addDoc(arcCol(), { type, title, content, url, aiTag, createdAt: serverTimestamp() });
+  if(editId) {
+    // 편집 모드
+    await updateDoc(arcPath(editId), { type, title, content, aiTag, updatedAt: serverTimestamp() });
+  } else {
+    // 신규 저장
+    await addDoc(arcCol(), { type, title, content, url, aiTag, pinned: false, createdAt: serverTimestamp() });
+  }
+  document.getElementById('arcEditId').value = '';
+  document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
   document.getElementById('arcOverlay').classList.add('hidden');
   showSaved();
 });
@@ -2255,7 +2667,7 @@ document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder
 
 /* ── SETTING ── */
 const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', ()=>{
+themeToggle.addEventListener('click', ()=>{ haptic.medium();
   const isDark = document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme', isDark?'':'dark');
   themeToggle.classList.toggle('on', !isDark);
@@ -2278,18 +2690,18 @@ function updateLogoTheme() {
 }
 updateLogoTheme();
 themeToggle.addEventListener('change', ()=>{ setTimeout(updateLogoTheme, 50); });
-document.getElementById('logoutBtn').addEventListener('click', async()=>{
+document.getElementById('logoutBtn').addEventListener('click', async()=>{ haptic.heavy();
   await signOut(auth);
 });
-document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{
+document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{ haptic.heavy();
   await signOut(auth);
 });
-document.getElementById('openAiKeyItem').addEventListener('click', ()=>{
+document.getElementById('openAiKeyItem').addEventListener('click', ()=>{ haptic.light();
   document.getElementById('openAiKeyInput').value = openAiKey||'';
   document.getElementById('openAiOverlay').classList.remove('hidden');
 });
-document.getElementById('openAiCancel').addEventListener('click', ()=>document.getElementById('openAiOverlay').classList.add('hidden'));
-document.getElementById('openAiSave').addEventListener('click', async()=>{
+document.getElementById('openAiCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('openAiOverlay').classList.add('hidden'); });
+document.getElementById('openAiSave').addEventListener('click', async()=>{ haptic.success();
   const key = document.getElementById('openAiKeyInput').value.trim();
   openAiKey = key;
   await setDoc(doc(db,'config','openai'), { key }, {merge:true});
@@ -2315,18 +2727,18 @@ function switchTab(tabName) {
   }
 }
 document.querySelectorAll('.tab-item').forEach(btn=>{
-  btn.addEventListener('click', ()=>switchTab(btn.dataset.tab));
+  btn.addEventListener('click', ()=>{ haptic.light(); switchTab(btn.dataset.tab); });
 });
 window.switchTab = switchTab;
 
 /* ── DATE NAV ── */
-document.getElementById('btnPrev').addEventListener('click', ()=>{
+document.getElementById('btnPrev').addEventListener('click', ()=>{ haptic.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()-1);
     updateHeader(); resubscribeToday();
   }
 });
-document.getElementById('btnNext').addEventListener('click', ()=>{
+document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()+1);
     updateHeader(); resubscribeToday();
@@ -2434,16 +2846,16 @@ document.getElementById('btnNext').addEventListener('click', ()=>{
     document.getElementById('calYearView').style.display='';
     renderYearGrid();
   });
-  document.getElementById('calYearPrev').addEventListener('click', ()=>{ calYearPageStart-=12; renderYearGrid(); });
-  document.getElementById('calYearNext').addEventListener('click', ()=>{ calYearPageStart+=12; renderYearGrid(); });
-  document.getElementById('calPrevMonth').addEventListener('click', ()=>{
+  document.getElementById('calYearPrev').addEventListener('click', ()=>{ haptic.light(); calYearPageStart-=12; renderYearGrid(); });
+  document.getElementById('calYearNext').addEventListener('click', ()=>{ haptic.light(); calYearPageStart+=12; renderYearGrid(); });
+  document.getElementById('calPrevMonth').addEventListener('click', ()=>{ haptic.light();
     calPickMonth--; if(calPickMonth<0){calPickMonth=11;calPickYear--;} renderCalMonth();
   });
-  document.getElementById('calNextMonth').addEventListener('click', ()=>{
+  document.getElementById('calNextMonth').addEventListener('click', ()=>{ haptic.light();
     calPickMonth++; if(calPickMonth>11){calPickMonth=0;calPickYear++;} renderCalMonth();
   });
-  document.getElementById('calCancel').addEventListener('click', closeCal);
-  document.getElementById('calGotoToday').addEventListener('click', ()=>{
+  document.getElementById('calCancel').addEventListener('click', ()=>{ haptic.light(); closeCal(); });
+  document.getElementById('calGotoToday').addEventListener('click', ()=>{ haptic.medium();
     const t = new Date();
     calPickYear=t.getFullYear(); calPickMonth=t.getMonth();
     calPickSelected=t; renderCalMonth();
@@ -2454,7 +2866,7 @@ document.getElementById('btnNext').addEventListener('click', ()=>{
   });
 
   // 날짜 클릭 시 커스텀 달력 열기
-  hdrDateBig.addEventListener('click', ()=>{ openCal(currentDate); });
+  hdrDateBig.addEventListener('click', ()=>{ haptic.light(); openCal(currentDate); });
   if(document.getElementById('hdrDateSub'))
     document.getElementById('hdrDateSub').addEventListener('click', ()=>{ openCal(currentDate); });
 
@@ -2510,7 +2922,7 @@ function initGIS() {
     setTimeout(() => syncFromGCal(), 1500);
   }
 }
-document.getElementById('gcalConnectItem').addEventListener('click', () => {
+document.getElementById('gcalConnectItem').addEventListener('click', () => { haptic.medium();
   if (!GCAL_CLIENT_ID) { showToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
   if (gcalAccessToken) {
     if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
@@ -2530,7 +2942,7 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => {
   }
 });
 
-document.getElementById('gcalSyncItem').addEventListener('click', () => {
+document.getElementById('gcalSyncItem').addEventListener('click', () => { haptic.medium();
   if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
   syncFromGCal();
 });
@@ -2689,7 +3101,7 @@ loadGIS();
       var btn   = document.getElementById('updateBtn');
       if (!toast || !btn) return;
       toast.style.display = 'block';
-      btn.onclick = function() {
+      btn.onclick = function() { haptic.success();
         toast.style.display = 'none';
         if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
       };
@@ -2703,7 +3115,7 @@ loadGIS();
     if (installBtn) installBtn.style.display = 'block';
   });
   if (installBtn) {
-    installBtn.addEventListener('click', function() {
+    installBtn.addEventListener('click', function() { haptic.medium();
       installBtn.style.display = 'none';
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
@@ -2796,7 +3208,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   const alarmOv = document.getElementById('alarmSheetOverlay');
   if (alarmOv) {
-    alarmOv.addEventListener('click', e => {
+    alarmOv.addEventListener('click', e => { haptic.medium();
       if (e.target === e.currentTarget) closeAlarmSheet();
     });
   }
@@ -2804,10 +3216,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // 드럼롤 버튼
   const drumCancelBtn = document.getElementById('drumCancelBtn');
   const drumConfirmBtn = document.getElementById('drumConfirmBtn');
-  if (drumCancelBtn) drumCancelBtn.addEventListener('click', () => {
+  if (drumCancelBtn) drumCancelBtn.addEventListener('click', () => { haptic.light();
     document.getElementById('drumOverlay').classList.remove('open');
   });
-  if (drumConfirmBtn) drumConfirmBtn.addEventListener('click', () => {
+  if (drumConfirmBtn) drumConfirmBtn.addEventListener('click', () => { haptic.double();
     const customAlarm = {
       dayOffset: drumState.dayIdx,
       ampm:  DRUM_AMPM[drumState.ampmIdx],
