@@ -2,45 +2,50 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BRAIN DUMP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRAIN DUMP — PC</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════
+   BRAIN DUMP — PC DESKTOP VERSION
+   Optimized for 1920×1080, 1440×900, 1280×800
+   ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:           #f4f4f0;
-  --surface:      #ffffff;
-  --hdr-bg:       #111111;
-  --hdr-text:     #ffffff;
-  --border:       #111111;
-  --border-mid:   #cccccc;
-  --border-light: #e8e8e4;
-  --text:         #111111;
-  --text2:        #555555;
-  --text3:        #aaaaaa;
-  --line:         #e4e4e0;
-  --row-hover:    #f9f9f6;
-  --done-color:   #bbbbbb;
-  --shadow:       0 2px 16px rgba(0,0,0,0.07);
-  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --bg:          #f5f5f1;
+  --surface:     #ffffff;
+  --hdr-bg:      #111111;
+  --hdr-text:    #ffffff;
+  --border:      #111111;
+  --border-mid:  #d0d0cc;
+  --line:        #ebebе7;
+  --text:        #111111;
+  --text2:       #555555;
+  --text3:       #aaaaaa;
+  --row-hover:   #fafaf7;
+  --done-color:  #c0c0c0;
+  --shadow:      0 1px 12px rgba(0,0,0,0.06);
+  --font:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Priority colors */
+  --pa: #c0392b; /* A — urgent */
+  --pb: #2980b9; /* B — normal */
+  --pc: #27ae60; /* C — low    */
 }
-
 [data-theme="dark"] {
-  --bg:           #161616;
-  --surface:      #1e1e1e;
-  --hdr-bg:       #f0f0ec;
-  --hdr-text:     #111111;
-  --border:       #f0f0ec;
-  --border-mid:   #333333;
-  --border-light: #2a2a2a;
-  --text:         #f0f0ec;
-  --text2:        #999999;
-  --text3:        #555555;
-  --line:         #282828;
-  --row-hover:    #242424;
-  --done-color:   #444444;
-  --shadow:       0 2px 16px rgba(0,0,0,0.4);
+  --bg:         #141414;
+  --surface:    #1c1c1c;
+  --hdr-bg:     #efefeb;
+  --hdr-text:   #111111;
+  --border:     #efefeb;
+  --border-mid: #2e2e2e;
+  --line:       #242424;
+  --text:       #efefeb;
+  --text2:      #888888;
+  --text3:      #4a4a4a;
+  --row-hover:  #202020;
+  --done-color: #3a3a3a;
+  --shadow:     0 1px 12px rgba(0,0,0,0.35);
 }
 
 html, body {
@@ -49,7 +54,8 @@ html, body {
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
-  transition: background 0.2s, color 0.2s;
+  font-size: 14px;
+  transition: background .2s, color .2s;
 }
 
 /* ── LAYOUT ── */
@@ -57,35 +63,35 @@ html, body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px 40px;
+  padding: 0 32px 48px;
 }
 
-/* ── TOP BAR ── */
+/* ── TOPBAR ── */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0 0;
+  padding: 22px 0 0;
+  gap: 16px;
 }
-
-.topbar-brand {
+.brand {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 800;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--text3);
+  user-select: none;
 }
-
-.topbar-actions {
+.topbar-right {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
-
 .icon-btn {
-  width: 32px;
-  height: 32px;
+  height: 34px;
+  padding: 0 14px;
   border: 1.5px solid var(--border-mid);
   background: var(--surface);
   color: var(--text2);
@@ -93,23 +99,28 @@ html, body {
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  gap: 6px;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: all .15s;
+  white-space: nowrap;
 }
 .icon-btn:hover { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
-.icon-btn:active { transform: scale(0.92); }
+.icon-btn:active { transform: scale(0.96); }
+.icon-btn .ico { font-size: 14px; }
 
 /* ── PAGE TITLE ── */
 .page-title {
   text-align: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--text3);
-  padding: 22px 0 6px;
+  padding: 24px 0 8px;
+  user-select: none;
 }
 
 /* ── DATE NAV ── */
@@ -118,152 +129,99 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 0 0 28px;
+  padding: 0 0 32px;
 }
-
 .date-nav-btn {
-  width: 48px;
-  height: 56px;
-  border: none;
-  background: transparent;
+  width: 52px; height: 64px;
+  border: none; background: transparent;
   color: var(--text3);
   cursor: pointer;
-  font-size: 24px;
-  font-weight: 300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  font-size: 28px; font-weight: 200;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  transition: all .15s;
+  user-select: none;
 }
 .date-nav-btn:hover { color: var(--text); background: var(--line); }
 .date-nav-btn:active { transform: scale(0.88); }
 
 .date-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  min-width: 240px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-width: 280px;
   cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 12px;
-  transition: background 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  padding: 12px 24px;
+  border-radius: 14px;
+  transition: background .15s;
+  user-select: none;
 }
 .date-center:hover { background: var(--line); }
 
 .date-main {
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   color: var(--text);
   line-height: 1;
 }
-
 .date-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--text3);
 }
-
 .today-pill {
-  background: var(--hdr-bg);
-  color: var(--hdr-text);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  padding: 2px 8px;
-  border-radius: 20px;
+  background: var(--hdr-bg); color: var(--hdr-text);
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 9px; border-radius: 20px;
 }
 
 /* ── DATE POPUP ── */
 .popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.32);
   z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
 }
 .popup-overlay.hidden { display: none; }
-
 .popup-box {
   background: var(--surface);
   border: 2px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  width: 320px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  border-radius: 18px;
+  padding: 32px;
+  width: 360px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
 }
-
 .popup-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text2);
-  margin-bottom: 16px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text2); margin-bottom: 18px;
 }
-
 .popup-box input[type="date"] {
-  width: 100%;
-  padding: 12px 14px;
+  width: 100%; padding: 13px 16px;
   border: 1.5px solid var(--border-mid);
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 16px;
-  background: var(--bg);
-  color: var(--text);
-  outline: none;
-  margin-bottom: 14px;
-  cursor: pointer;
+  border-radius: 9px;
+  font-family: var(--font); font-size: 16px;
+  background: var(--bg); color: var(--text);
+  outline: none; margin-bottom: 16px; cursor: pointer;
 }
 .popup-box input[type="date"]:focus { border-color: var(--border); }
-
-.popup-btns {
-  display: flex;
-  gap: 8px;
-}
-
+.popup-btns { display: flex; gap: 10px; }
 .btn-dark {
-  flex: 1;
-  padding: 11px;
-  background: var(--hdr-bg);
-  color: var(--hdr-text);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  flex: 1; padding: 12px;
+  background: var(--hdr-bg); color: var(--hdr-text);
+  border: none; border-radius: 9px;
+  font-family: var(--font); font-size: 12px; font-weight: 800;
+  letter-spacing: 0.08em; cursor: pointer; transition: opacity .15s;
 }
-.btn-dark:hover { opacity: 0.82; }
-
+.btn-dark:hover { opacity: 0.8; }
 .btn-ghost {
-  flex: 1;
-  padding: 11px;
-  background: transparent;
-  color: var(--text2);
-  border: 1.5px solid var(--border-mid);
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  flex: 1; padding: 12px;
+  background: transparent; color: var(--text2);
+  border: 1.5px solid var(--border-mid); border-radius: 9px;
+  font-family: var(--font); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
 }
 .btn-ghost:hover { border-color: var(--border); color: var(--text); }
 
@@ -271,15 +229,10 @@ html, body {
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
   align-items: start;
 }
-
-.col {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+.col { display: flex; flex-direction: column; gap: 24px; }
 
 /* ── CARD ── */
 .card {
@@ -291,306 +244,334 @@ html, body {
 
 /* ── CARD HEADER ── */
 .card-hdr {
-  background: var(--hdr-bg);
-  color: var(--hdr-text);
-  padding: 13px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  background: var(--hdr-bg); color: var(--hdr-text);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-
-.card-hdr-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.card-hdr-icon {
-  font-size: 15px;
-  line-height: 1;
-}
-
+.card-hdr-left { display: flex; align-items: center; gap: 10px; }
+.card-hdr-icon { font-size: 16px; line-height: 1; }
 .card-hdr-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
 }
-
 .card-hdr-count {
-  font-size: 10px;
-  font-weight: 700;
-  opacity: 0.55;
-  letter-spacing: 0.05em;
+  font-size: 10px; font-weight: 700;
+  opacity: 0.5; letter-spacing: 0.05em;
 }
 
 /* ── PROGRESS BAR ── */
-.card-prog {
-  height: 3px;
-  background: var(--border-mid);
-}
+.card-prog { height: 3px; background: #2a2a2a; }
 [data-theme="dark"] .card-prog { background: #2a2a2a; }
-
 .card-prog-fill {
-  height: 100%;
-  background: var(--hdr-text);
-  opacity: 0.45;
-  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  height: 100%; background: #fff; opacity: 0.35;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
 }
-[data-theme="dark"] .card-prog-fill { background: var(--hdr-bg); }
+[data-theme="dark"] .card-prog-fill { background: var(--hdr-bg); opacity: 0.4; }
 
-/* ── LIST ROWS ── */
-.list-body {
-  /* no extra padding */
-}
-
+/* ── LIST ROW ── */
+.list-body {}
 .list-row {
-  display: flex;
-  align-items: stretch;
+  display: flex; align-items: stretch;
   border-bottom: 1px solid var(--line);
-  min-height: 44px;
-  transition: background 0.1s;
+  min-height: 46px;
   position: relative;
+  overflow: hidden;
 }
 .list-row:last-child { border-bottom: none; }
-.list-row:hover { background: var(--row-hover); }
 
-/* 번호 셀 */
+/* Swipe container */
+.row-inner {
+  display: flex; align-items: stretch;
+  width: 100%;
+  background: var(--surface);
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  z-index: 1;
+}
+.list-row:hover .row-inner { background: var(--row-hover); }
+
+/* Swipe action buttons (revealed on left-swipe) */
+.row-actions {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex;
+  z-index: 0;
+}
+.row-act-btn {
+  width: 72px;
+  border: none; cursor: pointer;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  transition: opacity .15s;
+}
+.row-act-btn:hover { opacity: 0.82; }
+.row-act-edit { background: #2563eb; color: #fff; }
+.row-act-del  { background: #dc2626; color: #fff; }
+.row-act-btn .act-ico { font-size: 16px; }
+
+/* Row cells */
 .row-num {
-  width: 36px;
-  flex-shrink: 0;
+  width: 40px; flex-shrink: 0;
   border-right: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  letter-spacing: 0.02em;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--text3);
 }
-
-/* 체크박스 셀 */
 .row-chk {
-  width: 36px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
-
 .row-chk input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
-  accent-color: var(--text);
-  border-radius: 2px;
+  width: 15px; height: 15px;
+  cursor: pointer; accent-color: var(--text);
 }
-
-/* 텍스트 셀 */
-.row-txt {
-  flex: 1;
-  padding: 10px 8px 10px 6px;
-  font-size: 13.5px;
-  font-weight: 400;
-  color: var(--text);
-  line-height: 1.45;
-  word-break: break-word;
-  min-width: 0;
-  cursor: text;
-  outline: none;
-  background: transparent;
-  border: none;
+.row-pri {
+  width: 58px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.pri-badge {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 7px; border-radius: 4px;
+  cursor: pointer;
+  border: none; background: transparent;
   font-family: var(--font);
-  resize: none;
-  overflow: hidden;
-  align-self: center;
+}
+.pri-A { color: var(--pa); background: rgba(192,57,43,0.08); }
+.pri-B { color: var(--pb); background: rgba(41,128,185,0.08); }
+.pri-C { color: var(--pc); background: rgba(39,174,96,0.08); }
+.pri-none { color: var(--text3); background: transparent; }
+
+.row-txt {
+  flex: 1; padding: 10px 10px 10px 8px;
+  font-size: 13.5px; font-weight: 400; color: var(--text);
+  line-height: 1.45; word-break: break-word;
+  cursor: text; outline: none;
+  background: transparent; border: none;
+  font-family: var(--font);
 }
 .row-txt:empty::before {
   content: attr(data-ph);
-  color: var(--text3);
+  color: var(--text3); font-style: italic; font-size: 12px;
   pointer-events: none;
-  font-style: italic;
-  font-size: 12px;
 }
-.row-txt:focus { background: rgba(0,0,0,0.015); }
-[data-theme="dark"] .row-txt:focus { background: rgba(255,255,255,0.02); }
-
 .row-txt.done {
   text-decoration: line-through;
   color: var(--done-color);
-  text-decoration-color: var(--done-color);
 }
-
-/* 삭제 버튼 */
-.row-del {
-  width: 30px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--text3);
-  font-size: 16px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s;
-  -webkit-tap-highlight-color: transparent;
+.row-del-btn {
+  width: 36px; flex-shrink: 0;
+  border: none; background: transparent;
+  color: var(--text3); font-size: 18px;
+  cursor: pointer; opacity: 0;
+  transition: opacity .15s, color .15s;
+  display: flex; align-items: center; justify-content: center;
 }
-.list-row:hover .row-del { opacity: 1; }
-.row-del:hover { color: #cc2222; }
+.list-row:hover .row-del-btn { opacity: 1; }
+.row-del-btn:hover { color: #dc2626; }
 
-/* ── EMPTY STATE ── */
+/* ── EMPTY ── */
 .empty-row {
-  padding: 20px 18px;
-  text-align: center;
-  font-size: 12px;
-  font-style: italic;
-  color: var(--text3);
+  padding: 22px 20px; text-align: center;
+  font-size: 12px; font-style: italic; color: var(--text3);
   border-bottom: 1px solid var(--line);
 }
 
 /* ── ADD ROW ── */
 .add-row {
-  display: flex;
-  align-items: stretch;
+  display: flex; align-items: stretch;
   border-top: 1.5px solid var(--border);
-  min-height: 42px;
+  min-height: 46px;
   background: var(--bg);
-  cursor: text;
-  transition: background 0.1s;
+  transition: background .1s;
 }
 .add-row:hover { background: var(--line); }
-
-.add-row-icon {
-  width: 36px;
-  flex-shrink: 0;
+.add-row-plus {
+  width: 40px; flex-shrink: 0;
   border-right: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--text3);
-  font-weight: 300;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 300; color: var(--text3);
 }
-
+.add-row-pri {
+  width: 58px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.pri-select {
+  width: 50px; height: 26px;
+  border: 1px solid var(--border-mid);
+  border-radius: 5px;
+  background: var(--surface); color: var(--text);
+  font-family: var(--font); font-size: 11px; font-weight: 700;
+  cursor: pointer; outline: none;
+  padding: 0 2px;
+  -webkit-appearance: none;
+  text-align: center;
+}
 .add-row-input {
-  flex: 1;
-  padding: 10px 10px;
-  font-size: 13px;
-  font-family: var(--font);
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text2);
-  font-style: italic;
+  flex: 1; padding: 10px 10px;
+  font-size: 13px; font-family: var(--font);
+  background: transparent; border: none; outline: none;
+  color: var(--text2); font-style: italic;
 }
 .add-row-input::placeholder { color: var(--text3); }
-
 .add-row-btn {
-  width: 36px;
-  flex-shrink: 0;
-  border: none;
-  background: var(--hdr-bg);
-  color: var(--hdr-text);
-  font-size: 20px;
-  font-weight: 300;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  width: 46px; flex-shrink: 0;
+  border: none; background: var(--hdr-bg); color: var(--hdr-text);
+  font-size: 22px; font-weight: 300;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s;
 }
 .add-row-btn:hover { opacity: 0.75; }
 .add-row-btn:active { transform: scale(0.9); }
 
+/* ── PRIORITY POPUP ── */
+.pri-popup {
+  position: fixed; z-index: 300;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 8px;
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 4px;
+  width: 180px;
+}
+.pri-popup.hidden { display: none; }
+.pri-opt {
+  padding: 8px 4px; border: none; cursor: pointer;
+  border-radius: 6px;
+  font-family: var(--font); font-size: 11px; font-weight: 800;
+  letter-spacing: 0.04em; text-align: center;
+  transition: all .12s;
+}
+.pri-opt:hover { filter: brightness(1.12); transform: scale(1.06); }
+.pri-opt-A1,.pri-opt-A2,.pri-opt-A3 { background: rgba(192,57,43,0.1); color: var(--pa); }
+.pri-opt-B1,.pri-opt-B2,.pri-opt-B3 { background: rgba(41,128,185,0.1); color: var(--pb); }
+.pri-opt-C1,.pri-opt-C2,.pri-opt-C3 { background: rgba(39,174,96,0.1); color: var(--pc); }
+
+/* ── EDIT MODAL ── */
+.edit-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 400;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.edit-overlay.hidden { display: none; }
+.edit-box {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  width: 480px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+}
+.edit-title {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text2); margin-bottom: 14px;
+}
+.edit-pri-row {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.edit-pri-btn {
+  padding: 6px 12px; border: 1.5px solid var(--border-mid);
+  border-radius: 6px; cursor: pointer;
+  font-family: var(--font); font-size: 11px; font-weight: 800;
+  background: transparent; color: var(--text2);
+  transition: all .12s;
+}
+.edit-pri-btn.sel-A { border-color: var(--pa); color: var(--pa); background: rgba(192,57,43,0.08); }
+.edit-pri-btn.sel-B { border-color: var(--pb); color: var(--pb); background: rgba(41,128,185,0.08); }
+.edit-pri-btn.sel-C { border-color: var(--pc); color: var(--pc); background: rgba(39,174,96,0.08); }
+.edit-textarea {
+  width: 100%; min-height: 80px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border-mid); border-radius: 9px;
+  font-family: var(--font); font-size: 14px;
+  background: var(--bg); color: var(--text);
+  outline: none; resize: vertical;
+  margin-bottom: 16px; line-height: 1.5;
+}
+.edit-textarea:focus { border-color: var(--border); }
+.edit-btns { display: flex; gap: 10px; }
+
 /* ── TOAST ── */
 .toast-wrap {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
+  position: fixed; bottom: 32px; left: 50%;
   transform: translateX(-50%);
-  z-index: 300;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  z-index: 500; display: flex; flex-direction: column; gap: 8px;
   pointer-events: none;
 }
-
 .toast {
-  background: var(--hdr-bg);
-  color: var(--hdr-text);
-  padding: 9px 22px;
-  border-radius: 24px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  background: var(--hdr-bg); color: var(--hdr-text);
+  padding: 10px 24px; border-radius: 28px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
   white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-  animation: toastIn 0.22s ease, toastOut 0.28s ease 1.72s forwards;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.16);
+  animation: tIn .22s ease, tOut .28s ease 1.72s forwards;
 }
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.94); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes toastOut {
-  from { opacity: 1; }
-  to   { opacity: 0; transform: translateY(-6px) scale(0.96); }
-}
+@keyframes tIn  { from { opacity:0; transform:translateY(10px) scale(.94); } to { opacity:1; transform:none; } }
+@keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(-6px) scale(.96); } }
 
 /* ── FOOTER ── */
 .footer {
-  text-align: center;
-  padding: 28px 0 0;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  text-align: center; padding: 32px 0 0;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--text3);
 }
 
-/* ── MOBILE ── */
-@media (max-width: 660px) {
-  .app { padding: 0 12px 28px; }
-  .grid { grid-template-columns: 1fr; gap: 14px; }
-  .date-main { font-size: 28px; }
-  .date-center { min-width: 180px; }
-  .row-del { opacity: 1; }
-  .row-txt { font-size: 15px; }
+/* ── VERSION LINKS ── */
+.ver-links {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 20px 0 0;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
+.ver-links a {
+  color: var(--text3); text-decoration: none;
+  padding: 5px 12px; border: 1px solid var(--border-mid);
+  border-radius: 20px; transition: all .15s;
+}
+.ver-links a:hover { color: var(--text); border-color: var(--text); }
+.ver-links a.active { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
 </style>
 </head>
 <body>
-
 <div class="app">
 
-  <!-- TOP BAR -->
+  <!-- TOPBAR -->
   <div class="topbar">
-    <span class="topbar-brand">Brain Dump</span>
-    <div class="topbar-actions">
-      <button class="icon-btn" id="btnToday" title="오늘 (T)">📅</button>
-      <button class="icon-btn" id="btnTheme" title="테마 전환 (D)">🌙</button>
+    <span class="brand">Brain Dump</span>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btnToday"><span class="ico">📅</span> Today</button>
+      <button class="icon-btn" id="btnTheme"><span class="ico" id="themeIco">🌙</span> Theme</button>
     </div>
+  </div>
+
+  <!-- VERSION LINKS -->
+  <div class="ver-links">
+    <a href="index.html" class="active">🖥 PC</a>
+    <a href="galaxy.html">📱 Galaxy S25 Ultra</a>
+    <a href="iphone.html"> iPhone 17 Pro</a>
   </div>
 
   <!-- PAGE TITLE -->
   <div class="page-title">Daily Brain Dump</div>
 
-  <!-- DATE NAVIGATION -->
+  <!-- DATE NAV -->
   <div class="date-nav">
-    <button class="date-nav-btn" id="btnPrev" title="이전 날짜 (←)">‹</button>
+    <button class="date-nav-btn" id="btnPrev">‹</button>
     <div class="date-center" id="dateCenter">
       <div class="date-main" id="dateMain">—</div>
       <div class="date-meta" id="dateMeta">—</div>
     </div>
-    <button class="date-nav-btn" id="btnNext" title="다음 날짜 (→)">›</button>
+    <button class="date-nav-btn" id="btnNext">›</button>
   </div>
 
-  <!-- DATE PICKER POPUP -->
+  <!-- DATE POPUP -->
   <div class="popup-overlay hidden" id="popupOverlay">
     <div class="popup-box">
       <div class="popup-title">날짜 선택</div>
@@ -602,114 +583,124 @@ html, body {
     </div>
   </div>
 
-  <!-- MAIN GRID -->
+  <!-- PRIORITY POPUP -->
+  <div class="pri-popup hidden" id="priPopup"></div>
+
+  <!-- EDIT MODAL -->
+  <div class="edit-overlay hidden" id="editOverlay">
+    <div class="edit-box">
+      <div class="edit-title">항목 수정</div>
+      <div class="edit-pri-row" id="editPriRow"></div>
+      <textarea class="edit-textarea" id="editTextarea" rows="3"></textarea>
+      <div class="edit-btns">
+        <button class="btn-dark" id="editSave">저장</button>
+        <button class="btn-ghost" id="editCancel">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID -->
   <div class="grid">
     <div class="col" id="colLeft"></div>
     <div class="col" id="colRight"></div>
   </div>
 
-  <div class="footer">날짜별 자동 저장 · Brain Dump v2</div>
+  <div class="footer">날짜별 자동 저장 · Brain Dump PC v2.0</div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-// ── CARD CONFIG ──
+/* ── CARD CONFIG ── */
 const CARDS = [
-  { id: 'work',    title: 'Work',           icon: '💼', col: 'left'  },
-  { id: 'people',  title: 'People to Meet', icon: '🤝', col: 'right' },
-  { id: 'personal',title: 'Personal',       icon: '🙋', col: 'left'  },
-  { id: 'call',    title: 'People to Call', icon: '📞', col: 'right' },
-  { id: 'family',  title: 'Family',         icon: '🏠', col: 'left'  },
-  { id: 'buy',     title: 'Things to Buy',  icon: '🛒', col: 'right' },
+  { id:'work',    title:'Work',           icon:'💼', col:'left'  },
+  { id:'people',  title:'People to Meet', icon:'🤝', col:'right' },
+  { id:'personal',title:'Personal',       icon:'🙋', col:'left'  },
+  { id:'call',    title:'People to Call', icon:'📞', col:'right' },
+  { id:'family',  title:'Family',         icon:'🏠', col:'left'  },
+  { id:'buy',     title:'Things to Buy',  icon:'🛒', col:'right' },
 ];
 
-// ── STATE ──
+const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
+
+/* ── STATE ── */
 let curDate = todayStr();
 let db = {};
 let isDark = false;
+let swipedRow = null; // currently swiped row element
+let priTarget = null; // { cardId, itemId or 'new', el }
+let editTarget = null;
 
-// ── UTILS ──
+/* ── UTILS ── */
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
 }
 function p2(n) { return String(n).padStart(2,'0'); }
-
-function parseDate(s) {
-  const [y,m,d] = s.split('-').map(Number);
-  return new Date(y, m-1, d);
-}
-
-function offsetDate(s, delta) {
-  const d = parseDate(s);
-  d.setDate(d.getDate() + delta);
+function parseDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function offsetDate(s,delta) {
+  const d=parseDate(s); d.setDate(d.getDate()+delta);
   return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
 }
-
 function fmtDisplay(s) {
-  const d = parseDate(s);
-  const DAYS = ['일','월','화','수','목','금','토'];
-  const MONTHS = ['January','February','March','April','May','June',
-                  'July','August','September','October','November','December'];
+  const d=parseDate(s);
+  const DAYS=['일','월','화','수','목','금','토'];
   return {
-    main: `${d.getMonth()+1}월 ${d.getDate()}일`,
-    meta: `${d.getFullYear()} · ${DAYS[d.getDay()]}요일`,
-    isToday: s === todayStr()
+    main:`${d.getMonth()+1}월 ${d.getDate()}일`,
+    meta:`${d.getFullYear()} · ${DAYS[d.getDay()]}요일`,
+    isToday: s===todayStr()
   };
 }
-
-function uid() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function priClass(p) {
+  if(!p) return 'pri-none';
+  if(p[0]==='A') return 'pri-A';
+  if(p[0]==='B') return 'pri-B';
+  return 'pri-C';
 }
 
-// ── STORAGE ──
+/* ── STORAGE ── */
 function load() {
-  try { db = JSON.parse(localStorage.getItem('bd_v2') || '{}'); } catch { db = {}; }
-  try { isDark = JSON.parse(localStorage.getItem('bd_theme') || 'false'); } catch { isDark = false; }
+  try { db=JSON.parse(localStorage.getItem('bd_pc_v2')||'{}'); } catch { db={}; }
+  try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch { isDark=false; }
 }
-
-function save() {
-  localStorage.setItem('bd_v2', JSON.stringify(db));
-}
-
-function getItems(dateKey, cardId) {
-  if (!db[dateKey]) db[dateKey] = {};
-  if (!db[dateKey][cardId]) db[dateKey][cardId] = [];
+function save() { localStorage.setItem('bd_pc_v2',JSON.stringify(db)); }
+function getItems(dateKey,cardId) {
+  if(!db[dateKey]) db[dateKey]={};
+  if(!db[dateKey][cardId]) db[dateKey][cardId]=[];
   return db[dateKey][cardId];
 }
 
-// ── RENDER DATE ──
+/* ── RENDER DATE ── */
 function renderDate() {
-  const info = fmtDisplay(curDate);
-  document.getElementById('dateMain').textContent = info.main;
-  const meta = document.getElementById('dateMeta');
-  meta.innerHTML = info.meta + (info.isToday ? ' <span class="today-pill">TODAY</span>' : '');
+  const info=fmtDisplay(curDate);
+  document.getElementById('dateMain').textContent=info.main;
+  const meta=document.getElementById('dateMeta');
+  meta.innerHTML=info.meta+(info.isToday?' <span class="today-pill">TODAY</span>':'');
 }
 
-// ── RENDER CARDS ──
+/* ── RENDER CARDS ── */
 function renderCards() {
-  document.getElementById('colLeft').innerHTML = '';
-  document.getElementById('colRight').innerHTML = '';
-
-  CARDS.forEach(cfg => {
-    const el = buildCard(cfg);
-    document.getElementById(cfg.col === 'left' ? 'colLeft' : 'colRight').appendChild(el);
+  document.getElementById('colLeft').innerHTML='';
+  document.getElementById('colRight').innerHTML='';
+  CARDS.forEach(cfg=>{
+    const el=buildCard(cfg);
+    document.getElementById(cfg.col==='left'?'colLeft':'colRight').appendChild(el);
   });
+  swipedRow=null;
 }
 
 function buildCard(cfg) {
-  const items = getItems(curDate, cfg.id);
-  const total = items.length;
-  const done  = items.filter(i => i.done).length;
-  const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  const items=getItems(curDate,cfg.id);
+  const total=items.length;
+  const done=items.filter(i=>i.done).length;
+  const pct=total>0?Math.round((done/total)*100):0;
 
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.dataset.card = cfg.id;
+  const card=document.createElement('div');
+  card.className='card';
+  card.dataset.card=cfg.id;
 
-  // Header
-  card.innerHTML = `
+  card.innerHTML=`
     <div class="card-hdr">
       <div class="card-hdr-left">
         <span class="card-hdr-icon">${cfg.icon}</span>
@@ -717,213 +708,358 @@ function buildCard(cfg) {
       </div>
       <span class="card-hdr-count">${done}/${total}</span>
     </div>
-    <div class="card-prog">
-      <div class="card-prog-fill" style="width:${pct}%"></div>
-    </div>
+    <div class="card-prog"><div class="card-prog-fill" style="width:${pct}%"></div></div>
   `;
 
-  // List body
-  const body = document.createElement('div');
-  body.className = 'list-body';
+  const body=document.createElement('div');
+  body.className='list-body';
 
-  if (items.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'empty-row';
-    empty.textContent = '항목을 추가하세요';
-    body.appendChild(empty);
+  if(items.length===0) {
+    const emp=document.createElement('div');
+    emp.className='empty-row';
+    emp.textContent='항목을 추가하세요';
+    body.appendChild(emp);
   } else {
-    items.forEach((item, idx) => {
-      body.appendChild(buildRow(cfg.id, item, idx + 1));
-    });
+    items.forEach((item,idx)=>body.appendChild(buildRow(cfg.id,item,idx+1)));
   }
 
   // Add row
-  const addRow = document.createElement('div');
-  addRow.className = 'add-row';
-  addRow.innerHTML = `
-    <div class="add-row-icon">+</div>
-    <input class="add-row-input" placeholder="새 항목 추가..." data-card="${cfg.id}" autocomplete="off" autocorrect="off" spellcheck="false">
+  const addRow=document.createElement('div');
+  addRow.className='add-row';
+  addRow.innerHTML=`
+    <div class="add-row-plus">+</div>
+    <div class="add-row-pri">
+      <select class="pri-select" data-card="${cfg.id}">
+        <option value="">—</option>
+        ${PRI_OPTS.map(p=>`<option value="${p}">${p}</option>`).join('')}
+      </select>
+    </div>
+    <input class="add-row-input" placeholder="새 항목 입력 후 Enter..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
     <button class="add-row-btn" data-card="${cfg.id}">+</button>
   `;
   body.appendChild(addRow);
-
   card.appendChild(body);
   return card;
 }
 
-function buildRow(cardId, item, num) {
-  const row = document.createElement('div');
-  row.className = 'list-row';
-  row.dataset.item = item.id;
+function buildRow(cardId,item,num) {
+  const row=document.createElement('div');
+  row.className='list-row';
+  row.dataset.item=item.id;
+  row.dataset.card=cardId;
 
-  // Number
-  const numEl = document.createElement('div');
-  numEl.className = 'row-num';
-  numEl.textContent = num;
+  // Swipe action buttons (hidden behind)
+  const actions=document.createElement('div');
+  actions.className='row-actions';
+  actions.innerHTML=`
+    <button class="row-act-btn row-act-edit" data-act="edit"><span class="act-ico">✏️</span>수정</button>
+    <button class="row-act-btn row-act-del" data-act="del"><span class="act-ico">🗑</span>삭제</button>
+  `;
 
-  // Checkbox
-  const chkWrap = document.createElement('div');
-  chkWrap.className = 'row-chk';
-  const cb = document.createElement('input');
-  cb.type = 'checkbox';
-  cb.checked = item.done;
-  cb.addEventListener('change', () => toggleItem(cardId, item.id));
+  // Inner (slides on swipe)
+  const inner=document.createElement('div');
+  inner.className='row-inner';
+
+  const numEl=document.createElement('div');
+  numEl.className='row-num';
+  numEl.textContent=num;
+
+  const chkWrap=document.createElement('div');
+  chkWrap.className='row-chk';
+  const cb=document.createElement('input');
+  cb.type='checkbox'; cb.checked=item.done;
+  cb.addEventListener('change',()=>checkItem(cardId,item.id));
   chkWrap.appendChild(cb);
 
-  // Text
-  const txt = document.createElement('div');
-  txt.className = 'row-txt' + (item.done ? ' done' : '');
-  txt.contentEditable = 'true';
-  txt.textContent = item.text;
-  txt.dataset.ph = '내용 입력...';
-  txt.spellcheck = false;
-  txt.addEventListener('blur', () => {
-    const v = txt.textContent.trim();
-    if (v !== item.text) { item.text = v || item.text; save(); }
-  });
-  txt.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); txt.blur(); }
-  });
+  const priWrap=document.createElement('div');
+  priWrap.className='row-pri';
+  const priBadge=document.createElement('button');
+  priBadge.className=`pri-badge ${priClass(item.priority)}`;
+  priBadge.textContent=item.priority||'—';
+  priBadge.addEventListener('click',e=>openPriPopup(e,cardId,item.id,priBadge));
+  priWrap.appendChild(priBadge);
 
-  // Delete
-  const del = document.createElement('button');
-  del.className = 'row-del';
-  del.innerHTML = '&times;';
-  del.title = '삭제';
-  del.addEventListener('click', () => deleteItem(cardId, item.id));
+  const txt=document.createElement('div');
+  txt.className='row-txt'+(item.done?' done':'');
+  txt.contentEditable='true';
+  txt.textContent=item.text;
+  txt.dataset.ph='내용 입력...';
+  txt.spellcheck=false;
+  txt.addEventListener('blur',()=>{
+    const v=txt.textContent.trim();
+    if(v!==item.text){ item.text=v||item.text; save(); }
+  });
+  txt.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();txt.blur();} });
 
-  row.appendChild(numEl);
-  row.appendChild(chkWrap);
-  row.appendChild(txt);
-  row.appendChild(del);
+  const delBtn=document.createElement('button');
+  delBtn.className='row-del-btn';
+  delBtn.innerHTML='&times;';
+  delBtn.addEventListener('click',()=>deleteItem(cardId,item.id));
+
+  inner.appendChild(numEl);
+  inner.appendChild(chkWrap);
+  inner.appendChild(priWrap);
+  inner.appendChild(txt);
+  inner.appendChild(delBtn);
+
+  row.appendChild(actions);
+  row.appendChild(inner);
+
+  // Swipe (mouse drag + touch)
+  addSwipe(row,inner,actions,cardId,item);
+
   return row;
 }
 
-// ── ACTIONS ──
-function addItem(cardId, text) {
-  if (!text.trim()) return;
-  getItems(curDate, cardId).push({ id: uid(), text: text.trim(), done: false });
+/* ── SWIPE ── */
+function addSwipe(row,inner,actions,cardId,item) {
+  const THRESHOLD=80;
+  let startX=0, currentX=0, dragging=false, revealed=false;
+
+  function onStart(x) {
+    // Close other swiped rows
+    if(swipedRow && swipedRow!==row) closeSwipe(swipedRow);
+    startX=x; dragging=true; currentX=0;
+    inner.style.transition='none';
+  }
+  function onMove(x) {
+    if(!dragging) return;
+    const dx=x-startX;
+    if(dx>0 && !revealed) { inner.style.transform='none'; return; }
+    const offset=revealed ? Math.max(-144,Math.min(0,dx)) : Math.max(-144,Math.min(0,dx));
+    inner.style.transform=`translateX(${offset}px)`;
+  }
+  function onEnd(x) {
+    if(!dragging) return;
+    dragging=false;
+    const dx=x-startX;
+    inner.style.transition='transform .25s cubic-bezier(.4,0,.2,1)';
+    if(!revealed && dx<-THRESHOLD) {
+      inner.style.transform='translateX(-144px)';
+      revealed=true; swipedRow=row;
+    } else if(revealed && dx>THRESHOLD/2) {
+      inner.style.transform='none';
+      revealed=false; swipedRow=null;
+    } else if(revealed) {
+      inner.style.transform='translateX(-144px)';
+    } else {
+      inner.style.transform='none';
+    }
+  }
+
+  // Touch
+  inner.addEventListener('touchstart',e=>onStart(e.touches[0].clientX),{passive:true});
+  inner.addEventListener('touchmove',e=>onMove(e.touches[0].clientX),{passive:true});
+  inner.addEventListener('touchend',e=>onEnd(e.changedTouches[0].clientX));
+
+  // Mouse drag
+  inner.addEventListener('mousedown',e=>{
+    if(e.target.closest('input,button,[contenteditable]')) return;
+    onStart(e.clientX);
+    const mm=ev=>onMove(ev.clientX);
+    const mu=ev=>{ onEnd(ev.clientX); document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); };
+    document.addEventListener('mousemove',mm);
+    document.addEventListener('mouseup',mu);
+  });
+
+  // Action buttons
+  actions.querySelector('[data-act="edit"]').addEventListener('click',()=>{
+    closeSwipe(row); openEdit(cardId,item.id);
+  });
+  actions.querySelector('[data-act="del"]').addEventListener('click',()=>{
+    closeSwipe(row); deleteItem(cardId,item.id);
+  });
+
+  row._closeSwipe=()=>{ inner.style.transition='transform .25s cubic-bezier(.4,0,.2,1)'; inner.style.transform='none'; revealed=false; };
+}
+
+function closeSwipe(row) {
+  if(row && row._closeSwipe) row._closeSwipe();
+  if(swipedRow===row) swipedRow=null;
+}
+
+/* ── ACTIONS ── */
+function addItem(cardId,text,priority) {
+  if(!text.trim()) return;
+  getItems(curDate,cardId).push({id:uid(),text:text.trim(),done:false,priority:priority||''});
+  save(); renderCards(); toast('추가됨');
+  setTimeout(()=>{
+    const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
+    if(inp) inp.focus();
+  },40);
+}
+
+function checkItem(cardId,itemId) {
+  const items=getItems(curDate,cardId);
+  const item=items.find(i=>i.id===itemId);
+  if(!item) return;
+  item.done=true;
   save();
-  renderCards();
-  toast('추가됨');
-  setTimeout(() => {
-    const inp = document.querySelector(`.add-row-input[data-card="${cardId}"]`);
-    if (inp) inp.focus();
-  }, 40);
+  // Animate out then remove
+  const row=document.querySelector(`.list-row[data-item="${itemId}"]`);
+  if(row) {
+    row.style.transition='opacity .35s, max-height .35s, padding .35s';
+    row.style.opacity='0';
+    row.style.maxHeight='0';
+    row.style.overflow='hidden';
+    setTimeout(()=>{ items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓'); },360);
+  } else {
+    items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓');
+  }
 }
 
-function toggleItem(cardId, itemId) {
-  const item = getItems(curDate, cardId).find(i => i.id === itemId);
-  if (!item) return;
-  item.done = !item.done;
-  save();
-  renderCards();
+function deleteItem(cardId,itemId) {
+  const items=getItems(curDate,cardId);
+  const idx=items.findIndex(i=>i.id===itemId);
+  if(idx===-1) return;
+  items.splice(idx,1); save(); renderCards(); toast('삭제됨');
 }
 
-function deleteItem(cardId, itemId) {
-  const items = getItems(curDate, cardId);
-  const idx = items.findIndex(i => i.id === itemId);
-  if (idx === -1) return;
-  items.splice(idx, 1);
-  save();
-  renderCards();
-  toast('삭제됨');
+/* ── PRIORITY POPUP ── */
+function openPriPopup(e,cardId,itemId,anchorEl) {
+  e.stopPropagation();
+  const popup=document.getElementById('priPopup');
+  popup.innerHTML=PRI_OPTS.map(p=>`<button class="pri-opt pri-opt-${p}" data-p="${p}">${p}</button>`).join('');
+  popup.classList.remove('hidden');
+  priTarget={cardId,itemId,anchorEl};
+  const rect=anchorEl.getBoundingClientRect();
+  popup.style.top=(rect.bottom+6)+'px';
+  popup.style.left=Math.max(4,rect.left-40)+'px';
 }
 
-function goDate(s) {
-  curDate = s;
-  renderDate();
-  renderCards();
+function closePriPopup() {
+  document.getElementById('priPopup').classList.add('hidden');
+  priTarget=null;
 }
 
-// ── DATE POPUP ──
-function openPopup() {
-  document.getElementById('dateInput').value = curDate;
+/* ── EDIT MODAL ── */
+function openEdit(cardId,itemId) {
+  const item=getItems(curDate,cardId).find(i=>i.id===itemId);
+  if(!item) return;
+  editTarget={cardId,itemId};
+  const priRow=document.getElementById('editPriRow');
+  priRow.innerHTML=PRI_OPTS.map(p=>`<button class="edit-pri-btn${item.priority===p?' sel-'+p[0]:''}" data-p="${p}">${p}</button>`).join('');
+  document.getElementById('editTextarea').value=item.text;
+  document.getElementById('editOverlay').classList.remove('hidden');
+  document.getElementById('editTextarea').focus();
+}
+
+function closeEdit() {
+  document.getElementById('editOverlay').classList.add('hidden');
+  editTarget=null;
+}
+
+/* ── DATE NAV ── */
+function goDate(s) { curDate=s; renderDate(); renderCards(); }
+
+function openDatePopup() {
+  document.getElementById('dateInput').value=curDate;
   document.getElementById('popupOverlay').classList.remove('hidden');
-  setTimeout(() => document.getElementById('dateInput').focus(), 80);
+  setTimeout(()=>document.getElementById('dateInput').focus(),80);
 }
-function closePopup() {
-  document.getElementById('popupOverlay').classList.add('hidden');
-}
+function closeDatePopup() { document.getElementById('popupOverlay').classList.add('hidden'); }
 
-// ── THEME ──
+/* ── THEME ── */
 function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('btnTheme').textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('bd_theme', JSON.stringify(isDark));
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeIco').textContent=isDark?'☀️':'🌙';
+  localStorage.setItem('bd_theme',JSON.stringify(isDark));
 }
 
-// ── TOAST ──
+/* ── TOAST ── */
 function toast(msg) {
-  const el = document.createElement('div');
-  el.className = 'toast';
-  el.textContent = msg;
+  const el=document.createElement('div');
+  el.className='toast'; el.textContent=msg;
   document.getElementById('toastWrap').appendChild(el);
-  setTimeout(() => el.remove(), 2100);
+  setTimeout(()=>el.remove(),2100);
 }
 
-// ── EVENTS ──
+/* ── EVENTS ── */
 function bindEvents() {
-  document.getElementById('btnPrev').addEventListener('click', () => goDate(offsetDate(curDate, -1)));
-  document.getElementById('btnNext').addEventListener('click', () => goDate(offsetDate(curDate, +1)));
-  document.getElementById('dateCenter').addEventListener('click', openPopup);
-  document.getElementById('btnToday').addEventListener('click', () => { goDate(todayStr()); toast('오늘로 이동'); });
-  document.getElementById('btnTheme').addEventListener('click', () => { isDark = !isDark; applyTheme(); });
+  document.getElementById('btnPrev').addEventListener('click',()=>goDate(offsetDate(curDate,-1)));
+  document.getElementById('btnNext').addEventListener('click',()=>goDate(offsetDate(curDate,+1)));
+  document.getElementById('dateCenter').addEventListener('click',openDatePopup);
+  document.getElementById('btnToday').addEventListener('click',()=>{ goDate(todayStr()); toast('오늘로 이동'); });
+  document.getElementById('btnTheme').addEventListener('click',()=>{ isDark=!isDark; applyTheme(); });
 
-  document.getElementById('btnConfirm').addEventListener('click', () => {
-    const v = document.getElementById('dateInput').value;
-    if (v) { goDate(v); toast('날짜 이동'); }
-    closePopup();
+  document.getElementById('btnConfirm').addEventListener('click',()=>{
+    const v=document.getElementById('dateInput').value;
+    if(v){ goDate(v); toast('날짜 이동'); }
+    closeDatePopup();
   });
-  document.getElementById('btnCancel').addEventListener('click', closePopup);
-  document.getElementById('popupOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('popupOverlay')) closePopup();
+  document.getElementById('btnCancel').addEventListener('click',closeDatePopup);
+  document.getElementById('popupOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('popupOverlay')) closeDatePopup(); });
+
+  // Priority popup
+  document.getElementById('priPopup').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-p]');
+    if(!btn||!priTarget) return;
+    const p=btn.dataset.p;
+    const item=getItems(curDate,priTarget.cardId).find(i=>i.id===priTarget.itemId);
+    if(item){ item.priority=p; save(); renderCards(); toast(`우선순위 ${p}`); }
+    closePriPopup();
   });
+
+  // Edit modal
+  document.getElementById('editPriRow').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-p]');
+    if(!btn) return;
+    document.querySelectorAll('.edit-pri-btn').forEach(b=>b.className='edit-pri-btn');
+    btn.className=`edit-pri-btn sel-${btn.dataset.p[0]}`;
+    btn.dataset.selected='true';
+  });
+  document.getElementById('editSave').addEventListener('click',()=>{
+    if(!editTarget) return;
+    const item=getItems(curDate,editTarget.cardId).find(i=>i.id===editTarget.itemId);
+    if(!item) return;
+    item.text=document.getElementById('editTextarea').value.trim()||item.text;
+    const selBtn=document.querySelector('.edit-pri-btn[data-selected="true"]');
+    if(selBtn) item.priority=selBtn.dataset.p;
+    save(); renderCards(); closeEdit(); toast('수정됨');
+  });
+  document.getElementById('editCancel').addEventListener('click',closeEdit);
+  document.getElementById('editOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('editOverlay')) closeEdit(); });
 
   // Grid delegation
-  document.addEventListener('click', e => {
-    const addBtn = e.target.closest('.add-row-btn');
-    if (addBtn) {
-      const cardId = addBtn.dataset.card;
-      const inp = document.querySelector(`.add-row-input[data-card="${cardId}"]`);
-      if (inp) { addItem(cardId, inp.value); inp.value = ''; }
-      return;
-    }
-    const addRow = e.target.closest('.add-row');
-    if (addRow && !e.target.closest('.add-row-btn')) {
-      const inp = addRow.querySelector('.add-row-input');
-      if (inp) inp.focus();
+  document.addEventListener('click',e=>{
+    // Close pri popup on outside click
+    if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
+    // Close swipe on outside click
+    if(!e.target.closest('.list-row')&&swipedRow) closeSwipe(swipedRow);
+
+    const addBtn=e.target.closest('.add-row-btn');
+    if(addBtn){
+      const cardId=addBtn.dataset.card;
+      const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
+      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
+      if(inp){ addItem(cardId,inp.value,sel?sel.value:''); inp.value=''; if(sel) sel.value=''; }
     }
   });
 
-  document.addEventListener('keydown', e => {
-    if (e.target.classList.contains('add-row-input') && e.key === 'Enter') {
+  document.addEventListener('keydown',e=>{
+    if(e.target.classList.contains('add-row-input')&&e.key==='Enter'){
       e.preventDefault();
-      const cardId = e.target.dataset.card;
-      addItem(cardId, e.target.value);
-      e.target.value = '';
+      const cardId=e.target.dataset.card;
+      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
+      addItem(cardId,e.target.value,sel?sel.value:'');
+      e.target.value=''; if(sel) sel.value='';
       return;
     }
-    const tag = document.activeElement.tagName;
-    const ce = document.activeElement.contentEditable;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || ce === 'true') return;
-    if (e.key === 'ArrowLeft')  goDate(offsetDate(curDate, -1));
-    if (e.key === 'ArrowRight') goDate(offsetDate(curDate, +1));
-    if (e.key === 't' || e.key === 'T') { goDate(todayStr()); toast('오늘로 이동'); }
-    if (e.key === 'd' || e.key === 'D') { isDark = !isDark; applyTheme(); }
-    if (e.key === 'Escape') closePopup();
+    const tag=document.activeElement.tagName;
+    const ce=document.activeElement.contentEditable;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||ce==='true') return;
+    if(e.key==='ArrowLeft') goDate(offsetDate(curDate,-1));
+    if(e.key==='ArrowRight') goDate(offsetDate(curDate,+1));
+    if(e.key==='t'||e.key==='T'){ goDate(todayStr()); toast('오늘로 이동'); }
+    if(e.key==='d'||e.key==='D'){ isDark=!isDark; applyTheme(); }
+    if(e.key==='Escape'){ closeDatePopup(); closePriPopup(); closeEdit(); }
   });
 }
 
-// ── INIT ──
+/* ── INIT ── */
 function init() {
-  load();
-  applyTheme();
-  renderDate();
-  renderCards();
-  bindEvents();
+  load(); applyTheme(); renderDate(); renderCards(); bindEvents();
 }
-
 init();
 </script>
 </body>

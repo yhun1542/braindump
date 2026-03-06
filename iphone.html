@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Brain Dump — iPhone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   BRAIN DUMP — iPHONE 17 PRO
+   Optimized for 2622×1206 / 6.3" / iOS Safari
+   Dynamic Island aware · safe-area-inset
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:         #f2f2f0;
+  --surface:    #ffffff;
+  --hdr-bg:     #111111;
+  --hdr-text:   #ffffff;
+  --border:     #111111;
+  --border-mid: #d4d4d0;
+  --line:       #e8e8e4;
+  --text:       #111111;
+  --text2:      #555555;
+  --text3:      #b0b0aa;
+  --row-hover:  #f8f8f5;
+  --done-color: #c0c0c0;
+  --shadow:     0 2px 20px rgba(0,0,0,0.06);
+  --font:       'Inter', -apple-system, 'SF Pro Display', sans-serif;
+  --pa: #c0392b;
+  --pb: #2980b9;
+  --pc: #27ae60;
+  /* iOS safe areas */
+  --safe-top: env(safe-area-inset-top, 54px);
+  --safe-bot: env(safe-area-inset-bottom, 34px);
+  --safe-l:   env(safe-area-inset-left, 0px);
+  --safe-r:   env(safe-area-inset-right, 0px);
+}
+[data-theme="dark"] {
+  --bg:         #0a0a0a;
+  --surface:    #161616;
+  --hdr-bg:     #f2f2f0;
+  --hdr-text:   #111111;
+  --border:     #f2f2f0;
+  --border-mid: #282828;
+  --line:       #1e1e1e;
+  --text:       #f2f2f0;
+  --text2:      #888888;
+  --text3:      #404040;
+  --row-hover:  #1c1c1c;
+  --done-color: #383838;
+  --shadow:     0 2px 20px rgba(0,0,0,0.5);
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+  /* iOS momentum scroll */
+  -webkit-overflow-scrolling: touch;
+}
+body {
+  min-height: 100vh;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+  font-size: 15px;
+  overscroll-behavior-y: none;
+  transition: background .2s, color .2s;
+}
+
+/* ── STICKY HEADER (Dynamic Island aware) ── */
+.sticky-hdr {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--hdr-bg);
+  /* Pad for Dynamic Island (top safe area) */
+  padding-top: max(var(--safe-top), 54px);
+  padding-left: max(var(--safe-l), 16px);
+  padding-right: max(var(--safe-r), 16px);
+  padding-bottom: 0;
+}
+.hdr-inner {
+  padding-bottom: 0;
+}
+.hdr-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 12px;
+}
+.brand {
+  font-size: 9px; font-weight: 900;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--hdr-text); opacity: 0.45;
+}
+.hdr-btns { display: flex; gap: 8px; }
+.hdr-btn {
+  height: 30px; padding: 0 12px;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  background: transparent; color: var(--hdr-text);
+  border-radius: 20px; cursor: pointer;
+  font-family: var(--font); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; gap: 5px;
+  transition: all .15s; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-theme="dark"] .hdr-btn { border-color: rgba(0,0,0,0.12); }
+.hdr-btn:active { transform: scale(0.92); opacity: 0.65; }
+
+/* ── DATE NAV ── */
+.date-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0 14px;
+}
+.date-nav-btn {
+  width: 42px; height: 42px;
+  border: none; background: rgba(255,255,255,0.1);
+  color: var(--hdr-text); font-size: 26px; font-weight: 200;
+  border-radius: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-theme="dark"] .date-nav-btn { background: rgba(0,0,0,0.1); }
+.date-nav-btn:active { transform: scale(0.86); }
+
+.date-center { flex: 1; text-align: center; padding: 0 6px; cursor: pointer; }
+.date-main {
+  font-size: 30px; font-weight: 900;
+  letter-spacing: -0.03em; color: var(--hdr-text); line-height: 1;
+}
+.date-meta {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--hdr-text); opacity: 0.5; margin-top: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.today-pill {
+  background: var(--hdr-text); color: var(--hdr-bg);
+  font-size: 8px; font-weight: 900; letter-spacing: 0.1em;
+  padding: 2px 8px; border-radius: 20px;
+}
+
+/* ── VER LINKS ── */
+.ver-links {
+  display: flex; gap: 6px;
+  padding: 10px max(var(--safe-r),16px) 12px max(var(--safe-l),16px);
+  background: var(--bg);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.ver-links::-webkit-scrollbar { display: none; }
+.ver-link {
+  padding: 5px 14px; border: 1.5px solid var(--border-mid);
+  border-radius: 20px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em; text-decoration: none; color: var(--text2);
+  white-space: nowrap; transition: all .15s;
+}
+.ver-link.active { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
+
+/* ── SCROLL BODY ── */
+.scroll-body {
+  padding: 12px max(var(--safe-r),14px) calc(var(--safe-bot) + 40px) max(var(--safe-l),14px);
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.card-hdr {
+  background: var(--hdr-bg); color: var(--hdr-text);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-hdr-left { display: flex; align-items: center; gap: 9px; }
+.card-hdr-icon { font-size: 17px; }
+.card-hdr-title {
+  font-size: 10.5px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+.card-hdr-count { font-size: 10px; font-weight: 700; opacity: 0.4; }
+
+.card-prog { height: 2px; background: rgba(255,255,255,0.08); }
+[data-theme="dark"] .card-prog { background: rgba(0,0,0,0.08); }
+.card-prog-fill {
+  height: 100%; background: rgba(255,255,255,0.55);
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] .card-prog-fill { background: rgba(0,0,0,0.45); }
+
+/* ── LIST ROW ── */
+.list-row {
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  min-height: 50px;
+}
+.list-row:last-child { border-bottom: none; }
+
+.row-actions {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex; z-index: 0;
+}
+.row-act-btn {
+  width: 72px; border: none; cursor: pointer;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  -webkit-tap-highlight-color: transparent;
+}
+.row-act-btn:active { opacity: 0.72; }
+.row-act-edit { background: #2563eb; color: #fff; }
+.row-act-del  { background: #dc2626; color: #fff; }
+.row-act-btn .act-ico { font-size: 17px; }
+
+.row-inner {
+  display: flex; align-items: stretch;
+  background: var(--surface);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  position: relative; z-index: 1;
+  min-height: 50px;
+}
+
+.row-chk {
+  width: 46px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.row-chk input[type="checkbox"] {
+  width: 17px; height: 17px;
+  cursor: pointer; accent-color: var(--text);
+  /* iOS checkbox styling */
+  -webkit-appearance: none;
+  appearance: none;
+  border: 2px solid var(--border-mid);
+  border-radius: 50%;
+  background: transparent;
+  position: relative;
+  transition: all .15s;
+}
+.row-chk input[type="checkbox"]:checked {
+  background: var(--text);
+  border-color: var(--text);
+}
+.row-chk input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 1px;
+  width: 5px; height: 8px;
+  border: 2px solid var(--surface);
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+
+.row-pri {
+  width: 58px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.pri-badge {
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.04em;
+  padding: 3px 7px; border-radius: 5px;
+  border: none; background: transparent; cursor: pointer;
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+}
+.pri-A { color: var(--pa); background: rgba(192,57,43,0.09); }
+.pri-B { color: var(--pb); background: rgba(41,128,185,0.09); }
+.pri-C { color: var(--pc); background: rgba(39,174,96,0.09); }
+.pri-none { color: var(--text3); }
+
+.row-txt {
+  flex: 1; padding: 11px 12px 11px 10px;
+  font-size: 13.5px; font-weight: 400; color: var(--text);
+  line-height: 1.5; word-break: break-word;
+  background: transparent; border: none; outline: none;
+  font-family: var(--font); cursor: text;
+  /* iOS: prevent zoom on focus */
+  font-size: max(16px, 13.5px);
+}
+.row-txt:empty::before {
+  content: attr(data-ph); color: var(--text3);
+  font-style: italic; font-size: 13px; pointer-events: none;
+}
+.row-txt.done { text-decoration: line-through; color: var(--done-color); }
+
+/* ── EMPTY ── */
+.empty-row {
+  padding: 18px 16px; text-align: center;
+  font-size: 12px; font-style: italic; color: var(--text3);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── ADD ROW ── */
+.add-row {
+  display: flex; align-items: stretch;
+  border-top: 1.5px solid var(--border);
+  min-height: 50px; background: var(--bg);
+}
+.add-row-plus {
+  width: 46px; flex-shrink: 0;
+  border-right: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 300; color: var(--text3);
+}
+.add-row-pri {
+  width: 58px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.pri-select {
+  width: 50px; height: 28px;
+  border: 1px solid var(--border-mid); border-radius: 6px;
+  background: var(--surface); color: var(--text);
+  font-family: var(--font); font-size: 11px; font-weight: 700;
+  cursor: pointer; outline: none; padding: 0 2px;
+  -webkit-appearance: none; text-align: center;
+}
+.add-row-input {
+  flex: 1; padding: 11px 10px;
+  /* iOS: prevent zoom */
+  font-size: max(16px, 14px);
+  font-family: var(--font);
+  background: transparent; border: none; outline: none;
+  color: var(--text2); font-style: italic;
+  -webkit-appearance: none;
+}
+.add-row-input::placeholder { color: var(--text3); }
+.add-row-btn {
+  width: 50px; flex-shrink: 0;
+  border: none; background: var(--hdr-bg); color: var(--hdr-text);
+  font-size: 24px; font-weight: 300;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.add-row-btn:active { opacity: 0.68; }
+
+/* ── PRIORITY POPUP ── */
+.pri-popup {
+  position: fixed; z-index: 300;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.24);
+  padding: 10px;
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 6px;
+  width: 200px;
+}
+.pri-popup.hidden { display: none; }
+.pri-opt {
+  padding: 10px 4px; border: none; cursor: pointer;
+  border-radius: 9px;
+  font-family: var(--font); font-size: 12px; font-weight: 800;
+  letter-spacing: 0.04em; text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.pri-opt:active { transform: scale(0.88); }
+.pri-opt-A1,.pri-opt-A2,.pri-opt-A3 { background: rgba(192,57,43,0.1); color: var(--pa); }
+.pri-opt-B1,.pri-opt-B2,.pri-opt-B3 { background: rgba(41,128,185,0.1); color: var(--pb); }
+.pri-opt-C1,.pri-opt-C2,.pri-opt-C3 { background: rgba(39,174,96,0.1); color: var(--pc); }
+
+/* ── DATE POPUP (iOS sheet style) ── */
+.popup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.38);
+  z-index: 200;
+  display: flex; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.popup-overlay.hidden { display: none; }
+.popup-box {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 0 20px calc(var(--safe-bot) + 20px);
+  width: 100%;
+  box-shadow: 0 -12px 64px rgba(0,0,0,0.2);
+}
+.popup-handle {
+  width: 36px; height: 5px; background: var(--border-mid);
+  border-radius: 3px; margin: 14px auto 20px;
+}
+.popup-title {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text2); margin-bottom: 16px;
+}
+.popup-box input[type="date"] {
+  width: 100%; padding: 14px 16px;
+  border: 1.5px solid var(--border-mid); border-radius: 12px;
+  font-family: var(--font); font-size: 17px;
+  background: var(--bg); color: var(--text);
+  outline: none; margin-bottom: 16px; cursor: pointer;
+  -webkit-appearance: none;
+}
+.popup-btns { display: flex; gap: 10px; }
+.btn-dark {
+  flex: 1; padding: 15px;
+  background: var(--hdr-bg); color: var(--hdr-text);
+  border: none; border-radius: 13px;
+  font-family: var(--font); font-size: 14px; font-weight: 800;
+  letter-spacing: 0.06em; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-dark:active { opacity: 0.72; }
+.btn-ghost {
+  flex: 1; padding: 15px;
+  background: transparent; color: var(--text2);
+  border: 1.5px solid var(--border-mid); border-radius: 13px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-ghost:active { opacity: 0.68; }
+
+/* ── EDIT MODAL (iOS sheet) ── */
+.edit-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.32);
+  z-index: 400;
+  display: flex; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.edit-overlay.hidden { display: none; }
+.edit-box {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 0 20px calc(var(--safe-bot) + 20px);
+  width: 100%;
+  box-shadow: 0 -12px 64px rgba(0,0,0,0.22);
+}
+.edit-handle {
+  width: 36px; height: 5px; background: var(--border-mid);
+  border-radius: 3px; margin: 14px auto 20px;
+}
+.edit-title {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text2); margin-bottom: 14px;
+}
+.edit-pri-row {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.edit-pri-btn {
+  padding: 7px 12px; border: 1.5px solid var(--border-mid);
+  border-radius: 8px; cursor: pointer;
+  font-family: var(--font); font-size: 11px; font-weight: 800;
+  background: transparent; color: var(--text2);
+  -webkit-tap-highlight-color: transparent;
+}
+.edit-pri-btn.sel-A { border-color: var(--pa); color: var(--pa); background: rgba(192,57,43,0.08); }
+.edit-pri-btn.sel-B { border-color: var(--pb); color: var(--pb); background: rgba(41,128,185,0.08); }
+.edit-pri-btn.sel-C { border-color: var(--pc); color: var(--pc); background: rgba(39,174,96,0.08); }
+.edit-textarea {
+  width: 100%; min-height: 88px;
+  padding: 13px 15px;
+  border: 1.5px solid var(--border-mid); border-radius: 12px;
+  font-family: var(--font); font-size: 16px;
+  background: var(--bg); color: var(--text);
+  outline: none; resize: none; margin-bottom: 16px; line-height: 1.5;
+  -webkit-appearance: none;
+}
+.edit-textarea:focus { border-color: var(--border); }
+.edit-btns { display: flex; gap: 10px; }
+
+/* ── TOAST ── */
+.toast-wrap {
+  position: fixed; bottom: calc(var(--safe-bot) + 28px); left: 50%;
+  transform: translateX(-50%);
+  z-index: 500; display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--hdr-bg); color: var(--hdr-text);
+  padding: 11px 26px; border-radius: 28px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.2);
+  animation: tIn .22s ease, tOut .28s ease 1.72s forwards;
+}
+@keyframes tIn  { from { opacity:0; transform:translateY(12px) scale(.93); } to { opacity:1; transform:none; } }
+@keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(-8px) scale(.96); } }
+</style>
+</head>
+<body>
+<!-- STICKY HEADER -->
+<div class="sticky-hdr">
+  <div class="hdr-inner">
+    <div class="hdr-top">
+      <span class="brand">Brain Dump</span>
+      <div class="hdr-btns">
+        <button class="hdr-btn" id="btnToday">📅 Today</button>
+        <button class="hdr-btn" id="btnTheme"><span id="themeIco">🌙</span></button>
+      </div>
+    </div>
+    <div class="date-nav">
+      <button class="date-nav-btn" id="btnPrev">‹</button>
+      <div class="date-center" id="dateCenter">
+        <div class="date-main" id="dateMain">—</div>
+        <div class="date-meta" id="dateMeta">—</div>
+      </div>
+      <button class="date-nav-btn" id="btnNext">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- VER LINKS -->
+<div class="ver-links">
+  <a href="index.html" class="ver-link">🖥 PC</a>
+  <a href="galaxy.html" class="ver-link">📱 Galaxy S25 Ultra</a>
+  <a href="iphone.html" class="ver-link active"> iPhone 17 Pro</a>
+</div>
+
+<!-- DATE POPUP -->
+<div class="popup-overlay hidden" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-handle"></div>
+    <div class="popup-title">날짜 선택</div>
+    <input type="date" id="dateInput">
+    <div class="popup-btns">
+      <button class="btn-dark" id="btnConfirm">이동</button>
+      <button class="btn-ghost" id="btnCancel">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRIORITY POPUP -->
+<div class="pri-popup hidden" id="priPopup"></div>
+
+<!-- EDIT MODAL -->
+<div class="edit-overlay hidden" id="editOverlay">
+  <div class="edit-box">
+    <div class="edit-handle"></div>
+    <div class="edit-title">항목 수정</div>
+    <div class="edit-pri-row" id="editPriRow"></div>
+    <textarea class="edit-textarea" id="editTextarea" rows="3"></textarea>
+    <div class="edit-btns">
+      <button class="btn-dark" id="editSave">저장</button>
+      <button class="btn-ghost" id="editCancel">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL BODY -->
+<div class="scroll-body" id="scrollBody"></div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const CARDS = [
+  { id:'work',    title:'Work',           icon:'💼' },
+  { id:'personal',title:'Personal',       icon:'🙋' },
+  { id:'family',  title:'Family',         icon:'🏠' },
+  { id:'people',  title:'People to Meet', icon:'🤝' },
+  { id:'call',    title:'People to Call', icon:'📞' },
+  { id:'buy',     title:'Things to Buy',  icon:'🛒' },
+];
+const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
+
+let curDate = todayStr();
+let db = {};
+let isDark = false;
+let swipedRow = null;
+let priTarget = null;
+let editTarget = null;
+
+function todayStr() {
+  const d=new Date();
+  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+}
+function p2(n) { return String(n).padStart(2,'0'); }
+function parseDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function offsetDate(s,delta) {
+  const d=parseDate(s); d.setDate(d.getDate()+delta);
+  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+}
+function fmtDisplay(s) {
+  const d=parseDate(s);
+  const DAYS=['일','월','화','수','목','금','토'];
+  return {
+    main:`${d.getMonth()+1}월 ${d.getDate()}일`,
+    meta:`${d.getFullYear()} · ${DAYS[d.getDay()]}요일`,
+    isToday: s===todayStr()
+  };
+}
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function priClass(p) {
+  if(!p) return 'pri-none';
+  if(p[0]==='A') return 'pri-A';
+  if(p[0]==='B') return 'pri-B';
+  return 'pri-C';
+}
+function load() {
+  try { db=JSON.parse(localStorage.getItem('bd_iphone_v2')||'{}'); } catch { db={}; }
+  try { isDark=JSON.parse(localStorage.getItem('bd_theme')||'false'); } catch { isDark=false; }
+}
+function save() { localStorage.setItem('bd_iphone_v2',JSON.stringify(db)); }
+function getItems(dateKey,cardId) {
+  if(!db[dateKey]) db[dateKey]={};
+  if(!db[dateKey][cardId]) db[dateKey][cardId]=[];
+  return db[dateKey][cardId];
+}
+
+function renderDate() {
+  const info=fmtDisplay(curDate);
+  document.getElementById('dateMain').textContent=info.main;
+  const meta=document.getElementById('dateMeta');
+  meta.innerHTML=info.meta+(info.isToday?' <span class="today-pill">TODAY</span>':'');
+}
+
+function renderCards() {
+  const body=document.getElementById('scrollBody');
+  body.innerHTML='';
+  CARDS.forEach(cfg=>body.appendChild(buildCard(cfg)));
+  swipedRow=null;
+}
+
+function buildCard(cfg) {
+  const items=getItems(curDate,cfg.id);
+  const total=items.length;
+  const done=items.filter(i=>i.done).length;
+  const pct=total>0?Math.round((done/total)*100):0;
+
+  const card=document.createElement('div');
+  card.className='card';
+  card.dataset.card=cfg.id;
+
+  card.innerHTML=`
+    <div class="card-hdr">
+      <div class="card-hdr-left">
+        <span class="card-hdr-icon">${cfg.icon}</span>
+        <span class="card-hdr-title">${cfg.title}</span>
+      </div>
+      <span class="card-hdr-count">${done}/${total}</span>
+    </div>
+    <div class="card-prog"><div class="card-prog-fill" style="width:${pct}%"></div></div>
+  `;
+
+  const body=document.createElement('div');
+  body.className='list-body';
+
+  if(items.length===0) {
+    const emp=document.createElement('div');
+    emp.className='empty-row';
+    emp.textContent='항목을 추가하세요';
+    body.appendChild(emp);
+  } else {
+    items.forEach(item=>body.appendChild(buildRow(cfg.id,item)));
+  }
+
+  const addRow=document.createElement('div');
+  addRow.className='add-row';
+  addRow.innerHTML=`
+    <div class="add-row-plus">+</div>
+    <div class="add-row-pri">
+      <select class="pri-select" data-card="${cfg.id}">
+        <option value="">—</option>
+        ${PRI_OPTS.map(p=>`<option value="${p}">${p}</option>`).join('')}
+      </select>
+    </div>
+    <input class="add-row-input" placeholder="새 항목..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
+    <button class="add-row-btn" data-card="${cfg.id}">+</button>
+  `;
+  body.appendChild(addRow);
+  card.appendChild(body);
+  return card;
+}
+
+function buildRow(cardId,item) {
+  const row=document.createElement('div');
+  row.className='list-row';
+  row.dataset.item=item.id;
+  row.dataset.card=cardId;
+
+  const actions=document.createElement('div');
+  actions.className='row-actions';
+  actions.innerHTML=`
+    <button class="row-act-btn row-act-edit" data-act="edit"><span class="act-ico">✏️</span>수정</button>
+    <button class="row-act-btn row-act-del" data-act="del"><span class="act-ico">🗑</span>삭제</button>
+  `;
+
+  const inner=document.createElement('div');
+  inner.className='row-inner';
+
+  const chkWrap=document.createElement('div');
+  chkWrap.className='row-chk';
+  const cb=document.createElement('input');
+  cb.type='checkbox'; cb.checked=item.done;
+  cb.addEventListener('change',()=>checkItem(cardId,item.id));
+  chkWrap.appendChild(cb);
+
+  const priWrap=document.createElement('div');
+  priWrap.className='row-pri';
+  const priBadge=document.createElement('button');
+  priBadge.className=`pri-badge ${priClass(item.priority)}`;
+  priBadge.textContent=item.priority||'—';
+  priBadge.addEventListener('click',e=>openPriPopup(e,cardId,item.id,priBadge));
+  priWrap.appendChild(priBadge);
+
+  const txt=document.createElement('div');
+  txt.className='row-txt'+(item.done?' done':'');
+  txt.contentEditable='true';
+  txt.textContent=item.text;
+  txt.dataset.ph='내용 입력...';
+  txt.spellcheck=false;
+  txt.addEventListener('blur',()=>{
+    const v=txt.textContent.trim();
+    if(v!==item.text){ item.text=v||item.text; save(); }
+  });
+
+  inner.appendChild(chkWrap);
+  inner.appendChild(priWrap);
+  inner.appendChild(txt);
+  row.appendChild(actions);
+  row.appendChild(inner);
+
+  addSwipe(row,inner,actions,cardId,item);
+  return row;
+}
+
+function addSwipe(row,inner,actions,cardId,item) {
+  const THRESHOLD=68;
+  let startX=0, startY=0, dragging=false, revealed=false, isHoriz=null;
+
+  inner.addEventListener('touchstart',e=>{
+    if(swipedRow && swipedRow!==row) closeSwipe(swipedRow);
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    dragging=true; isHoriz=null;
+    inner.style.transition='none';
+  },{passive:true});
+
+  inner.addEventListener('touchmove',e=>{
+    if(!dragging) return;
+    const dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(isHoriz===null) {
+      if(Math.abs(dx)>Math.abs(dy)+5) isHoriz=true;
+      else if(Math.abs(dy)>Math.abs(dx)+5) { isHoriz=false; dragging=false; return; }
+      else return;
+    }
+    if(!isHoriz) return;
+    e.preventDefault();
+    const base=revealed?-144:0;
+    const offset=Math.max(-144,Math.min(0,base+dx));
+    inner.style.transform=`translateX(${offset}px)`;
+  },{passive:false});
+
+  inner.addEventListener('touchend',e=>{
+    if(!dragging||!isHoriz) { dragging=false; return; }
+    dragging=false;
+    const dx=e.changedTouches[0].clientX-startX;
+    inner.style.transition='transform .28s cubic-bezier(.4,0,.2,1)';
+    if(!revealed && dx<-THRESHOLD) {
+      inner.style.transform='translateX(-144px)';
+      revealed=true; swipedRow=row;
+    } else if(revealed && dx>THRESHOLD/2) {
+      inner.style.transform='none';
+      revealed=false; swipedRow=null;
+    } else {
+      inner.style.transform=revealed?'translateX(-144px)':'none';
+    }
+  });
+
+  actions.querySelector('[data-act="edit"]').addEventListener('click',()=>{
+    closeSwipe(row); openEdit(cardId,item.id);
+  });
+  actions.querySelector('[data-act="del"]').addEventListener('click',()=>{
+    closeSwipe(row); deleteItem(cardId,item.id);
+  });
+
+  row._closeSwipe=()=>{
+    inner.style.transition='transform .28s cubic-bezier(.4,0,.2,1)';
+    inner.style.transform='none'; revealed=false;
+  };
+}
+
+function closeSwipe(row) {
+  if(row&&row._closeSwipe) row._closeSwipe();
+  if(swipedRow===row) swipedRow=null;
+}
+
+function addItem(cardId,text,priority) {
+  if(!text.trim()) return;
+  getItems(curDate,cardId).push({id:uid(),text:text.trim(),done:false,priority:priority||''});
+  save(); renderCards(); toast('추가됨');
+  setTimeout(()=>{
+    const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
+    if(inp) inp.focus();
+  },40);
+}
+
+function checkItem(cardId,itemId) {
+  const items=getItems(curDate,cardId);
+  const item=items.find(i=>i.id===itemId);
+  if(!item) return;
+  item.done=true; save();
+  const row=document.querySelector(`.list-row[data-item="${itemId}"]`);
+  if(row) {
+    row.style.transition='opacity .35s, max-height .35s';
+    row.style.opacity='0'; row.style.maxHeight='0'; row.style.overflow='hidden';
+    setTimeout(()=>{ items.splice(items.findIndex(i=>i.id===itemId),1); save(); renderCards(); toast('완료 ✓'); },360);
+  }
+}
+
+function deleteItem(cardId,itemId) {
+  const items=getItems(curDate,cardId);
+  items.splice(items.findIndex(i=>i.id===itemId),1);
+  save(); renderCards(); toast('삭제됨');
+}
+
+function openPriPopup(e,cardId,itemId,anchorEl) {
+  e.stopPropagation();
+  const popup=document.getElementById('priPopup');
+  popup.innerHTML=PRI_OPTS.map(p=>`<button class="pri-opt pri-opt-${p}" data-p="${p}">${p}</button>`).join('');
+  popup.classList.remove('hidden');
+  priTarget={cardId,itemId,anchorEl};
+  const rect=anchorEl.getBoundingClientRect();
+  const top=rect.bottom+6;
+  const left=Math.max(8,Math.min(window.innerWidth-208,rect.left-60));
+  popup.style.top=top+'px'; popup.style.left=left+'px';
+}
+function closePriPopup() { document.getElementById('priPopup').classList.add('hidden'); priTarget=null; }
+
+function openEdit(cardId,itemId) {
+  const item=getItems(curDate,cardId).find(i=>i.id===itemId);
+  if(!item) return;
+  editTarget={cardId,itemId};
+  const priRow=document.getElementById('editPriRow');
+  priRow.innerHTML=PRI_OPTS.map(p=>`<button class="edit-pri-btn${item.priority===p?' sel-'+p[0]:''}" data-p="${p}">${p}</button>`).join('');
+  document.getElementById('editTextarea').value=item.text;
+  document.getElementById('editOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('editTextarea').focus(),120);
+}
+function closeEdit() { document.getElementById('editOverlay').classList.add('hidden'); editTarget=null; }
+
+function goDate(s) { curDate=s; renderDate(); renderCards(); }
+function openDatePopup() {
+  document.getElementById('dateInput').value=curDate;
+  document.getElementById('popupOverlay').classList.remove('hidden');
+}
+function closeDatePopup() { document.getElementById('popupOverlay').classList.add('hidden'); }
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeIco').textContent=isDark?'☀️':'🌙';
+  localStorage.setItem('bd_theme',JSON.stringify(isDark));
+}
+
+function toast(msg) {
+  const el=document.createElement('div');
+  el.className='toast'; el.textContent=msg;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),2100);
+}
+
+function bindEvents() {
+  document.getElementById('btnPrev').addEventListener('click',()=>goDate(offsetDate(curDate,-1)));
+  document.getElementById('btnNext').addEventListener('click',()=>goDate(offsetDate(curDate,+1)));
+  document.getElementById('dateCenter').addEventListener('click',openDatePopup);
+  document.getElementById('btnToday').addEventListener('click',()=>{ goDate(todayStr()); toast('오늘로 이동'); });
+  document.getElementById('btnTheme').addEventListener('click',()=>{ isDark=!isDark; applyTheme(); });
+  document.getElementById('btnConfirm').addEventListener('click',()=>{
+    const v=document.getElementById('dateInput').value;
+    if(v){ goDate(v); toast('날짜 이동'); }
+    closeDatePopup();
+  });
+  document.getElementById('btnCancel').addEventListener('click',closeDatePopup);
+  document.getElementById('popupOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('popupOverlay')) closeDatePopup(); });
+
+  document.getElementById('priPopup').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-p]');
+    if(!btn||!priTarget) return;
+    const item=getItems(curDate,priTarget.cardId).find(i=>i.id===priTarget.itemId);
+    if(item){ item.priority=btn.dataset.p; save(); renderCards(); toast(`우선순위 ${btn.dataset.p}`); }
+    closePriPopup();
+  });
+
+  document.getElementById('editPriRow').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-p]');
+    if(!btn) return;
+    document.querySelectorAll('.edit-pri-btn').forEach(b=>b.className='edit-pri-btn');
+    btn.className=`edit-pri-btn sel-${btn.dataset.p[0]}`;
+    btn.dataset.selected='true';
+  });
+  document.getElementById('editSave').addEventListener('click',()=>{
+    if(!editTarget) return;
+    const item=getItems(curDate,editTarget.cardId).find(i=>i.id===editTarget.itemId);
+    if(!item) return;
+    item.text=document.getElementById('editTextarea').value.trim()||item.text;
+    const selBtn=document.querySelector('.edit-pri-btn[data-selected="true"]');
+    if(selBtn) item.priority=selBtn.dataset.p;
+    save(); renderCards(); closeEdit(); toast('수정됨');
+  });
+  document.getElementById('editCancel').addEventListener('click',closeEdit);
+  document.getElementById('editOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('editOverlay')) closeEdit(); });
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('#priPopup')&&!e.target.closest('.pri-badge')) closePriPopup();
+    if(!e.target.closest('.list-row')&&swipedRow) closeSwipe(swipedRow);
+    const addBtn=e.target.closest('.add-row-btn');
+    if(addBtn){
+      const cardId=addBtn.dataset.card;
+      const inp=document.querySelector(`.add-row-input[data-card="${cardId}"]`);
+      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
+      if(inp){ addItem(cardId,inp.value,sel?sel.value:''); inp.value=''; if(sel) sel.value=''; }
+    }
+  });
+
+  document.addEventListener('keydown',e=>{
+    if(e.target.classList.contains('add-row-input')&&e.key==='Enter'){
+      e.preventDefault();
+      const cardId=e.target.dataset.card;
+      const sel=document.querySelector(`.pri-select[data-card="${cardId}"]`);
+      addItem(cardId,e.target.value,sel?sel.value:'');
+      e.target.value=''; if(sel) sel.value='';
+    }
+    if(e.key==='Escape'){ closeDatePopup(); closePriPopup(); closeEdit(); }
+  });
+}
+
+function init() { load(); applyTheme(); renderDate(); renderCards(); bindEvents(); }
+init();
+</script>
+</body>
+</html>
