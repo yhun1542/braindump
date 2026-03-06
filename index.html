@@ -122,11 +122,13 @@ body {
 }
 #loginScreen.hidden { display: none; }
 .login-logo {
-  font-family: 'GmarketSans', 'Inter', sans-serif;
-  font-weight: 700; font-size: 52px;
-  background: var(--grad); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
+  display: flex; align-items: center; justify-content: center;
   margin-bottom: 8px; text-align: center;
+}
+.login-logo img {
+  height: 60px;
+  width: auto;
+  display: block;
 }
 .login-sub {
   font-size: 13px; color: #555577; margin-bottom: 48px; text-align: center;
@@ -175,12 +177,14 @@ body {
   margin-bottom: 4px;
 }
 .hdr-logo {
-  font-family: 'GmarketSans', 'Inter', sans-serif;
-  font-weight: 700; font-size: 22px;
-  background: var(--grad); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-  letter-spacing: -0.5px; user-select: none;
+  display: flex; align-items: center;
   justify-self: start;
+  user-select: none;
+}
+.hdr-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
 }
 .hdr-date-nav {
   display: flex; align-items: center; gap: 8px;
@@ -758,7 +762,7 @@ body {
     <div style="margin-top:14px; font-size:20px; font-weight:700;
                 background:linear-gradient(135deg,#6c63ff,#00d4ff);
                 -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-                background-clip:text;">Synapse Brain</div>
+                background-clip:text;"><img src="/images/jf_os_header_dark_2x.png" alt="JF OS" height="32" style="display:block; margin:0 auto;"></div>
     <div style="margin-top:6px; font-size:13px; color:rgba(255,255,255,0.4);">로딩 중…</div>
   </div>
 </div>
@@ -772,7 +776,11 @@ window.__hideSplash = function () {
 </script>
 <!-- ══ LOGIN SCREEN ══ -->
 <div id="loginScreen">
-  <div class="login-logo">Synapse Brain</div>
+  <div class="login-logo">
+    <img src="/images/jf_os_header_dark_1x.png"
+         srcset="/images/jf_os_header_dark_1x.png 1x, /images/jf_os_header_dark_2x.png 2x, /images/jf_os_header_dark_3x.png 3x"
+         alt="JF OS" height="60">
+  </div>
   <div class="login-sub">최고의 답을 찾기 위한 여정을 시작하세요</div>
   <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
   <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
@@ -790,7 +798,11 @@ window.__hideSplash = function () {
   <!-- HEADER -->
   <div class="hdr" id="mainHdr">
     <div class="hdr-top">
-      <div class="hdr-logo">JF</div>
+      <div class="hdr-logo">
+        <img src="/images/jf_os_header_dark_1x.png"
+             srcset="/images/jf_os_header_dark_1x.png 1x, /images/jf_os_header_dark_2x.png 2x, /images/jf_os_header_dark_3x.png 3x"
+             alt="JF OS" height="28">
+      </div>
       <div class="hdr-date-nav">
         <button class="hdr-nav-btn" id="btnPrev">‹</button>
         <div>
