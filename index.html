@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#0B1220">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Synapse">
 <title>Synapse Brain</title>
 <script>
 /* ══ DEVICE AUTO-REDIRECT ══
@@ -739,7 +744,32 @@ body {
 </style>
 </head>
 <body>
-
+<!-- ═══ PWA BOOT SPLASH ═══ -->
+<div id="bootSplash" style="
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:#0B1220; z-index:99999;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  transition: opacity 0.18s ease;
+">
+  <div style="text-align:center;">
+    <img src="/icons/icon-192.png" width="80" height="80"
+         style="border-radius:20px; box-shadow:0 8px 32px rgba(108,99,255,0.4);"
+         alt="Synapse Brain">
+    <div style="margin-top:14px; font-size:20px; font-weight:700;
+                background:linear-gradient(135deg,#6c63ff,#00d4ff);
+                -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+                background-clip:text;">Synapse Brain</div>
+    <div style="margin-top:6px; font-size:13px; color:rgba(255,255,255,0.4);">로딩 중…</div>
+  </div>
+</div>
+<script>
+window.__hideSplash = function () {
+  var el = document.getElementById('bootSplash');
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 200);
+};
+</script>
 <!-- ══ LOGIN SCREEN ══ -->
 <div id="loginScreen">
   <div class="login-logo">Synapse Brain</div>
@@ -1233,6 +1263,7 @@ onAuthStateChanged(auth, async user => {
     subscribeAll();
     renderCalendar();
     setTimeout(loadAiReminder, 1500);
+    window.__hideSplash?.();
   } else {
     currentUser = null;
     loginScreen.classList.remove('hidden');
@@ -1240,9 +1271,9 @@ onAuthStateChanged(auth, async user => {
     unsubListeners.forEach(u=>u());
     unsubListeners = [];
     loginBtn.textContent = '로그인';
+    window.__hideSplash?.();
   }
 });
-
 /* ── Firestore paths ── */
 const uid = () => currentUser.uid;
 const todayPath  = (dateStr, cardId) => doc(db,`users/${uid()}/today/${dateStr}/cards/${cardId}`);
@@ -2094,6 +2125,151 @@ try {
 } catch(e) {}
 
 loadGIS();
+</script>
+
+<!-- ═══ PWA: 업데이트 토스트 ═══ -->
+<div id="updateToast" style="
+  position:fixed; left:16px; right:16px; bottom:calc(var(--tab-h, 64px) + var(--safe-bot, 0px) + 12px);
+  padding:12px 14px; border-radius:14px;
+  background:rgba(11,18,32,0.95); color:#fff;
+  border:1px solid rgba(108,99,255,0.4);
+  display:none; z-index:99998;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+">
+  <div style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
+    <div>
+      <div style="font-size:14px; font-weight:600;">새 버전이 준비됐어요</div>
+      <div style="font-size:12px; opacity:0.6; margin-top:2px;">Synapse Brain이 업데이트되었습니다</div>
+    </div>
+    <button id="updateBtn" style="
+      border:0; padding:8px 14px; border-radius:10px;
+      background:linear-gradient(135deg,#6c63ff,#00d4ff);
+      color:#fff; font-weight:700; cursor:pointer;
+      font-size:13px; white-space:nowrap;
+    ">업데이트</button>
+  </div>
+</div>
+
+<!-- ═══ PWA: Android/Chrome 설치 버튼 ═══ -->
+<button id="installBtn" style="
+  display:none; position:fixed; right:16px;
+  bottom:calc(var(--tab-h, 64px) + var(--safe-bot, 0px) + 72px);
+  z-index:99997; border:0; padding:10px 14px; border-radius:14px;
+  background:rgba(11,18,32,0.95); color:#fff;
+  border:1px solid rgba(108,99,255,0.4);
+  font-weight:700; cursor:pointer;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size:13px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+">📲 앱 설치</button>
+
+<!-- ═══ PWA: iOS 홈화면 추가 안내 ═══ -->
+<div id="iosA2HS" style="
+  display:none; position:fixed; left:16px; right:16px;
+  bottom:calc(var(--tab-h, 64px) + var(--safe-bot, 0px) + 12px);
+  z-index:99997; padding:14px 16px; border-radius:14px;
+  background:rgba(11,18,32,0.95); color:#fff;
+  border:1px solid rgba(108,99,255,0.3);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+">
+  <div style="display:flex; gap:12px; align-items:flex-start; justify-content:space-between;">
+    <div>
+      <div style="font-size:14px; font-weight:600; margin-bottom:4px;">iPhone에서 앱으로 사용하려면</div>
+      <div style="font-size:13px; opacity:0.7; line-height:1.5;">
+        하단 <b>공유 버튼(↗)</b> 탭하여<br>
+        <b>홈 화면에 추가</b>를 선택하세요
+      </div>
+    </div>
+    <button id="iosA2HSClose" style="
+      border:0; padding:6px 10px; border-radius:10px;
+      background:rgba(255,255,255,0.15); color:#fff;
+      font-weight:700; cursor:pointer; font-size:13px;
+      flex-shrink:0;
+    ">닫기</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(reg) { console.log('[PWA] SW 등록:', reg.scope); })
+        .catch(function(err) { console.warn('[PWA] SW 실패:', err); });
+    });
+    var newWorker = null;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+    navigator.serviceWorker.getRegistration().then(function(reg) {
+      if (!reg) return;
+      if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
+      reg.addEventListener('updatefound', function() {
+        var installing = reg.installing;
+        if (!installing) return;
+        installing.addEventListener('statechange', function() {
+          if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker = reg.waiting; showUpdateToast();
+          }
+        });
+      });
+    });
+    function showUpdateToast() {
+      var toast = document.getElementById('updateToast');
+      var btn   = document.getElementById('updateBtn');
+      if (!toast || !btn) return;
+      toast.style.display = 'block';
+      btn.onclick = function() {
+        toast.style.display = 'none';
+        if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
+      };
+    }
+  }
+  // Android/Chrome 설치 버튼
+  var deferredPrompt = null;
+  var installBtn = document.getElementById('installBtn');
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault(); deferredPrompt = e;
+    if (installBtn) installBtn.style.display = 'block';
+  });
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      installBtn.style.display = 'none';
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+    });
+  }
+  window.addEventListener('appinstalled', function() {
+    if (installBtn) installBtn.style.display = 'none';
+    deferredPrompt = null;
+  });
+  // iOS A2HS 안내
+  var isIOS        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+                     || window.navigator.standalone === true;
+  var isSafari     = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+  var iosBanner    = document.getElementById('iosA2HS');
+  var iosClose     = document.getElementById('iosA2HSClose');
+  var A2HS_KEY     = 'ios_a2hs_seen_v2';
+  var seen         = parseInt(localStorage.getItem(A2HS_KEY) || '0', 10);
+  if (iosClose) {
+    iosClose.onclick = function() {
+      if (iosBanner) iosBanner.style.display = 'none';
+      localStorage.setItem(A2HS_KEY, String(Math.min(seen + 1, 99)));
+    };
+  }
+  if (isIOS && isSafari && !isStandalone && seen < 2 && iosBanner) {
+    setTimeout(function() {
+      iosBanner.style.display = 'block';
+      localStorage.setItem(A2HS_KEY, String(seen + 1));
+    }, 1500);
+  }
+})();
 </script>
 </body>
 </html>

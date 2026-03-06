@@ -1,0 +1,43 @@
+{
+  "name": "Synapse Brain",
+  "short_name": "Synapse",
+  "description": "Jasoneye의 두뇌 확장 앱 — 일정, 할일, AI 리마인더",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B1220",
+  "theme_color": "#0B1220",
+  "lang": "ko",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "오늘",
+      "short_name": "Today",
+      "description": "오늘 할일 바로 보기",
+      "url": "/?source=pwa&tab=today",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "캘린더",
+      "short_name": "Calendar",
+      "description": "캘린더 바로 보기",
+      "url": "/?source=pwa&tab=calendar",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
