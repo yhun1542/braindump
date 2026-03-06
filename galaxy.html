@@ -700,7 +700,7 @@ const CARDS = [
   { id:'buy',     title:'Things to Buy',  icon:'🛒' },
 ];
 const PRI_OPTS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3'];
-const OPENAI_KEY = 'sk-proj-placeholder'; // 서버사이드 프록시 사용 권장
+const OPENAI_KEY = window.__OPENAI_KEY__ || ''; // Firestore config에서 런타임 로드
 
 /* ── 상태 ── */
 let curDate   = todayStr();
