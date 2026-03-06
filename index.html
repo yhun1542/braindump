@@ -386,6 +386,7 @@ html, body {
   min-height: 46px;
   background: var(--bg);
   transition: background .1s;
+  overflow: hidden;
 }
 .add-row:hover { background: var(--line); }
 .add-row-plus {
@@ -400,15 +401,15 @@ html, body {
   border-right: 1px solid var(--line);
 }
 .pri-select {
-  width: 50px; height: 26px;
+  width: 44px; height: 24px;
   border: 1px solid var(--border-mid);
-  border-radius: 5px;
+  border-radius: 4px;
   background: var(--surface); color: var(--text);
   font-family: var(--font); font-size: 11px; font-weight: 700;
   cursor: pointer; outline: none;
-  padding: 0 2px;
-  -webkit-appearance: none;
-  text-align: center;
+  -webkit-appearance: none; appearance: none;
+  text-align: center; text-align-last: center;
+  padding: 0;
 }
 .add-row-input {
   flex: 1; padding: 10px 10px;
@@ -714,14 +715,8 @@ function buildCard(cfg) {
   const body=document.createElement('div');
   body.className='list-body';
 
-  if(items.length===0) {
-    const emp=document.createElement('div');
-    emp.className='empty-row';
-    emp.textContent='항목을 추가하세요';
-    body.appendChild(emp);
-  } else {
-    items.forEach((item,idx)=>body.appendChild(buildRow(cfg.id,item,idx+1)));
-  }
+  /* ★ 빈 상태 메시지 제거 */
+  items.forEach((item,idx)=>body.appendChild(buildRow(cfg.id,item,idx+1)));
 
   // Add row
   const addRow=document.createElement('div');

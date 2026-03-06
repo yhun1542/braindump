@@ -10,9 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
-   BRAIN DUMP — iPHONE 17 PRO
-   Optimized for 2622×1206 / 6.3" / iOS Safari
-   Dynamic Island aware · safe-area-inset
+   BRAIN DUMP — iPHONE 17 PRO  v2.1
+   Dynamic Island · safe-area-inset
    ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -26,14 +25,12 @@
   --text:       #111111;
   --text2:      #555555;
   --text3:      #b0b0aa;
-  --row-hover:  #f8f8f5;
   --done-color: #c0c0c0;
   --shadow:     0 2px 20px rgba(0,0,0,0.06);
   --font:       'Inter', -apple-system, 'SF Pro Display', sans-serif;
   --pa: #c0392b;
   --pb: #2980b9;
   --pc: #27ae60;
-  /* iOS safe areas */
   --safe-top: env(safe-area-inset-top, 54px);
   --safe-bot: env(safe-area-inset-bottom, 34px);
   --safe-l:   env(safe-area-inset-left, 0px);
@@ -50,17 +47,11 @@
   --text:       #f2f2f0;
   --text2:      #888888;
   --text3:      #404040;
-  --row-hover:  #1c1c1c;
   --done-color: #383838;
   --shadow:     0 2px 20px rgba(0,0,0,0.5);
 }
 
-html {
-  height: 100%;
-  overflow-x: hidden;
-  /* iOS momentum scroll */
-  -webkit-overflow-scrolling: touch;
-}
+html { height: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 body {
   min-height: 100vh;
   font-family: var(--font);
@@ -78,13 +69,9 @@ body {
 .sticky-hdr {
   position: sticky; top: 0; z-index: 100;
   background: var(--hdr-bg);
-  /* Pad for Dynamic Island (top safe area) */
   padding-top: max(var(--safe-top), 54px);
   padding-left: max(var(--safe-l), 16px);
   padding-right: max(var(--safe-r), 16px);
-  padding-bottom: 0;
-}
-.hdr-inner {
   padding-bottom: 0;
 }
 .hdr-top {
@@ -95,6 +82,7 @@ body {
   font-size: 9px; font-weight: 900;
   letter-spacing: 0.32em; text-transform: uppercase;
   color: var(--hdr-text); opacity: 0.45;
+  user-select: none;
 }
 .hdr-btns { display: flex; gap: 8px; }
 .hdr-btn {
@@ -104,11 +92,11 @@ body {
   border-radius: 20px; cursor: pointer;
   font-family: var(--font); font-size: 11px; font-weight: 700;
   display: flex; align-items: center; gap: 5px;
-  transition: all .15s; white-space: nowrap;
+  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
 [data-theme="dark"] .hdr-btn { border-color: rgba(0,0,0,0.12); }
-.hdr-btn:active { transform: scale(0.92); opacity: 0.65; }
+.hdr-btn:active { opacity: 0.6; }
 
 /* ── DATE NAV ── */
 .date-nav {
@@ -121,13 +109,13 @@ body {
   color: var(--hdr-text); font-size: 26px; font-weight: 200;
   border-radius: 13px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
+  flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
 }
 [data-theme="dark"] .date-nav-btn { background: rgba(0,0,0,0.1); }
-.date-nav-btn:active { transform: scale(0.86); }
+.date-nav-btn:active { opacity: 0.6; }
 
-.date-center { flex: 1; text-align: center; padding: 0 6px; cursor: pointer; }
+.date-center { flex: 1; text-align: center; padding: 0 6px; cursor: pointer; min-width: 0; }
 .date-main {
   font-size: 30px; font-weight: 900;
   letter-spacing: -0.03em; color: var(--hdr-text); line-height: 1;
@@ -147,17 +135,17 @@ body {
 /* ── VER LINKS ── */
 .ver-links {
   display: flex; gap: 6px;
-  padding: 10px max(var(--safe-r),16px) 12px max(var(--safe-l),16px);
+  padding: 10px max(var(--safe-r),14px) 12px max(var(--safe-l),14px);
   background: var(--bg);
   overflow-x: auto; -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .ver-links::-webkit-scrollbar { display: none; }
 .ver-link {
-  padding: 5px 14px; border: 1.5px solid var(--border-mid);
-  border-radius: 20px; font-size: 10px; font-weight: 700;
-  letter-spacing: 0.06em; text-decoration: none; color: var(--text2);
-  white-space: nowrap; transition: all .15s;
+  padding: 6px 16px; border: 1.5px solid var(--border-mid);
+  border-radius: 20px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em; text-decoration: none; color: var(--text2);
+  white-space: nowrap;
 }
 .ver-link.active { background: var(--hdr-bg); color: var(--hdr-text); border-color: var(--hdr-bg); }
 
@@ -171,24 +159,25 @@ body {
 .card {
   background: var(--surface);
   border: 1.5px solid var(--border);
-  border-radius: 2px;
   overflow: hidden;
   box-shadow: var(--shadow);
 }
 
+/* ── CARD HEADER ── */
 .card-hdr {
   background: var(--hdr-bg); color: var(--hdr-text);
   padding: 12px 16px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .card-hdr-left { display: flex; align-items: center; gap: 9px; }
-.card-hdr-icon { font-size: 17px; }
+.card-hdr-icon { font-size: 17px; line-height: 1; }
 .card-hdr-title {
   font-size: 10.5px; font-weight: 800;
   letter-spacing: 0.22em; text-transform: uppercase;
 }
 .card-hdr-count { font-size: 10px; font-weight: 700; opacity: 0.4; }
 
+/* ── PROGRESS ── */
 .card-prog { height: 2px; background: rgba(255,255,255,0.08); }
 [data-theme="dark"] .card-prog { background: rgba(0,0,0,0.08); }
 .card-prog-fill {
@@ -201,10 +190,10 @@ body {
 .list-row {
   position: relative; overflow: hidden;
   border-bottom: 1px solid var(--line);
-  min-height: 50px;
 }
 .list-row:last-child { border-bottom: none; }
 
+/* Swipe action buttons */
 .row-actions {
   position: absolute; right: 0; top: 0; bottom: 0;
   display: flex; z-index: 0;
@@ -223,29 +212,28 @@ body {
 .row-act-btn .act-ico { font-size: 17px; }
 
 .row-inner {
-  display: flex; align-items: stretch;
+  display: flex; align-items: center;
   background: var(--surface);
   transition: transform .28s cubic-bezier(.4,0,.2,1);
   position: relative; z-index: 1;
   min-height: 50px;
 }
 
+/* ── 체크박스 (iOS 원형) ── */
 .row-chk {
   width: 46px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  border-right: 1px solid var(--line);
 }
 .row-chk input[type="checkbox"] {
-  width: 17px; height: 17px;
-  cursor: pointer; accent-color: var(--text);
-  /* iOS checkbox styling */
-  -webkit-appearance: none;
-  appearance: none;
+  width: 18px; height: 18px;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
   border: 2px solid var(--border-mid);
   border-radius: 50%;
   background: transparent;
   position: relative;
   transition: all .15s;
+  flex-shrink: 0;
 }
 .row-chk input[type="checkbox"]:checked {
   background: var(--text);
@@ -261,31 +249,36 @@ body {
   transform: rotate(45deg);
 }
 
+/* ── 우선순위 배지 ── */
 .row-pri {
-  width: 58px; flex-shrink: 0;
+  width: 52px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
+  border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
 }
 .pri-badge {
-  font-size: 10.5px; font-weight: 800; letter-spacing: 0.04em;
-  padding: 3px 7px; border-radius: 5px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.04em;
+  padding: 3px 6px; border-radius: 4px;
   border: none; background: transparent; cursor: pointer;
   font-family: var(--font);
   -webkit-tap-highlight-color: transparent;
+  line-height: 1;
 }
 .pri-A { color: var(--pa); background: rgba(192,57,43,0.09); }
 .pri-B { color: var(--pb); background: rgba(41,128,185,0.09); }
 .pri-C { color: var(--pc); background: rgba(39,174,96,0.09); }
-.pri-none { color: var(--text3); }
+.pri-none { color: var(--text3); font-size: 12px; }
 
+/* ── 텍스트 ── */
 .row-txt {
-  flex: 1; padding: 11px 12px 11px 10px;
-  font-size: 13.5px; font-weight: 400; color: var(--text);
+  flex: 1; padding: 12px 12px 12px 10px;
+  /* iOS: 16px 이상으로 줌 방지 */
+  font-size: max(16px, 14px);
+  font-weight: 400; color: var(--text);
   line-height: 1.5; word-break: break-word;
   background: transparent; border: none; outline: none;
   font-family: var(--font); cursor: text;
-  /* iOS: prevent zoom on focus */
-  font-size: max(16px, 13.5px);
+  min-width: 0;
 }
 .row-txt:empty::before {
   content: attr(data-ph); color: var(--text3);
@@ -293,46 +286,42 @@ body {
 }
 .row-txt.done { text-decoration: line-through; color: var(--done-color); }
 
-/* ── EMPTY ── */
-.empty-row {
-  padding: 18px 16px; text-align: center;
-  font-size: 12px; font-style: italic; color: var(--text3);
-  border-bottom: 1px solid var(--line);
-}
-
 /* ── ADD ROW ── */
 .add-row {
-  display: flex; align-items: stretch;
+  display: flex; align-items: center;
   border-top: 1.5px solid var(--border);
   min-height: 50px; background: var(--bg);
+  overflow: hidden;
 }
 .add-row-plus {
   width: 46px; flex-shrink: 0;
-  border-right: 1px solid var(--line);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 300; color: var(--text3);
+  font-size: 18px; font-weight: 300; color: var(--text3);
 }
 .add-row-pri {
-  width: 58px; flex-shrink: 0;
+  width: 52px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
+  border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
 }
 .pri-select {
-  width: 50px; height: 28px;
-  border: 1px solid var(--border-mid); border-radius: 6px;
+  width: 44px; height: 26px;
+  border: 1px solid var(--border-mid); border-radius: 5px;
   background: var(--surface); color: var(--text);
   font-family: var(--font); font-size: 11px; font-weight: 700;
-  cursor: pointer; outline: none; padding: 0 2px;
-  -webkit-appearance: none; text-align: center;
+  cursor: pointer; outline: none;
+  -webkit-appearance: none; appearance: none;
+  text-align: center; text-align-last: center;
+  padding: 0;
 }
 .add-row-input {
-  flex: 1; padding: 11px 10px;
-  /* iOS: prevent zoom */
+  flex: 1; padding: 12px 8px;
   font-size: max(16px, 14px);
   font-family: var(--font);
   background: transparent; border: none; outline: none;
   color: var(--text2); font-style: italic;
   -webkit-appearance: none;
+  min-width: 0;
 }
 .add-row-input::placeholder { color: var(--text3); }
 .add-row-btn {
@@ -340,9 +329,10 @@ body {
   border: none; background: var(--hdr-bg); color: var(--hdr-text);
   font-size: 24px; font-weight: 300;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
+  align-self: stretch;
   -webkit-tap-highlight-color: transparent;
 }
-.add-row-btn:active { opacity: 0.68; }
+.add-row-btn:active { opacity: 0.65; }
 
 /* ── PRIORITY POPUP ── */
 .pri-popup {
@@ -368,7 +358,7 @@ body {
 .pri-opt-B1,.pri-opt-B2,.pri-opt-B3 { background: rgba(41,128,185,0.1); color: var(--pb); }
 .pri-opt-C1,.pri-opt-C2,.pri-opt-C3 { background: rgba(39,174,96,0.1); color: var(--pc); }
 
-/* ── DATE POPUP (iOS sheet style) ── */
+/* ── DATE POPUP (iOS sheet) ── */
 .popup-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.38);
@@ -408,7 +398,7 @@ body {
   background: var(--hdr-bg); color: var(--hdr-text);
   border: none; border-radius: 13px;
   font-family: var(--font); font-size: 14px; font-weight: 800;
-  letter-spacing: 0.06em; cursor: pointer;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 .btn-dark:active { opacity: 0.72; }
@@ -495,22 +485,20 @@ body {
 <body>
 <!-- STICKY HEADER -->
 <div class="sticky-hdr">
-  <div class="hdr-inner">
-    <div class="hdr-top">
-      <span class="brand">Brain Dump</span>
-      <div class="hdr-btns">
-        <button class="hdr-btn" id="btnToday">📅 Today</button>
-        <button class="hdr-btn" id="btnTheme"><span id="themeIco">🌙</span></button>
-      </div>
+  <div class="hdr-top">
+    <span class="brand">Brain Dump</span>
+    <div class="hdr-btns">
+      <button class="hdr-btn" id="btnToday">📅 Today</button>
+      <button class="hdr-btn" id="btnTheme"><span id="themeIco">🌙</span></button>
     </div>
-    <div class="date-nav">
-      <button class="date-nav-btn" id="btnPrev">‹</button>
-      <div class="date-center" id="dateCenter">
-        <div class="date-main" id="dateMain">—</div>
-        <div class="date-meta" id="dateMeta">—</div>
-      </div>
-      <button class="date-nav-btn" id="btnNext">›</button>
+  </div>
+  <div class="date-nav">
+    <button class="date-nav-btn" id="btnPrev">‹</button>
+    <div class="date-center" id="dateCenter">
+      <div class="date-main" id="dateMain">—</div>
+      <div class="date-meta" id="dateMeta">—</div>
     </div>
+    <button class="date-nav-btn" id="btnNext">›</button>
   </div>
 </div>
 
@@ -646,17 +634,11 @@ function buildCard(cfg) {
     <div class="card-prog"><div class="card-prog-fill" style="width:${pct}%"></div></div>
   `;
 
-  const body=document.createElement('div');
-  body.className='list-body';
+  const listBody=document.createElement('div');
+  listBody.className='list-body';
 
-  if(items.length===0) {
-    const emp=document.createElement('div');
-    emp.className='empty-row';
-    emp.textContent='항목을 추가하세요';
-    body.appendChild(emp);
-  } else {
-    items.forEach(item=>body.appendChild(buildRow(cfg.id,item)));
-  }
+  /* ★ 빈 상태 메시지 제거 */
+  items.forEach(item=>listBody.appendChild(buildRow(cfg.id,item)));
 
   const addRow=document.createElement('div');
   addRow.className='add-row';
@@ -668,11 +650,11 @@ function buildCard(cfg) {
         ${PRI_OPTS.map(p=>`<option value="${p}">${p}</option>`).join('')}
       </select>
     </div>
-    <input class="add-row-input" placeholder="새 항목..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
+    <input class="add-row-input" placeholder="새 항목 입력 후 Enter..." data-card="${cfg.id}" autocomplete="off" spellcheck="false">
     <button class="add-row-btn" data-card="${cfg.id}">+</button>
   `;
-  body.appendChild(addRow);
-  card.appendChild(body);
+  listBody.appendChild(addRow);
+  card.appendChild(listBody);
   return card;
 }
 
