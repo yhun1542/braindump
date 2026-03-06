@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Brain Dump</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   LIFERADAR DESIGN SYSTEM — Brain Dump v1.0
+   ============================================================ */
+:root {
+  /* LifeRadar Core Palette */
+  --hi-blue:    #2563EB;
+  --hi-gold:    #F59E0B;
+  --hi-green:   #10B981;
+  --hi-red:     #EF4444;
+  --hi-purple:  #8B5CF6;
+  --hi-cyan:    #06B6D4;
+  --hi-orange:  #F97316;
+  --hi-pink:    #EC4899;
+
+  /* Dark Theme (default) */
+  --bg:         #0B1220;
+  --surface:    #111827;
+  --surface2:   #1A2332;
+  --surface3:   #1F2D40;
+  --border:     #2D3B4E;
+  --border2:    #374151;
+  --text:       #E5E7EB;
+  --text2:      #9CA3AF;
+  --text3:      #6B7280;
+  --accent:     #2563EB;
+  --accent-glow: rgba(37,99,235,0.18);
+
+  /* Card System */
+  --card-radius: 18px;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.2);
+  --card-shadow-hover: 0 8px 40px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --card-border: 1px solid var(--border);
+
+  /* Typography */
+  --font: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Transitions */
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="light"] {
+  --bg:         #F0F4F8;
+  --surface:    #FFFFFF;
+  --surface2:   #F8FAFC;
+  --surface3:   #EEF2F7;
+  --border:     #E2E8F0;
+  --border2:    #CBD5E1;
+  --text:       #0F172A;
+  --text2:      #475569;
+  --text3:      #94A3B8;
+  --accent:     #2563EB;
+  --accent-glow: rgba(37,99,235,0.10);
+  --card-shadow: 0 2px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+  --card-shadow-hover: 0 6px 30px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px 16px;
+}
+
+/* ============================================================
+   TOP BAR — 날짜 네비게이션
+   ============================================================ */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 12px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--hi-blue), var(--hi-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--hi-blue), var(--hi-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 날짜 네비게이터 */
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: 50px;
+  padding: 6px 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.date-nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface2);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.date-nav-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.date-nav-btn:active { transform: scale(0.95); }
+
+.date-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.date-center:hover { background: var(--surface2); }
+
+.date-main {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.date-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.date-today-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--hi-green);
+  background: rgba(16,185,129,0.12);
+  border-radius: 20px;
+  padding: 1px 7px;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* 우측 컨트롤 */
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: var(--card-border);
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+  box-shadow: var(--card-shadow);
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.icon-btn:active { transform: translateY(0) scale(0.95); }
+
+/* ============================================================
+   MAIN GRID — 좌 3카드 / 우 3카드
+   ============================================================ */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   CARD COMPONENT
+   ============================================================ */
+.card {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition);
+  position: relative;
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* 카드 상단 컬러 스트라이프 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  background: var(--card-accent, var(--hi-blue));
+}
+
+/* 카드 헤더 */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  background: var(--card-icon-bg, rgba(37,99,235,0.12));
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.card-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  background: var(--surface2);
+  border-radius: 20px;
+  padding: 2px 8px;
+  letter-spacing: 0.3px;
+  border: 1px solid var(--border);
+}
+
+.card-count.has-items {
+  color: var(--card-accent, var(--hi-blue));
+  background: var(--accent-glow);
+  border-color: var(--card-accent, var(--hi-blue));
+}
+
+/* 카드 바디 — 스크롤 가능 */
+.card-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.card-body::-webkit-scrollbar { width: 4px; }
+.card-body::-webkit-scrollbar-track { background: transparent; }
+.card-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* 카드 푸터 — 입력창 */
+.card-footer {
+  padding: 8px 12px 12px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 10px;
+  transition: var(--transition);
+}
+
+.input-row:focus-within {
+  border-color: var(--card-accent, var(--hi-blue));
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.input-row input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+  min-width: 0;
+}
+
+.input-row input::placeholder { color: var(--text3); }
+
+.add-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: none;
+  background: var(--card-accent, var(--hi-blue));
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 300;
+  flex-shrink: 0;
+  transition: var(--transition);
+  line-height: 1;
+}
+
+.add-btn:hover { opacity: 0.85; transform: scale(1.1); }
+.add-btn:active { transform: scale(0.92); }
+
+/* ============================================================
+   LIST ITEMS
+   ============================================================ */
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 6px;
+  border-radius: 10px;
+  transition: background var(--transition);
+  cursor: default;
+  position: relative;
+  group: true;
+}
+
+.list-item:hover { background: var(--surface2); }
+
+.list-item + .list-item {
+  border-top: 1px solid var(--border);
+}
+
+/* 체크박스 */
+.item-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--border2);
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  margin-top: 1px;
+  background: transparent;
+}
+
+.item-check:hover {
+  border-color: var(--card-accent, var(--hi-blue));
+  background: var(--accent-glow);
+}
+
+.item-check.checked {
+  background: var(--card-accent, var(--hi-blue));
+  border-color: var(--card-accent, var(--hi-blue));
+}
+
+.item-check.checked::after {
+  content: '✓';
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 아이템 텍스트 */
+.item-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  word-break: break-word;
+  padding-top: 1px;
+  cursor: text;
+  outline: none;
+  min-height: 20px;
+}
+
+.item-text.done {
+  text-decoration: line-through;
+  color: var(--text3);
+}
+
+/* 삭제 버튼 */
+.item-del {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: var(--transition);
+  margin-top: 1px;
+}
+
+.list-item:hover .item-del { opacity: 1; }
+.item-del:hover { background: rgba(239,68,68,0.12); color: var(--hi-red); }
+
+/* 빈 상태 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  gap: 8px;
+  opacity: 0.5;
+}
+
+.empty-icon { font-size: 28px; }
+.empty-text { font-size: 12px; color: var(--text3); text-align: center; line-height: 1.4; }
+
+/* ============================================================
+   CARD THEMES
+   ============================================================ */
+/* Work — Blue */
+.card-work {
+  --card-accent: #2563EB;
+  --card-icon-bg: rgba(37,99,235,0.12);
+  --accent-glow: rgba(37,99,235,0.12);
+}
+
+/* Personal — Purple */
+.card-personal {
+  --card-accent: #8B5CF6;
+  --card-icon-bg: rgba(139,92,246,0.12);
+  --accent-glow: rgba(139,92,246,0.12);
+}
+
+/* Family — Green */
+.card-family {
+  --card-accent: #10B981;
+  --card-icon-bg: rgba(16,185,129,0.12);
+  --accent-glow: rgba(16,185,129,0.12);
+}
+
+/* People to Meet — Cyan */
+.card-meet {
+  --card-accent: #06B6D4;
+  --card-icon-bg: rgba(6,182,212,0.12);
+  --accent-glow: rgba(6,182,212,0.12);
+}
+
+/* People to Call — Orange */
+.card-call {
+  --card-accent: #F97316;
+  --card-icon-bg: rgba(249,115,22,0.12);
+  --accent-glow: rgba(249,115,22,0.12);
+}
+
+/* Things to Buy — Gold */
+.card-buy {
+  --card-accent: #F59E0B;
+  --card-icon-bg: rgba(245,158,11,0.12);
+  --accent-glow: rgba(245,158,11,0.12);
+}
+
+/* ============================================================
+   PRIORITY BADGE
+   ============================================================ */
+.priority-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.p-high   { background: var(--hi-red); box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+.p-mid    { background: var(--hi-gold); }
+.p-low    { background: var(--text3); }
+
+/* ============================================================
+   PROGRESS BAR (카드 헤더 하단)
+   ============================================================ */
+.card-progress {
+  height: 3px;
+  background: var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.card-progress-fill {
+  height: 100%;
+  background: var(--card-accent, var(--hi-blue));
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toastIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.toast.out { animation: toastOut 0.25s ease-in forwards; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-8px) scale(0.95); }
+}
+
+/* ============================================================
+   DATE PICKER MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-overlay.hidden { display: none; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-box {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  min-width: 300px;
+  animation: slideUp 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: var(--text);
+  font-family: var(--font);
+  outline: none;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.modal-input:focus {
+  border-color: var(--hi-blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.modal-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font);
+}
+
+.modal-btn.cancel {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.modal-btn.confirm {
+  background: var(--hi-blue);
+  color: #fff;
+}
+
+.modal-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.modal-btn:active { transform: translateY(0) scale(0.97); }
+
+/* ============================================================
+   RESPONSIVE — 모바일
+   ============================================================ */
+@media (max-width: 700px) {
+  #app { padding: 0 10px 10px; }
+
+  .top-bar {
+    flex-wrap: wrap;
+    padding: 10px 0 8px;
+    gap: 8px;
+  }
+
+  .brand-name { font-size: 15px; }
+
+  .date-nav { padding: 4px 8px; }
+  .date-center { min-width: 110px; }
+  .date-main { font-size: 13px; }
+
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .col { flex-direction: row; overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; }
+  .card { min-width: 260px; flex: 0 0 260px; }
+
+  .card-body { max-height: 200px; }
+}
+
+@media (max-width: 480px) {
+  .top-bar { justify-content: center; }
+  .brand { display: none; }
+}
+
+/* ============================================================
+   SCROLLBAR GLOBAL
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes itemIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.item-enter { animation: itemIn 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+@keyframes itemOut {
+  from { opacity: 1; transform: translateX(0); max-height: 60px; }
+  to   { opacity: 0; transform: translateX(20px); max-height: 0; padding: 0; }
+}
+
+.item-exit { animation: itemOut 0.2s ease-in forwards; }
+
+/* ============================================================
+   STATS BAR (카드 헤더 내)
+   ============================================================ */
+.stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--hi-green);
+  background: rgba(16,185,129,0.1);
+  border-radius: 20px;
+  padding: 2px 7px;
+}
+
+/* ============================================================
+   DRAG HANDLE (향후 드래그 정렬용)
+   ============================================================ */
+.drag-handle {
+  color: var(--text3);
+  font-size: 14px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity var(--transition);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.list-item:hover .drag-handle { opacity: 0.5; }
+.drag-handle:active { cursor: grabbing; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-icon">🧠</div>
+      <div class="brand-name">Brain Dump</div>
+    </div>
+
+    <div class="date-nav">
+      <button class="date-nav-btn" id="prevDay" title="이전 날짜">‹</button>
+      <div class="date-center" id="dateCenter" onclick="openDatePicker()">
+        <div class="date-main" id="dateMain">—</div>
+        <div class="date-sub" id="dateSub">—</div>
+        <div id="todayBadge" class="date-today-badge" style="display:none">● TODAY</div>
+      </div>
+      <button class="date-nav-btn" id="nextDay" title="다음 날짜">›</button>
+    </div>
+
+    <div class="top-controls">
+      <button class="icon-btn" id="todayBtn" title="오늘로 이동" onclick="goToday()">📅</button>
+      <button class="icon-btn" id="themeBtn" title="테마 전환" onclick="toggleTheme()">🌙</button>
+      <button class="icon-btn" title="전체 초기화" onclick="confirmClear()">🗑️</button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    <!-- 좌측 컬럼 -->
+    <div class="col" id="colLeft">
+      <!-- Work Card -->
+      <div class="card card-work" id="card-work">
+        <div class="card-header">
+          <div class="card-icon">💼</div>
+          <div class="card-title">Work</div>
+          <div class="card-count" id="count-work">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-work" style="width:0%"></div></div>
+        <div class="card-body" id="list-work"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-work" placeholder="업무 할 일 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('work')">
+            <button class="add-btn" onclick="addItem('work')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Card -->
+      <div class="card card-personal" id="card-personal">
+        <div class="card-header">
+          <div class="card-icon">🙋</div>
+          <div class="card-title">Personal</div>
+          <div class="card-count" id="count-personal">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-personal" style="width:0%"></div></div>
+        <div class="card-body" id="list-personal"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-personal" placeholder="개인 할 일 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('personal')">
+            <button class="add-btn" onclick="addItem('personal')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Family Card -->
+      <div class="card card-family" id="card-family">
+        <div class="card-header">
+          <div class="card-icon">🏠</div>
+          <div class="card-title">Family</div>
+          <div class="card-count" id="count-family">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-family" style="width:0%"></div></div>
+        <div class="card-body" id="list-family"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-family" placeholder="가족 할 일 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('family')">
+            <button class="add-btn" onclick="addItem('family')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 우측 컬럼 -->
+    <div class="col" id="colRight">
+      <!-- People to Meet Card -->
+      <div class="card card-meet" id="card-meet">
+        <div class="card-header">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">People to Meet</div>
+          <div class="card-count" id="count-meet">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-meet" style="width:0%"></div></div>
+        <div class="card-body" id="list-meet"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-meet" placeholder="만날 사람 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('meet')">
+            <button class="add-btn" onclick="addItem('meet')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- People to Call Card -->
+      <div class="card card-call" id="card-call">
+        <div class="card-header">
+          <div class="card-icon">📞</div>
+          <div class="card-title">People to Call</div>
+          <div class="card-count" id="count-call">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-call" style="width:0%"></div></div>
+        <div class="card-body" id="list-call"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-call" placeholder="전화할 사람 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('call')">
+            <button class="add-btn" onclick="addItem('call')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Things to Buy Card -->
+      <div class="card card-buy" id="card-buy">
+        <div class="card-header">
+          <div class="card-icon">🛒</div>
+          <div class="card-title">Things to Buy</div>
+          <div class="card-count" id="count-buy">0</div>
+        </div>
+        <div class="card-progress"><div class="card-progress-fill" id="prog-buy" style="width:0%"></div></div>
+        <div class="card-body" id="list-buy"></div>
+        <div class="card-footer">
+          <div class="input-row">
+            <input type="text" id="inp-buy" placeholder="구매할 것 추가..." maxlength="200"
+              onkeydown="if(event.key==='Enter')addItem('buy')">
+            <button class="add-btn" onclick="addItem('buy')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DATE PICKER MODAL -->
+<div class="modal-overlay hidden" id="dateModal" onclick="if(event.target===this)closeDatePicker()">
+  <div class="modal-box">
+    <div class="modal-title">📅 날짜 선택</div>
+    <input type="date" class="modal-input" id="datePickerInput">
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeDatePicker()">취소</button>
+      <button class="modal-btn confirm" onclick="applyDatePicker()">이동</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ============================================================
+   BRAIN DUMP — Core State & Storage
+   ============================================================ */
+const STORAGE_KEY = 'braindump_v1';
+const CARDS = ['work','personal','family','meet','call','buy'];
+
+// 현재 날짜 (YYYY-MM-DD 문자열)
+let currentDate = todayStr();
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// 전체 데이터 구조: { "2026-03-06": { work:[...], personal:[...], ... } }
+function loadAll() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function saveAll(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  catch(e) { showToast('⚠️ 저장 공간이 부족합니다'); }
+}
+
+function getDayData(date) {
+  const all = loadAll();
+  if (!all[date]) {
+    all[date] = {};
+    CARDS.forEach(c => { all[date][c] = []; });
+  }
+  CARDS.forEach(c => { if (!all[date][c]) all[date][c] = []; });
+  return all[date];
+}
+
+function saveDayData(date, dayData) {
+  const all = loadAll();
+  all[date] = dayData;
+  saveAll(all);
+}
+
+/* ============================================================
+   DATE NAVIGATION
+   ============================================================ */
+const DAY_NAMES = ['일','월','화','수','목','금','토'];
+const DAY_NAMES_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function parseDate(str) {
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function formatDateStr(str) {
+  const d = parseDate(str);
+  const dow = DAY_NAMES[d.getDay()];
+  return {
+    main: `${d.getMonth()+1}월 ${d.getDate()}일 (${dow})`,
+    sub: `${d.getFullYear()} · ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}, ${DAY_NAMES_EN[d.getDay()]}`
+  };
+}
+
+function shiftDate(str, delta) {
+  const d = parseDate(str);
+  d.setDate(d.getDate() + delta);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function updateDateUI() {
+  const fmt = formatDateStr(currentDate);
+  document.getElementById('dateMain').textContent = fmt.main;
+  document.getElementById('dateSub').textContent = fmt.sub;
+  const isToday = currentDate === todayStr();
+  document.getElementById('todayBadge').style.display = isToday ? 'inline-flex' : 'none';
+  document.getElementById('nextDay').style.opacity = isToday ? '0.4' : '1';
+}
+
+document.getElementById('prevDay').onclick = () => {
+  currentDate = shiftDate(currentDate, -1);
+  updateDateUI();
+  renderAll();
+};
+
+document.getElementById('nextDay').onclick = () => {
+  currentDate = shiftDate(currentDate, 1);
+  updateDateUI();
+  renderAll();
+};
+
+function goToday() {
+  const was = currentDate;
+  currentDate = todayStr();
+  updateDateUI();
+  if (was !== currentDate) renderAll();
+  showToast('📅 오늘로 이동했습니다');
+}
+
+/* DATE PICKER */
+function openDatePicker() {
+  document.getElementById('datePickerInput').value = currentDate;
+  document.getElementById('dateModal').classList.remove('hidden');
+}
+
+function closeDatePicker() {
+  document.getElementById('dateModal').classList.add('hidden');
+}
+
+function applyDatePicker() {
+  const val = document.getElementById('datePickerInput').value;
+  if (val) {
+    currentDate = val;
+    updateDateUI();
+    renderAll();
+    showToast('📅 날짜가 변경되었습니다');
+  }
+  closeDatePicker();
+}
+
+/* ============================================================
+   ITEM CRUD
+   ============================================================ */
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function addItem(card) {
+  const inp = document.getElementById(`inp-${card}`);
+  const text = inp.value.trim();
+  if (!text) { inp.focus(); return; }
+
+  const dayData = getDayData(currentDate);
+  dayData[card].unshift({ id: genId(), text, done: false, createdAt: Date.now() });
+  saveDayData(currentDate, dayData);
+  inp.value = '';
+  renderCard(card, dayData[card]);
+  inp.focus();
+  showToast(`✅ 추가되었습니다`);
+}
+
+function toggleDone(card, id) {
+  const dayData = getDayData(currentDate);
+  const item = dayData[card].find(i => i.id === id);
+  if (item) {
+    item.done = !item.done;
+    saveDayData(currentDate, dayData);
+    renderCard(card, dayData[card]);
+    if (item.done) showToast('🎉 완료!');
+  }
+}
+
+function deleteItem(card, id) {
+  const dayData = getDayData(currentDate);
+  const idx = dayData[card].findIndex(i => i.id === id);
+  if (idx === -1) return;
+
+  // 애니메이션 후 삭제
+  const el = document.getElementById(`item-${id}`);
+  if (el) {
+    el.classList.add('item-exit');
+    setTimeout(() => {
+      dayData[card].splice(idx, 1);
+      saveDayData(currentDate, dayData);
+      renderCard(card, dayData[card]);
+    }, 180);
+  } else {
+    dayData[card].splice(idx, 1);
+    saveDayData(currentDate, dayData);
+    renderCard(card, dayData[card]);
+  }
+}
+
+function editItem(card, id, newText) {
+  const dayData = getDayData(currentDate);
+  const item = dayData[card].find(i => i.id === id);
+  if (item && newText.trim()) {
+    item.text = newText.trim();
+    saveDayData(currentDate, dayData);
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderCard(card, items) {
+  const listEl = document.getElementById(`list-${card}`);
+  const countEl = document.getElementById(`count-${card}`);
+  const progEl = document.getElementById(`prog-${card}`);
+
+  const total = items.length;
+  const done = items.filter(i => i.done).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  // 카운트 배지
+  countEl.textContent = total > 0 ? `${done}/${total}` : '0';
+  countEl.className = 'card-count' + (total > 0 ? ' has-items' : '');
+
+  // 진행률 바
+  progEl.style.width = pct + '%';
+
+  // 아이템 목록
+  if (total === 0) {
+    listEl.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">${getCardEmptyIcon(card)}</div>
+        <div class="empty-text">${getCardEmptyText(card)}</div>
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = items.map((item, idx) => `
+    <div class="list-item" id="item-${item.id}">
+      <div class="drag-handle">⠿</div>
+      <div class="item-check ${item.done ? 'checked' : ''}"
+        onclick="toggleDone('${card}','${item.id}')"></div>
+      <div class="item-text ${item.done ? 'done' : ''}"
+        contenteditable="true"
+        spellcheck="false"
+        onblur="editItem('${card}','${item.id}',this.textContent)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+      >${escHtml(item.text)}</div>
+      <button class="item-del" onclick="deleteItem('${card}','${item.id}')" title="삭제">×</button>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  const dayData = getDayData(currentDate);
+  CARDS.forEach(card => renderCard(card, dayData[card]));
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getCardEmptyIcon(card) {
+  const icons = { work:'💼', personal:'🙋', family:'🏠', meet:'🤝', call:'📞', buy:'🛒' };
+  return icons[card] || '📝';
+}
+
+function getCardEmptyText(card) {
+  const texts = {
+    work: '업무 할 일을 추가하세요',
+    personal: '개인 할 일을 추가하세요',
+    family: '가족 관련 할 일을 추가하세요',
+    meet: '만날 사람을 추가하세요',
+    call: '전화할 사람을 추가하세요',
+    buy: '구매할 것을 추가하세요'
+  };
+  return texts[card] || '항목을 추가하세요';
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('braindump_theme', isDark ? 'light' : 'dark');
+  showToast(isDark ? '☀️ 라이트 모드' : '🌙 다크 모드');
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('braindump_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '🌙' : '☀️';
+}
+
+/* ============================================================
+   CLEAR
+   ============================================================ */
+function confirmClear() {
+  const fmt = formatDateStr(currentDate);
+  if (confirm(`${fmt.main}의 모든 항목을 삭제하시겠습니까?`)) {
+    const all = loadAll();
+    delete all[currentDate];
+    saveAll(all);
+    renderAll();
+    showToast('🗑️ 삭제되었습니다');
+  }
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, duration = 2200) {
+  const container = document.getElementById('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 280);
+  }, duration);
+}
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.contentEditable === 'true') return;
+  if (e.key === 'ArrowLeft' || e.key === 'h') {
+    currentDate = shiftDate(currentDate, -1);
+    updateDateUI(); renderAll();
+  }
+  if (e.key === 'ArrowRight' || e.key === 'l') {
+    if (currentDate < todayStr()) { currentDate = shiftDate(currentDate, 1); updateDateUI(); renderAll(); }
+  }
+  if (e.key === 't' || e.key === 'T') goToday();
+  if (e.key === 'd' || e.key === 'D') toggleTheme();
+  if (e.key === 'Escape') closeDatePicker();
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  initTheme();
+  updateDateUI();
+  renderAll();
+
+  // 날짜 자동 갱신 (자정 처리)
+  setInterval(() => {
+    const newToday = todayStr();
+    if (currentDate === todayStr() && newToday !== currentDate) {
+      currentDate = newToday;
+      updateDateUI();
+      renderAll();
+    }
+  }, 60000);
+}
+
+init();
+</script>
+</body>
+</html>
