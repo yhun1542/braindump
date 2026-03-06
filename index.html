@@ -894,6 +894,12 @@ body {
           </div>
         </div>
         <div class="setting-group">
+          <div class="setting-item" id="gcalConnectItem">
+            <span class="setting-icon">📅</span>
+            <span class="setting-label">구글 캘린더 연동</span>
+            <span class="setting-value" id="gcalStatus">미연동</span>
+            <span class="setting-arrow">›</span>
+          </div>
           <div class="setting-item" id="openAiKeyItem">
             <span class="setting-icon">🤖</span>
             <span class="setting-label">OpenAI API Key</span>
@@ -1951,6 +1957,55 @@ function escReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 
 // Init FAB visibility
 document.getElementById('calFab').classList.add('hidden');
+/* ══ GOOGLE CALENDAR OAUTH ══ */
+const GCAL_CLIENT_ID = '931666684955-dae922jfsrh5d099v1dbjgmn21d8hu09.apps.googleusercontent.com';
+const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar';
+let gcalTokenClient = null;
+let gcalAccessToken = null;
+function loadGIS() {
+  if (!GCAL_CLIENT_ID) return;
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.onload = initGIS;
+  document.head.appendChild(s);
+}
+function initGIS() {
+  if (!window.google || !GCAL_CLIENT_ID) return;
+  gcalTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GCAL_CLIENT_ID,
+    scope: GCAL_SCOPES,
+    callback: (resp) => {
+      if (resp.error) { console.error('GCal auth error', resp); return; }
+      gcalAccessToken = resp.access_token;
+      localStorage.setItem('gcal_token', gcalAccessToken);
+      document.getElementById('gcalStatus').textContent = '연동됨 ✓';
+      document.getElementById('gcalStatus').style.color = '#27ae60';
+      showToast('구글 캘린더 연동 완료!');
+    }
+  });
+  const saved = localStorage.getItem('gcal_token');
+  if (saved) {
+    gcalAccessToken = saved;
+    document.getElementById('gcalStatus').textContent = '연동됨 ✓';
+    document.getElementById('gcalStatus').style.color = '#27ae60';
+  }
+}
+document.getElementById('gcalConnectItem').addEventListener('click', () => {
+  if (!GCAL_CLIENT_ID) { showToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
+  if (gcalAccessToken) {
+    if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
+      gcalAccessToken = null;
+      localStorage.removeItem('gcal_token');
+      document.getElementById('gcalStatus').textContent = '미연동';
+      document.getElementById('gcalStatus').style.color = '';
+      showToast('구글 캘린더 연동 해제');
+    }
+  } else {
+    if (gcalTokenClient) gcalTokenClient.requestAccessToken();
+    else { loadGIS(); showToast('Google OAuth 초기화 중...'); }
+  }
+});
+loadGIS();
 </script>
 </body>
 </html>
