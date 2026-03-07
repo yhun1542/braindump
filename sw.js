@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v4';
+const CACHE_VERSION = 'pwa-v5';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -40,8 +40,8 @@ self.addEventListener('install', (event) => {
       );
     })
   );
-  // 새 SW를 즉시 활성화하지 않음 — 업데이트 토스트가 제어
-  // (사용자가 토스트에서 "업데이트" 클릭 시 SKIP_WAITING 메시지로 활성화)
+  // 즉시 활성화 — waiting 없이 바로 새 SW 적용
+  self.skipWaiting();
 });
 
 // ── Activate: 구버전 캐시 정리 ──────────────────────────────────────────────
