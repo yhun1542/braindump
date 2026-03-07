@@ -6,7 +6,7 @@
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v9'));
+    const oldKeys = keys.filter(k => !k.includes('pwa-v10'));
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       const regs = await navigator.serviceWorker.getRegistrations();
@@ -358,7 +358,9 @@ body {
   font-family: var(--font); transition: color 0.2s;
 }
 .tab-item.active { color: var(--accent); }
-.tab-icon { font-size: 20px; line-height: 1; }
+.tab-icon { font-size: 20px; line-height: 1; display:flex; align-items:center; justify-content:center; }
+.tab-icon img { transition: filter 0.2s; }
+.tab-item.active .tab-icon img { filter: drop-shadow(0 0 4px var(--accent)) brightness(1.1); }
 .tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
 
 /* ════════════════════════════════════════
@@ -629,6 +631,7 @@ body {
   scrollbar-width: none;
 }
 .arc-cats::-webkit-scrollbar { display: none; }
+.arc-cat-btn img { vertical-align: middle; margin-right: 2px; }
 .arc-cat-btn {
   padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
   border: 1.5px solid var(--border-mid); background: var(--surface);
@@ -1568,12 +1571,12 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
       </div>
       <div class="arc-cats">
         <button class="arc-cat-btn active" data-cat="all">전체 <span class="arc-cat-count" id="cnt-all">0</span></button>
-        <button class="arc-cat-btn" data-cat="note">📝 노트 <span class="arc-cat-count" id="cnt-note">0</span></button>
-        <button class="arc-cat-btn" data-cat="url">🔗 링크 <span class="arc-cat-count" id="cnt-url">0</span></button>
+        <button class="arc-cat-btn" data-cat="note"><img src="/icons/pencil-dynamic-color.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;" alt=""> 노트 <span class="arc-cat-count" id="cnt-note">0</span></button>
+        <button class="arc-cat-btn" data-cat="url"><img src="/icons/link-dynamic-color.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;" alt=""> 링크 <span class="arc-cat-count" id="cnt-url">0</span></button>
         <button class="arc-cat-btn" data-cat="image">🖼 사진 <span class="arc-cat-count" id="cnt-image">0</span></button>
         <button class="arc-cat-btn" data-cat="video">🎬 동영상 <span class="arc-cat-count" id="cnt-video">0</span></button>
         <button class="arc-cat-btn" data-cat="file">📄 파일 <span class="arc-cat-count" id="cnt-file">0</span></button>
-        <button class="arc-cat-btn" data-cat="pinned">⭐ 즐겨찾기 <span class="arc-cat-count" id="cnt-pinned">0</span></button>
+        <button class="arc-cat-btn" data-cat="pinned"><img src="/icons/bookmark-fav-dynamic-premium.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;" alt=""> 즐겨찾기 <span class="arc-cat-count" id="cnt-pinned">0</span></button>
       </div>
       
       <div class="arc-smartbar" id="arcSmartBar">
@@ -1608,24 +1611,24 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
             <button class="setting-toggle" id="themeToggle"></button>
           </div>
           <div class="setting-item">
-            <span class="setting-icon">🔔</span>
+            <span class="setting-icon"><img src="/icons/bell-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt=""></span>
             <span class="setting-label">알림</span>
             <button class="setting-toggle on" id="notiToggle"></button>
           </div>
         </div>
         <div class="setting-group">
           <div class="setting-item" onclick="switchTab('today')">
-            <span class="setting-icon">📅</span>
+            <span class="setting-icon"><img src="/icons/pencil-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt=""></span>
             <span class="setting-label">Today 바로가기</span>
             <span class="setting-arrow">›</span>
           </div>
           <div class="setting-item" onclick="switchTab('schedule')">
-            <span class="setting-icon">🗓</span>
+            <span class="setting-icon"><img src="/icons/clock-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt=""></span>
             <span class="setting-label">Schedule 바로가기</span>
             <span class="setting-arrow">›</span>
           </div>
           <div class="setting-item" onclick="switchTab('archive')">
-            <span class="setting-icon">🗂</span>
+            <span class="setting-icon"><img src="/icons/new-folder-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt=""></span>
             <span class="setting-label">Archive 바로가기</span>
             <span class="setting-arrow">›</span>
           </div>
@@ -1659,23 +1662,23 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
   <!-- BOTTOM TAB BAR -->
   <div class="tab-bar">
     <button class="tab-item active" data-tab="today">
-      <span class="tab-icon">🏠</span>
+      <span class="tab-icon"><img src="/icons/pencil-dynamic-color.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">Today</span>
     </button>
     <button class="tab-item" data-tab="schedule">
-      <span class="tab-icon">🗓</span>
+      <span class="tab-icon"><img src="/icons/clock-dynamic-color.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">Schedule</span>
     </button>
     <button class="tab-item" data-tab="braindump">
-      <span class="tab-icon">🧠</span>
+      <span class="tab-icon"><img src="/icons/magic-trick-dynamic-premium.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">BrainDump</span>
     </button>
     <button class="tab-item" data-tab="archive">
-      <span class="tab-icon">🗂</span>
+      <span class="tab-icon"><img src="/icons/new-folder-dynamic-premium.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">Archive</span>
     </button>
     <button class="tab-item" data-tab="setting">
-      <span class="tab-icon">⚙️</span>
+      <span class="tab-icon"><img src="/icons/setting-dynamic-premium.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">Setting</span>
     </button>
   </div>
@@ -2084,12 +2087,12 @@ let arcItems = [];
 let unsubListeners = [];
 
 const CARDS = [
-  { id:'work',        icon:'💼', title:'WORK' },
-  { id:'personal',    icon:'🧑', title:'PERSONAL' },
-  { id:'family',      icon:'🏠', title:'FAMILY' },
-  { id:'people',      icon:'🤝', title:'PEOPLE TO MEET' },
-  { id:'health',      icon:'💪', title:'HEALTH' },
-  { id:'finance',     icon:'💰', title:'FINANCE' },
+  { id:'work',        icon:'<img src="/icons/notebook-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'WORK' },
+  { id:'personal',    icon:'<img src="/icons/puzzle-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'PERSONAL' },
+  { id:'family',      icon:'<img src="/icons/phone-outgoing-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'FAMILY' },
+  { id:'people',      icon:'<img src="/icons/headphone-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'PEOPLE TO MEET' },
+  { id:'health',      icon:'<img src="/icons/gym-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'HEALTH' },
+  { id:'finance',     icon:'<img src="/icons/dollar-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'FINANCE' },
 ];
 
 /* ── DOM refs ── */
@@ -2376,7 +2379,7 @@ function renderTodaySchedule() {
   el.style.display = '';
   el.innerHTML = `
     <div class="card-hdr">
-      <span class="card-hdr-icon">🗓</span>
+      <span class="card-hdr-icon"><img src="/icons/clock-dynamic-color.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;" alt=""></span>
       <span class="card-hdr-title">TODAY'S SCHEDULE</span>
       <span class="card-hdr-count">${todayEvs.length}개</span>
     </div>
@@ -3429,59 +3432,72 @@ async function arcEnrichWithAI({title, content, type}) {
     return null;
   }
 }
-document.getElementById('arcSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('arcSave').addEventListener('click', async()=>{
+  const btn = document.getElementById('arcSave');
+  if(btn.disabled) return;
+  haptic.success();
   let type = document.getElementById('arcType').value;
   let title = document.getElementById('arcTitle').value.trim();
   let content = document.getElementById('arcContent').value.trim();
   const file = document.getElementById('arcFile').files[0];
   const editId = document.getElementById('arcEditId').value;
   if(!title && !content && !file) { showSaved('제목 또는 내용을 입력해주세요'); return; }
-  if(arcIsUrl(content) && type === 'note') type = 'url';
-  let url = '';
-  const heuristicMentions = arcExtractMentions(title + ' ' + content);
-  const heuristicTags = [...new Set([...arcExtractHashTags(title+' '+content), ...arcGuessTags(title, content, type)])].slice(0,8);
-  const heuristicKind = arcGuessKind(title, content, type);
-  const heuristicProject = arcGuessProject(title, content, heuristicTags, heuristicMentions);
-  let summary = arcSummarizeFallback(content);
-  let aiTag = '';
-  let project = heuristicProject;
-  let kind = heuristicKind;
-  let tags = heuristicTags;
-  let mentions = heuristicMentions;
-  let wikiLinks = arcExtractWikiLinks(title + ' ' + content);
-  if(file && ['image','video','file'].includes(type)) {
-    try {
-      const sRef = storageRef(storage, `users/${uid()}/archive/${Date.now()}_${file.name}`);
-      await uploadBytes(sRef, file);
-      url = await getDownloadURL(sRef);
-      if(!title) title = file.name.replace(/\.[^.]+$/, '');
-      if(!content) content = file.name;
-    } catch(e) {}
+  btn.disabled = true;
+  btn.textContent = '저장 중...';
+  try {
+    if(arcIsUrl(content) && type === 'note') type = 'url';
+    let url = '';
+    const heuristicMentions = arcExtractMentions(title + ' ' + content);
+    const heuristicTags = [...new Set([...arcExtractHashTags(title+' '+content), ...arcGuessTags(title, content, type)])].slice(0,8);
+    const heuristicKind = arcGuessKind(title, content, type);
+    const heuristicProject = arcGuessProject(title, content, heuristicTags, heuristicMentions);
+    let summary = arcSummarizeFallback(content);
+    let aiTag = '';
+    let project = heuristicProject;
+    let kind = heuristicKind;
+    let tags = heuristicTags;
+    let mentions = heuristicMentions;
+    let wikiLinks = arcExtractWikiLinks(title + ' ' + content);
+    if(file && ['image','video','file'].includes(type)) {
+      try {
+        const sRef = storageRef(storage, `users/${uid()}/archive/${Date.now()}_${file.name}`);
+        await uploadBytes(sRef, file);
+        url = await getDownloadURL(sRef);
+        if(!title) title = file.name.replace(/\.[^.]+$/, '');
+        if(!content) content = file.name;
+      } catch(e) { console.warn('파일 업로드 실패:', e); }
+    }
+    const ai = await arcEnrichWithAI({title, content, type});
+    if(ai){
+      summary = ai.summary || summary;
+      aiTag = ai.aiTag || aiTag;
+      project = ai.project || project;
+      kind = ['meeting','material','idea'].includes(ai.kind) ? ai.kind : kind;
+      tags = [...new Set([...(Array.isArray(ai.tags)?ai.tags:[]), ...tags])].slice(0,8);
+    }
+    if(!title) title = type==='url' ? arcGetDomain(content) || '새 링크' : '새 메모';
+    const collection = arcComputeCollection({type, kind, title, content});
+    const payload = { type, title, content, url, aiTag, summary, project, kind, collection, tags, mentions, wikiLinks, pinned:false, updatedAt: serverTimestamp() };
+    if(editId) {
+      if(!url) delete payload.url;
+      delete payload.pinned;
+      await updateDoc(arcPath(editId), payload);
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(arcCol(), payload);
+    }
+    document.getElementById('arcEditId').value = '';
+    document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
+    document.getElementById('arcOverlay').classList.add('hidden');
+    document.getElementById('arcFile').value = '';
+    showSaved();
+  } catch(e) {
+    console.error('저장 오류:', e);
+    showSaved('저장 실패: ' + (e.message || '오류가 발생했습니다'));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '저장 + AI 분류';
   }
-  const ai = await arcEnrichWithAI({title, content, type});
-  if(ai){
-    summary = ai.summary || summary;
-    aiTag = ai.aiTag || aiTag;
-    project = ai.project || project;
-    kind = ['meeting','material','idea'].includes(ai.kind) ? ai.kind : kind;
-    tags = [...new Set([...(Array.isArray(ai.tags)?ai.tags:[]), ...tags])].slice(0,8);
-  }
-  if(!title) title = type==='url' ? arcGetDomain(content) || '새 링크' : '새 메모';
-  const collection = arcComputeCollection({type, kind, title, content});
-  const payload = { type, title, content, url, aiTag, summary, project, kind, collection, tags, mentions, wikiLinks, pinned:false, updatedAt: serverTimestamp() };
-  if(editId) {
-    if(!url) delete payload.url;
-    delete payload.pinned;
-    await updateDoc(arcPath(editId), payload);
-  } else {
-    payload.createdAt = serverTimestamp();
-    await addDoc(arcCol(), payload);
-  }
-  document.getElementById('arcEditId').value = '';
-  document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
-  document.getElementById('arcOverlay').classList.add('hidden');
-  document.getElementById('arcFile').value = '';
-  showSaved();
 });
 document.getElementById('arcGraphClose')?.addEventListener('click', closeArcGraph);
 document.getElementById('arcProjectClose')?.addEventListener('click', closeArcProjectSheet);
