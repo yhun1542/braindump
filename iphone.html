@@ -217,7 +217,8 @@ body {
   cursor: pointer; font-family: var(--font);
   letter-spacing: 0.5px;
 }
-.login-error { color: #ff6b6b; font-size: 13px; margin-top: 12px; text-align: center; }
+.login-error { color: #ff6b6b; font-size: 13px; margin-top: 12px; text-align: center; display: block; }
+.login-error.hidden { display: none !important; }
 
 /* ── APP SHELL ── */
 #app { display: none; flex-direction: column; height: 100vh; }
@@ -2080,7 +2081,20 @@ loginBtn.addEventListener('click', async () => { haptic.medium();
     await setPersistence(auth, persistence);
     await signInWithEmailAndPassword(auth, email, pw);
   } catch(e) {
-    loginError.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+    const errCode = e.code || '';
+    let errMsg = '로그인에 실패했습니다. 다시 시도해주세요.';
+    if (errCode.includes('user-not-found') || errCode.includes('wrong-password') || errCode.includes('invalid-credential')) {
+      errMsg = '이메일 또는 비밀번호가 올바르지 않습니다.';
+    } else if (errCode.includes('too-many-requests')) {
+      errMsg = '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
+    } else if (errCode.includes('network-request-failed')) {
+      errMsg = '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.';
+    } else if (errCode.includes('unauthorized-domain')) {
+      errMsg = '인증 도메인 오류입니다. 관리자에게 문의하세요.';
+    } else if (errCode.includes('user-disabled')) {
+      errMsg = '비활성화된 계정입니다.';
+    }
+    loginError.textContent = errMsg;
     loginError.classList.remove('hidden');
     loginBtn.textContent = '로그인';
   }
