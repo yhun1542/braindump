@@ -2022,7 +2022,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
   browserLocalPersistence, browserSessionPersistence, setPersistence
@@ -2036,7 +2036,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 /* ── Firebase Init ── */
-const fbApp = initializeApp({
+const fbApp = getApps().length > 0 ? getApp() : initializeApp({
   apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
   authDomain: "braindump-jasoneye.firebaseapp.com",
   projectId: "braindump-jasoneye",
@@ -2124,7 +2124,7 @@ loginBtn.addEventListener('click', async () => { haptic.medium();
       errMsg = '비활성화된 계정입니다.';
     }
     loginError.textContent = errMsg;
-    loginError.classList.remove('hidden');
+      loginError.style.display = 'block'; loginError.classList.remove('hidden');
     loginBtn.textContent = '로그인';
   }
 });
