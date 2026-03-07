@@ -6,7 +6,7 @@
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v10'));
+    const oldKeys = keys.filter(k => !k.includes('pwa-v11'));
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       const regs = await navigator.serviceWorker.getRegistrations();
@@ -2087,7 +2087,7 @@ const CARDS = [
   { id:'family',      icon:'<img src="/icons/phone-outgoing-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'FAMILY' },
   { id:'people',      icon:'<img src="/icons/headphone-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'PEOPLE TO MEET' },
   { id:'health',      icon:'<img src="/icons/gym-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'HEALTH' },
-  { id:'finance',     icon:'<img src="/icons/dollar-dynamic-premium.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'FINANCE' },
+  { id:'finance',     icon:'<img src="/icons/wallet-dynamic-color.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;" alt="">', title:'FINANCE' },
 ];
 
 /* ── DOM refs ── */
