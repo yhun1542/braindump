@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>
+// SW 캐시 강제 무효화 (v22 fix)
+(async () => {
+  try {
+    const keys = await caches.keys();
+    const oldKeys = keys.filter(k => !k.includes('pwa-v6'));
+    if (oldKeys.length > 0) {
+      await Promise.all(oldKeys.map(k => caches.delete(k)));
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+      location.reload(true);
+    }
+  } catch(e) {}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0B1220">
