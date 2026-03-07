@@ -1,0 +1,19 @@
+{
+  "results": {
+    "gemini": {
+      "error": "401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https"
+    },
+    "grok": {
+      "error": "400 Client Error: Bad Request for url: https://api.x.ai/v1/chat/completions"
+    },
+    "openai": {
+      "error": "401 Client Error: Unauthorized for url: https://api.openai.com/v1/responses"
+    },
+    "claude": {
+      "error": "401 Client Error: Unauthorized for url: https://api.anthropic.com/v1/messages"
+    }
+  },
+  "scores": [],
+  "average": null,
+  "improvements": []
+}

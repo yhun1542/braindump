@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v3';
+const CACHE_VERSION = 'pwa-v4';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -20,7 +20,10 @@ const SHELL_ASSETS = [
   '/iphone.html',
   '/manifest.webmanifest',
   '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-512.png',
+  '/icons/apple-touch-icon.png',
+  '/favicon.ico',
+  '/images/og-image.png'
 ];
 
 // ── Install: 셸 에셋 사전 캐시 ──────────────────────────────────────────────

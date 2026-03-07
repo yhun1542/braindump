@@ -1,0 +1,131 @@
+{
+  "files": {
+    "galaxy.html": {
+      "score": 90.0,
+      "passed": 24,
+      "warnings": 2,
+      "issues": 2,
+      "details": {
+        "passed": [
+          "✅ haptic utility 존재",
+          "✅ openArcDashboard 존재",
+          "✅ openMeetingSummary 존재",
+          "✅ openQuickConvert 존재",
+          "✅ execConvert 존재",
+          "✅ arcSearchScore 존재",
+          "✅ arcInferProject 존재",
+          "✅ arcFormatDate 존재",
+          "✅ arcEnrichItem 존재",
+          "✅ renderArcGrid 존재",
+          "✅ arcTogglePin 존재",
+          "✅ sendMeetActionsToToday 존재",
+          "✅ 다크모드 CSS 변수 완성 (9/9)",
+          "✅ arc-ctx-overlay hidden 버그픽스 적용",
+          "✅ 햅틱 피드백 93곳 적용",
+          "✅ arcFormatDate 오늘/어제 표시 개선",
+          "✅ XSS 방어 escHtml 77곳 사용",
+          "✅ try-catch 에러 핸들링 17곳",
+          "✅ 빈 상태(empty state) 처리 존재",
+          "✅ 모바일 뷰포트 설정 완료",
+          "✅ PWA 설정 완료",
+          "✅ 삭제 확인 다이얼로그 존재",
+          "✅ URL 자동 감지 로직 존재",
+          "✅ 검색 점수 가중치 로직 존재"
+        ],
+        "warnings": [
+          "⚠️  innerHTML 직접 할당 30곳 (XSS 위험 가능)",
+          "⚠️  파일 크기 206KB (4748줄) - 분리 고려"
+        ],
+        "issues": [
+          "❌ arcDeleteItem 누락",
+          "❌ arcSaveItem 누락"
+        ]
+      }
+    },
+    "iphone.html": {
+      "score": 90.0,
+      "passed": 24,
+      "warnings": 2,
+      "issues": 2,
+      "details": {
+        "passed": [
+          "✅ haptic utility 존재",
+          "✅ openArcDashboard 존재",
+          "✅ openMeetingSummary 존재",
+          "✅ openQuickConvert 존재",
+          "✅ execConvert 존재",
+          "✅ arcSearchScore 존재",
+          "✅ arcInferProject 존재",
+          "✅ arcFormatDate 존재",
+          "✅ arcEnrichItem 존재",
+          "✅ renderArcGrid 존재",
+          "✅ arcTogglePin 존재",
+          "✅ sendMeetActionsToToday 존재",
+          "✅ 다크모드 CSS 변수 완성 (9/9)",
+          "✅ arc-ctx-overlay hidden 버그픽스 적용",
+          "✅ 햅틱 피드백 90곳 적용",
+          "✅ arcFormatDate 오늘/어제 표시 개선",
+          "✅ XSS 방어 escHtml 76곳 사용",
+          "✅ try-catch 에러 핸들링 15곳",
+          "✅ 빈 상태(empty state) 처리 존재",
+          "✅ 모바일 뷰포트 설정 완료",
+          "✅ PWA 설정 완료",
+          "✅ 삭제 확인 다이얼로그 존재",
+          "✅ URL 자동 감지 로직 존재",
+          "✅ 검색 점수 가중치 로직 존재"
+        ],
+        "warnings": [
+          "⚠️  innerHTML 직접 할당 30곳 (XSS 위험 가능)",
+          "⚠️  파일 크기 201KB (4589줄) - 분리 고려"
+        ],
+        "issues": [
+          "❌ arcDeleteItem 누락",
+          "❌ arcSaveItem 누락"
+        ]
+      }
+    },
+    "index.html": {
+      "score": 90.0,
+      "passed": 24,
+      "warnings": 2,
+      "issues": 2,
+      "details": {
+        "passed": [
+          "✅ haptic utility 존재",
+          "✅ openArcDashboard 존재",
+          "✅ openMeetingSummary 존재",
+          "✅ openQuickConvert 존재",
+          "✅ execConvert 존재",
+          "✅ arcSearchScore 존재",
+          "✅ arcInferProject 존재",
+          "✅ arcFormatDate 존재",
+          "✅ arcEnrichItem 존재",
+          "✅ renderArcGrid 존재",
+          "✅ arcTogglePin 존재",
+          "✅ sendMeetActionsToToday 존재",
+          "✅ 다크모드 CSS 변수 완성 (9/9)",
+          "✅ arc-ctx-overlay hidden 버그픽스 적용",
+          "✅ 햅틱 피드백 91곳 적용",
+          "✅ arcFormatDate 오늘/어제 표시 개선",
+          "✅ XSS 방어 escHtml 76곳 사용",
+          "✅ try-catch 에러 핸들링 15곳",
+          "✅ 빈 상태(empty state) 처리 존재",
+          "✅ 모바일 뷰포트 설정 완료",
+          "✅ PWA 설정 완료",
+          "✅ 삭제 확인 다이얼로그 존재",
+          "✅ URL 자동 감지 로직 존재",
+          "✅ 검색 점수 가중치 로직 존재"
+        ],
+        "warnings": [
+          "⚠️  innerHTML 직접 할당 30곳 (XSS 위험 가능)",
+          "⚠️  파일 크기 203KB (4650줄) - 분리 고려"
+        ],
+        "issues": [
+          "❌ arcDeleteItem 누락",
+          "❌ arcSaveItem 누락"
+        ]
+      }
+    }
+  },
+  "average": 90.0
+}

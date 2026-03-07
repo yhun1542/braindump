@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0B1220">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <!-- ═══ Icons & OG ═══ -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+  <meta property="og:image" content="https://jasoneye.com/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasoneye.com/images/og-image.png">
+  <link rel="manifest" href="/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Synapse">
@@ -163,8 +173,8 @@ body {
   margin-bottom: 8px; text-align: center;
 }
 .login-logo img {
-  height: 60px;
-  width: auto;
+  height: auto;
+  width: min(220px, 55vw);
   display: block;
 }
 
@@ -1374,7 +1384,6 @@ body {
 @keyframes spin{to{transform:rotate(360deg)}}
 
 
-
 </style>
 </head>
 <body>
@@ -1386,9 +1395,9 @@ body {
   transition: opacity 0.4s ease;
 ">
   <div style="text-align:center;">
-    <img src="/images/jf_os_header_dark_master.png" alt="JF OS"
-         style="width:200px; height:auto; display:block; margin:0 auto;"
-         onerror="this.src='/images/jf_os_header_dark_2x.png'">
+    <img src="/images/jf_os_header_dark_hd.png" alt="JF OS"
+         style="width:min(280px,60vw); height:auto; display:block; margin:0 auto; image-rendering:auto;"
+         onerror="this.src='/images/jf_os_header_dark_master.png'">
     <div style="margin-top:16px; font-size:13px; color:rgba(255,255,255,0.35); letter-spacing:0.05em;">로딩 중…</div>
   </div>
 </div>
@@ -1405,11 +1414,11 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 <!-- ══ LOGIN SCREEN ══ -->
 <div id="loginScreen">
   <div class="login-logo">
-    <img src="/images/jf_os_header_light_master.png"
-         srcset="/images/jf_os_header_light_1x.png 1x, /images/jf_os_header_light_2x.png 2x, /images/jf_os_header_light_3x.png 3x"
+    <img src="/images/jf_os_header_light_hd.png"
+         srcset="/images/jf_os_header_light_hd.webp 2x, /images/jf_os_header_light_hd.png 1x"
          alt="JF OS"
          style="width:200px; height:auto; display:block; margin:0 auto;"
-         onerror="this.src='/images/jf_os_header_light_2x.png'">
+         onerror="this.src='/images/jf_os_header_dark_master.png'">
   </div>
   <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
   <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
@@ -1847,7 +1856,6 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
     </div>
   </div>
 </div>
-
 
 
 <!-- ═══ v22: Project Dashboard Sheet ═══ -->
@@ -3918,8 +3926,8 @@ function updateLogoTheme() {
   const variant = isDark ? 'dark' : 'light';
   const hdrLogo = document.getElementById('hdrLogoImg');
   if(hdrLogo) {
-    hdrLogo.src = `/images/jf_os_header_${variant}_1x.png`;
-    hdrLogo.srcset = `/images/jf_os_header_${variant}_1x.png 1x, /images/jf_os_header_${variant}_2x.png 2x, /images/jf_os_header_${variant}_3x.png 3x`;
+    hdrLogo.src = `/images/jf_os_header_${variant}_hd.png`;
+    hdrLogo.srcset = `/images/jf_os_header_${variant}_hd.webp 2x, /images/jf_os_header_${variant}_hd.png 1x`;
   }
 }
 updateLogoTheme();
