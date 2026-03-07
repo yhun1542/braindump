@@ -6,7 +6,7 @@
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v7'));
+    const oldKeys = keys.filter(k => !k.includes('pwa-v8'));
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       const regs = await navigator.serviceWorker.getRegistrations();
@@ -1274,6 +1274,7 @@ body {
 .arc-doclinks-list::-webkit-scrollbar,.arc-bdlinks-list::-webkit-scrollbar{display:none}
 .arc-doclink-btn,.arc-bdlink-btn{white-space:nowrap}
 .arc-project-sheet{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.46);backdrop-filter:blur(12px);padding:20px 14px max(18px, env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:center}
+.arc-project-sheet.hidden{display:none}
 .arc-project-panel{width:min(100%,760px);max-height:min(88vh,900px);overflow:auto;border-radius:28px 28px 22px 22px;background:var(--surface);color:var(--text);padding:18px 16px 20px}
 .arc-project-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
 .arc-project-title{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.03em}
