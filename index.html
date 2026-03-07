@@ -124,7 +124,7 @@ const haptic = (() => {
   --err-border: #fcc;
 }
 [data-theme="dark"] {
-  --bg: #0e0e0e; --surface: #1a1a1a; --hdr-bg: #f0f0ec; --hdr-text: #111111;
+  --bg: #0e0e0e; --surface: #1a1a1a; --hdr-bg: #1a1a1a; --hdr-text: #f0f0ec;
   --border: #f0f0ec; --border-mid: #2c2c2c; --line: #222222;
   --text: #f0f0ec; --text2: #888888; --text3: #444444;
   --done-color: #3a3a3a; --shadow: 0 2px 16px rgba(0,0,0,0.4);
@@ -638,6 +638,10 @@ body {
   position: absolute; top: 10px; right: 10px;
   font-size: 14px; line-height: 1; z-index: 2;
 }
+.arc-kind-badge { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:4px; vertical-align:middle; }
+.arc-kind-meeting { background:var(--arc-kind-meeting-bg,rgba(245,158,11,0.12)); color:#f59e0b; }
+.arc-kind-material { background:var(--arc-kind-material-bg,rgba(59,130,246,0.12)); color:#3b82f6; }
+.arc-kind-idea { background:var(--arc-kind-idea-bg,rgba(16,185,129,0.12)); color:#10b981; }
 
 /* 헤더 */
 .arc-item-header {
@@ -1180,6 +1184,226 @@ body {
   background: none; border: none; cursor: pointer; padding: 8px 16px;
 }
 
+
+/* ===== Archive v20 Second Brain ===== */
+.arc-smartbar{display:flex;gap:8px;overflow:auto;padding:4px 16px 2px;-ms-overflow-style:none;scrollbar-width:none}
+.arc-smartbar::-webkit-scrollbar{display:none}
+.arc-smart-btn{flex:0 0 auto;border:none;border-radius:999px;padding:9px 12px;background:var(--card);color:var(--text2);font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.arc-smart-btn.active{background:var(--accent);color:#fff}
+.arc-hub{padding:12px 16px 10px;display:flex;flex-direction:column;gap:12px}
+.arc-hub-top{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.arc-hub-card{background:var(--surface);border:1px solid var(--border-mid);border-radius:18px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.04)}
+.arc-hub-label{font-size:12px;color:var(--text3);margin-bottom:6px}
+.arc-hub-value{font-size:22px;font-weight:800;line-height:1.1}
+.arc-hub-sub{font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4}
+.arc-focus-card{background:linear-gradient(180deg,rgba(91,114,238,.10),rgba(91,114,238,.04));border:1px solid rgba(91,114,238,.14);border-radius:20px;padding:16px}
+.arc-focus-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.arc-focus-title{font-size:15px;font-weight:800}
+.arc-focus-sub{font-size:12px;color:var(--text3);margin-top:4px;line-height:1.45}
+.arc-hub-action{border:none;border-radius:12px;padding:10px 12px;background:var(--text);color:var(--bg);font-size:12px;font-weight:800}
+.arc-section-title{font-size:12px;color:var(--text3);font-weight:800;margin-bottom:8px}
+.arc-projects,.arc-kinds{display:flex;gap:8px;overflow:auto;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+.arc-projects::-webkit-scrollbar,.arc-kinds::-webkit-scrollbar{display:none}
+.arc-project-chip,.arc-kind-chip{flex:0 0 auto;border:none;border-radius:999px;padding:10px 12px;background:var(--card);font-size:12px;color:var(--text2);font-weight:700;border:1px solid var(--border-mid)}
+.arc-project-chip.active,.arc-kind-chip.active{background:#111827;color:#fff;border-color:#111827}
+.arc-kind-chip small{opacity:.75;margin-left:4px}
+.arc-grid{padding:0 16px 84px}
+.arc-item{background:var(--card);border:1px solid var(--border-mid);border-radius:22px;padding:16px 16px 12px;margin-bottom:14px;box-shadow:0 12px 24px rgba(0,0,0,.04)}
+.arc-item-header{display:flex;gap:12px;align-items:flex-start}
+.arc-type-icon{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+.arc-item-title{font-size:16px;font-weight:800;line-height:1.38;color:var(--text)}
+.arc-item-meta{font-size:12px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.arc-summary{font-size:14px;line-height:1.55;color:var(--text2);margin:12px 0 10px}
+.arc-item-preview{font-size:13px;line-height:1.58;color:var(--text3);background:var(--bg);border-radius:14px;padding:12px}
+.arc-item-preview img{width:100%;display:block;border-radius:14px;max-height:220px;object-fit:cover}
+.arc-link-card{display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:12px;border:1px solid var(--border-mid)}
+.arc-link-thumb{width:56px;height:56px;border-radius:14px;background:#eef2ff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto}
+.arc-link-thumb img{width:100%;height:100%;object-fit:cover}
+.arc-link-body{min-width:0;flex:1}
+.arc-link-domain{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.arc-link-url{font-size:13px;color:var(--text2);margin-top:5px;line-height:1.45;word-break:break-all}
+.arc-link-title{font-size:14px;font-weight:700;line-height:1.35;color:var(--text)}
+.arc-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.arc-pill{font-size:11px;padding:6px 10px;border-radius:999px;background:var(--bg);color:var(--text2);border:1px solid var(--border-mid)}
+.arc-pill.project{background:rgba(91,114,238,.10);color:var(--accent);border-color:rgba(91,114,238,.14)}
+.arc-doclinks,.arc-bdlinks{margin-top:12px}
+.arc-doclinks-list,.arc-bdlinks-list{display:flex;flex-wrap:wrap;gap:8px}
+.arc-doclink-btn,.arc-bdlink-btn{border:none;border-radius:12px;padding:9px 10px;background:var(--bg);font-size:12px;color:var(--text2);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arc-bdlink-btn{background:rgba(245,158,11,.10);color:#b45309}
+.arc-item-actions{display:flex;gap:8px;margin-top:12px}
+.arc-action-btn{flex:1;border:none;border-radius:12px;padding:11px 10px;background:var(--bg);font-size:13px;font-weight:700;color:var(--text2)}
+.arc-action-btn.primary{background:var(--accent);color:#fff}
+.arc-action-btn.ghost{flex:0 0 46px;padding:11px 0}
+.arc-action-btn.danger{color:#dc2626}
+.arc-empty{text-align:center;padding:68px 20px;color:var(--text3)}
+.arc-empty-icon{font-size:48px;margin-bottom:12px}
+.arc-graph-sheet{position:fixed;inset:0;background:rgba(15,23,42,.34);backdrop-filter:blur(4px);z-index:1500;display:flex;align-items:flex-end;justify-content:center}
+.arc-graph-sheet.hidden{display:none}
+.arc-graph-panel{width:min(100%,780px);max-height:88vh;overflow:auto;background:var(--sheet);border-radius:26px 26px 0 0;padding:18px 16px 18px}
+.arc-graph-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.arc-graph-head h3{margin:0;font-size:18px}
+.arc-graph-head p{margin:4px 0 0;font-size:12px;color:var(--text3);line-height:1.5}
+.arc-graph-close{border:none;background:var(--bg);border-radius:12px;padding:9px 11px;font-weight:800;color:var(--text)}
+.arc-graph-svg{width:100%;height:360px;border-radius:18px;background:var(--bg);border:1px solid var(--border-mid);margin-top:12px}
+.arc-project-list{display:grid;gap:10px;margin-top:14px}
+.arc-project-item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:var(--bg);border:1px solid var(--border-mid);border-radius:16px;padding:12px 14px}
+.arc-project-name{font-size:14px;font-weight:800}
+.arc-project-meta{font-size:12px;color:var(--text3);margin-top:4px}
+.arc-project-open{border:none;border-radius:10px;background:#111827;color:#fff;padding:9px 10px;font-size:12px;font-weight:800}
+
+/* ===== Archive v21 Polish + Project Detail ===== */
+.arc-header{align-items:stretch}
+.arc-search{min-height:48px;font-size:15px;border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,.06)}
+.arc-header-actions{gap:10px}
+.arc-sort-btn,.arc-upload-btn{border-radius:16px;box-shadow:0 10px 24px rgba(15,23,42,.08)}
+.arc-hub{display:flex;flex-direction:column;gap:12px}
+.arc-hub-card,.arc-focus-card,.arc-item,.arc-project-panel,.arc-graph-panel{box-shadow:0 14px 36px rgba(15,23,42,.08)}
+.arc-hub-card{border:1px solid rgba(91,114,238,.08)}
+.arc-focus-card{border:1px solid rgba(91,114,238,.10);overflow:hidden}
+.arc-focus-row{gap:12px;align-items:flex-start}
+.arc-focus-actions{display:flex;gap:8px;flex-shrink:0}
+.arc-hub-action.secondary{background:rgba(91,114,238,.10);color:var(--text)}
+.arc-section-title{font-size:12px;letter-spacing:.02em;opacity:.82}
+.arc-projects{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:none}
+.arc-projects::-webkit-scrollbar{display:none}
+.arc-project-chip,.arc-kind-chip,.arc-pill{border-radius:999px}
+.arc-item{border:1px solid rgba(148,163,184,.12);border-radius:22px}
+.arc-item-title{line-height:1.45;letter-spacing:-.01em}
+.arc-item-meta{flex-wrap:wrap;row-gap:4px}
+.arc-summary{font-size:14px;line-height:1.6}
+.arc-item-preview{line-height:1.65}
+.arc-doclinks,.arc-bdlinks{background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.10);border-radius:16px;padding:10px 12px}
+.arc-doclinks-list,.arc-bdlinks-list{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:none}
+.arc-doclinks-list::-webkit-scrollbar,.arc-bdlinks-list::-webkit-scrollbar{display:none}
+.arc-doclink-btn,.arc-bdlink-btn{white-space:nowrap}
+.arc-project-sheet{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.46);backdrop-filter:blur(12px);padding:20px 14px max(18px, env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:center}
+.arc-project-panel{width:min(100%,760px);max-height:min(88vh,900px);overflow:auto;border-radius:28px 28px 22px 22px;background:var(--surface);color:var(--text);padding:18px 16px 20px}
+.arc-project-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.arc-project-title{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.03em}
+.arc-project-sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.5}
+.arc-project-close{border:none;background:rgba(148,163,184,.12);color:var(--text);border-radius:14px;padding:10px 12px;font-weight:700}
+.arc-project-hero{background:linear-gradient(135deg, rgba(91,114,238,.12), rgba(124,58,237,.10));border:1px solid rgba(91,114,238,.12);border-radius:22px;padding:16px;margin-bottom:14px}
+.arc-project-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.arc-project-stat{background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.48);border-radius:18px;padding:12px}
+[data-theme="dark"] .arc-project-stat{background:rgba(15,23,42,.32);border-color:rgba(148,163,184,.14)}
+.arc-project-stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.arc-project-stat-value{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.arc-project-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+.arc-project-card{border:1px solid rgba(148,163,184,.12);background:var(--surface-2, rgba(148,163,184,.06));border-radius:20px;padding:14px}
+.arc-project-list2{display:flex;flex-direction:column;gap:10px}
+.arc-project-list-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:16px;background:rgba(148,163,184,.06)}
+.arc-project-list-item button{flex-shrink:0;border:none;border-radius:12px;background:rgba(91,114,238,.12);color:var(--text);padding:8px 10px;font-weight:700}
+.arc-mini-note{font-size:12px;color:var(--muted);line-height:1.55}
+.arc-kv{display:flex;flex-wrap:wrap;gap:8px}
+.arc-kv .arc-pill{background:rgba(91,114,238,.10)}
+@media (max-width: 720px){.arc-focus-row{flex-direction:column}.arc-focus-actions{width:100%}.arc-focus-actions .arc-hub-action{flex:1}.arc-project-grid{grid-template-columns:1fr}.arc-project-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.arc-project-panel{padding:16px 14px 18px}.arc-project-title{font-size:22px}}
+
+
+/* ===== Archive v22 — Project Dashboard + Meeting Summary + Quick Convert ===== */
+
+/* ── Project Dashboard ── */
+.arc-dash-sheet{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end}
+.arc-dash-sheet.hidden{display:none}
+.arc-dash-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:92dvh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,.15)}
+.arc-dash-handle{width:40px;height:4px;border-radius:2px;background:var(--border-mid);margin:12px auto 0}
+.arc-dash-scroll{flex:1;overflow-y:auto;padding:0 18px 32px}
+.arc-dash-hero{padding:16px 0 14px;display:flex;align-items:flex-start;gap:12px}
+.arc-dash-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:linear-gradient(135deg,rgba(91,114,238,.15),rgba(91,114,238,.05));border:1px solid rgba(91,114,238,.15)}
+.arc-dash-hero-text{flex:1;min-width:0}
+.arc-dash-title{font-size:20px;font-weight:900;line-height:1.25;color:var(--text)}
+.arc-dash-sub{font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4}
+.arc-dash-close{width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.arc-dash-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.arc-dash-stat{background:var(--surface);border-radius:14px;padding:10px 8px;text-align:center;border:1px solid var(--border-mid)}
+.arc-dash-stat-num{font-size:20px;font-weight:900;line-height:1}
+.arc-dash-stat-label{font-size:10px;color:var(--text3);margin-top:3px;font-weight:700;letter-spacing:.02em}
+.arc-dash-sec{margin-bottom:18px}
+.arc-dash-sec-title{font-size:11px;font-weight:900;color:var(--text3);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.arc-dash-sec-link{font-size:11px;color:var(--accent);font-weight:700;background:none;border:none;cursor:pointer}
+.arc-dash-progress{background:var(--bg);border-radius:12px;overflow:hidden;height:8px;margin-bottom:14px}
+.arc-dash-progress-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--accent),#7c3aed);transition:width .6s cubic-bezier(.16,1,.3,1)}
+.arc-dash-doc-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--bg);border:1px solid var(--border-mid);margin-bottom:7px;cursor:pointer;transition:background .1s}
+.arc-dash-doc-row:active{background:var(--line)}
+.arc-dash-doc-icon{font-size:16px;flex-shrink:0}
+.arc-dash-doc-body{flex:1;min-width:0}
+.arc-dash-doc-title{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arc-dash-doc-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.arc-dash-doc-btn{border:none;border-radius:9px;padding:5px 10px;background:var(--border-mid);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer}
+.arc-dash-insight{background:linear-gradient(135deg,rgba(91,114,238,.08),rgba(124,58,237,.06));border:1px solid rgba(91,114,238,.12);border-radius:14px;padding:14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.arc-dash-action-row{display:flex;gap:8px;margin-bottom:8px}
+.arc-dash-action-btn{flex:1;border:none;border-radius:13px;padding:13px 10px;font-size:12px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .1s}
+.arc-dash-action-btn:active{transform:scale(.95)}
+.arc-dash-action-btn .dab-icon{font-size:20px}
+.arc-dash-action-btn.primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(91,114,238,.3)}
+.arc-dash-action-btn.secondary{background:var(--bg);border:1.5px solid var(--border-mid);color:var(--text2)}
+.arc-dash-timeline{display:flex;flex-direction:column;gap:0}
+.arc-dash-tl-item{display:flex;gap:10px;padding:8px 0;position:relative}
+.arc-dash-tl-item:not(:last-child)::before{content:'';position:absolute;left:6px;top:22px;bottom:-4px;width:1px;background:var(--line)}
+.arc-dash-tl-dot{width:13px;height:13px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;box-shadow:0 0 0 3px rgba(91,114,238,.18)}
+.arc-dash-tl-dot.meeting{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2)}
+.arc-dash-tl-dot.idea{background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2)}
+.arc-dash-tl-text{flex:1;min-width:0}
+.arc-dash-tl-title{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arc-dash-tl-meta{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── Meeting Summary Sheet ── */
+.arc-meet-sheet{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.5);backdrop-filter:blur(5px);display:flex;flex-direction:column;justify-content:flex-end}
+.arc-meet-sheet.hidden{display:none}
+.arc-meet-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:90dvh;display:flex;flex-direction:column}
+.arc-meet-head{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-shrink:0}
+.arc-meet-head-left{display:flex;flex-direction:column;gap:3px}
+.arc-meet-head-title{font-size:17px;font-weight:900;color:var(--text)}
+.arc-meet-head-sub{font-size:11px;color:var(--text3)}
+.arc-meet-body{flex:1;overflow-y:auto;padding:16px 20px 28px}
+.arc-meet-block{margin-bottom:18px}
+.arc-meet-block-title{font-size:11px;font-weight:900;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.arc-meet-block-title span{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:9px;font-weight:800}
+.arc-meet-box{background:var(--bg);border-radius:13px;padding:12px 14px;border:1px solid var(--border-mid);font-size:13px;color:var(--text);line-height:1.6}
+.arc-meet-action-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:11px;background:var(--bg);border:1px solid var(--border-mid);margin-bottom:6px;cursor:pointer;transition:background .1s}
+.arc-meet-action-row:active{background:var(--line)}
+.arc-meet-action-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-mid);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);transition:all .15s}
+.arc-meet-action-row.done .arc-meet-action-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.arc-meet-action-row.done .arc-meet-action-text{text-decoration:line-through;color:var(--text3)}
+.arc-meet-action-text{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.arc-meet-person-chips{display:flex;flex-wrap:wrap;gap:6px}
+.arc-meet-person-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;background:rgba(91,114,238,.10);color:var(--accent);font-size:12px;font-weight:700;border:1px solid rgba(91,114,238,.15)}
+.arc-meet-send-btn{width:100%;border:none;border-radius:14px;padding:14px;background:var(--accent);color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(91,114,238,.3)}
+
+/* ── Quick Convert Sheet ── */
+.arc-conv-sheet{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.48);backdrop-filter:blur(5px);display:flex;flex-direction:column;justify-content:flex-end}
+.arc-conv-sheet.hidden{display:none}
+.arc-conv-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:86dvh;display:flex;flex-direction:column}
+.arc-conv-head{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-shrink:0}
+.arc-conv-title{font-size:17px;font-weight:900;color:var(--text)}
+.arc-conv-body{flex:1;overflow-y:auto;padding:14px 20px 28px}
+.arc-conv-source{background:linear-gradient(135deg,rgba(91,114,238,.07),rgba(91,114,238,.03));border:1px solid rgba(91,114,238,.13);border-radius:14px;padding:13px;font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:14px}
+.arc-conv-items{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.arc-conv-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:13px;background:var(--bg);border:1.5px solid var(--border-mid);cursor:pointer;transition:all .15s}
+.arc-conv-item:active{transform:scale(.98)}
+.arc-conv-item.selected{border-color:var(--accent);background:rgba(91,114,238,.06)}
+.arc-conv-item-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border-mid);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+.arc-conv-item.selected .arc-conv-item-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.arc-conv-item-text{flex:1;font-size:13px;font-weight:600;color:var(--text);line-height:1.4}
+.arc-conv-dest-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.arc-conv-dest-btn{border:1.5px solid var(--border-mid);border-radius:13px;padding:12px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
+.arc-conv-dest-btn:active{transform:scale(.96)}
+.arc-conv-dest-btn.active{border-color:var(--accent);background:rgba(91,114,238,.08)}
+.arc-conv-dest-icon{font-size:22px}
+.arc-conv-dest-label{font-size:12px;font-weight:800;color:var(--text)}
+.arc-conv-dest-sub{font-size:10px;color:var(--text3);text-align:center}
+.arc-conv-go-btn{width:100%;border:none;border-radius:14px;padding:14px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(91,114,238,.3);display:flex;align-items:center;justify-content:center;gap:8px}
+.arc-conv-ai-label{font-size:11px;color:var(--text3);text-align:center;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* ── v22 card action enhancement ── */
+.arc-action-btn.convert{color:#7c3aed}
+.arc-action-btn.meeting{color:#f59e0b}
+.arc-v22-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:7px;font-size:10px;font-weight:800;background:rgba(245,158,11,.12);color:#b45309;margin-left:4px}
+.arc-meet-loading{text-align:center;padding:28px 0;color:var(--text3);font-size:14px}
+.arc-meet-loading .spin{display:inline-block;animation:spin 1s linear infinite;font-size:24px;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+
+
 </style>
 </head>
 <body>
@@ -1310,7 +1534,7 @@ window.__hideSplash = function () {
     <!-- ── ARCHIVE TAB ── -->
     <div class="tab-pane" id="pane-archive">
       <div class="arc-header">
-        <input class="arc-search" id="arcSearch" placeholder="🔍 아카이브 검색...">
+        <input class="arc-search" id="arcSearch" placeholder="🔍 제목, 태그, @멘션, [[위키링크]] 검색...">
         <div class="arc-header-actions">
           <button class="arc-sort-btn" id="arcSortBtn" title="정렬">⇅</button>
           <button class="arc-upload-btn" id="arcUploadBtn">+</button>
@@ -1325,6 +1549,17 @@ window.__hideSplash = function () {
         <button class="arc-cat-btn" data-cat="file">📄 파일 <span class="arc-cat-count" id="cnt-file">0</span></button>
         <button class="arc-cat-btn" data-cat="pinned">⭐ 즐겨찾기 <span class="arc-cat-count" id="cnt-pinned">0</span></button>
       </div>
+      
+      <div class="arc-smartbar" id="arcSmartBar">
+        <button class="arc-smart-btn active" data-smart="all">전체</button>
+        <button class="arc-smart-btn" data-smart="recent7">최근 7일</button>
+        <button class="arc-smart-btn" data-smart="meeting">회의</button>
+        <button class="arc-smart-btn" data-smart="material">자료</button>
+        <button class="arc-smart-btn" data-smart="idea">아이디어</button>
+        <button class="arc-smart-btn" data-smart="pdf">PDF</button>
+        <button class="arc-smart-btn" data-smart="ai">AI 정리됨</button>
+      </div>
+      <div class="arc-hub" id="arcHub"></div>
       <div class="arc-grid" id="arcGrid"></div>
     </div>
 
@@ -1584,6 +1819,100 @@ window.__hideSplash = function () {
       <button class="sheet-cancel" id="moveCancel">취소</button>
       <button class="sheet-save" id="moveConfirm">이동</button>
     </div>
+  </div>
+</div>
+
+
+<div class="arc-graph-sheet hidden" id="arcGraphSheet">
+  <div class="arc-graph-panel">
+    <div class="arc-graph-head">
+      <div>
+        <h3>프로젝트 허브</h3>
+        <p>회의 · 자료 · 아이디어가 같은 축으로 자동 묶입니다. 위 칩이나 그래프 노드를 누르면 바로 필터됩니다.</p>
+      </div>
+      <button class="arc-graph-close" id="arcGraphClose">닫기</button>
+    </div>
+    <svg class="arc-graph-svg" id="arcGraphSvg" viewBox="0 0 360 360" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="arc-project-list" id="arcProjectList"></div>
+  </div>
+</div>
+
+
+<div class="arc-project-sheet hidden" id="arcProjectSheet">
+  <div class="arc-project-panel">
+    <div class="arc-project-head">
+      <div>
+        <div class="arc-project-title" id="arcProjectTitle">프로젝트</div>
+        <div class="arc-project-sub" id="arcProjectSub">관련 회의 · 자료 · 아이디어를 한 번에 봅니다.</div>
+      </div>
+      <button class="arc-project-close" id="arcProjectClose">닫기</button>
+    </div>
+    <div class="arc-project-hero">
+      <div class="arc-project-stats">
+        <div class="arc-project-stat"><div class="arc-project-stat-label">전체</div><div class="arc-project-stat-value" id="arcProjectStatAll">0</div></div>
+        <div class="arc-project-stat"><div class="arc-project-stat-label">회의</div><div class="arc-project-stat-value" id="arcProjectStatMeeting">0</div></div>
+        <div class="arc-project-stat"><div class="arc-project-stat-label">자료</div><div class="arc-project-stat-value" id="arcProjectStatMaterial">0</div></div>
+        <div class="arc-project-stat"><div class="arc-project-stat-label">아이디어</div><div class="arc-project-stat-value" id="arcProjectStatIdea">0</div></div>
+      </div>
+    </div>
+    <div class="arc-project-grid">
+      <div class="arc-project-card">
+        <div class="arc-section-title">핵심 문서</div>
+        <div class="arc-project-list2" id="arcProjectDocs"></div>
+      </div>
+      <div class="arc-project-card">
+        <div class="arc-section-title">핵심 신호</div>
+        <div class="arc-kv" id="arcProjectSignals"></div>
+        <div class="arc-mini-note" id="arcProjectInsight" style="margin-top:12px"></div>
+      </div>
+      <div class="arc-project-card">
+        <div class="arc-section-title">최근 타임라인</div>
+        <div class="arc-project-list2" id="arcProjectTimeline"></div>
+      </div>
+      <div class="arc-project-card">
+        <div class="arc-section-title">연결된 BrainDump</div>
+        <div class="arc-project-list2" id="arcProjectDumps"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ═══ v22: Project Dashboard Sheet ═══ -->
+<div class="arc-dash-sheet hidden" id="arcDashSheet">
+  <div class="arc-dash-panel">
+    <div class="arc-dash-handle"></div>
+    <div class="arc-dash-scroll" id="arcDashBody"></div>
+  </div>
+</div>
+
+<!-- ═══ v22: Meeting Summary Sheet ═══ -->
+<div class="arc-meet-sheet hidden" id="arcMeetSheet">
+  <div class="arc-meet-panel">
+    <div class="arc-dash-handle" style="margin:12px auto 0"></div>
+    <div class="arc-meet-head">
+      <div class="arc-meet-head-left">
+        <div class="arc-meet-head-title">📋 회의 요약</div>
+        <div class="arc-meet-head-sub" id="arcMeetHeadSub">AI가 분석 중...</div>
+      </div>
+      <button class="arc-dash-close" id="arcMeetClose">✕</button>
+    </div>
+    <div class="arc-meet-body" id="arcMeetBody">
+      <div class="arc-meet-loading"><div class="spin">⏳</div><div>AI 분석 중...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ v22: Quick Convert Sheet ═══ -->
+<div class="arc-conv-sheet hidden" id="arcConvSheet">
+  <div class="arc-conv-panel">
+    <div class="arc-dash-handle" style="margin:12px auto 0"></div>
+    <div class="arc-conv-head">
+      <div class="arc-conv-title">⚡ 빠른 변환</div>
+      <button class="arc-dash-close" id="arcConvClose">✕</button>
+    </div>
+    <div class="arc-conv-body" id="arcConvBody"></div>
   </div>
 </div>
 
@@ -2318,25 +2647,198 @@ document.getElementById('moveConfirm').addEventListener('click', async()=>{ hapt
   showSaved();
 });
 
-/* ── ARCHIVE ── */
-// ═══════════════════════════════════════════════════════
-// ARCHIVE v2 — 업그레이드 로직
-// ═══════════════════════════════════════════════════════
-let arcSortMode = 'newest'; // newest | oldest | pinned
-let arcCtxTargetId = null;
 
-/* ── 도메인 추출 유틸 ── */
+/* ── ARCHIVE v20 SECOND BRAIN ── */
+let arcSortMode = 'newest';
+let arcCtxTargetId = null;
+let currentArcProjectSheet = '';
+let currentArcSmartFilter = 'all';
+let currentArcProjectFilter = '';
+let currentArcKindFilter = '';
+
 function arcGetDomain(url) {
-  try { return new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return url; }
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return ''; }
 }
+const ARC_STOPWORDS = new Set(['그리고','그러나','하지만','대한','관련','위한','또는','에서','으로','입니다','있음','없음','정리','메모','노트','자료','문서','링크','회의','아이디어','업무','개인','가족','today','archive','project','the','and','for','with','from','this','that','www','http','https','com','note','link','file']);
 function arcGetFavicon(url) {
-  try { const u = new URL(url); return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`; } catch(e) { return ''; }
+  try { const u = new URL(url); return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=64`; } catch(e) { return ''; }
 }
 function arcIsUrl(str) {
-  return /^https?:\/\//i.test(str.trim());
+  return /^https?:\/\//i.test(String(str||'').trim());
+}
+function arcIsPdf(item){
+  return /\.pdf(\?|#|$)/i.test(item?.url || item?.content || item?.title || '');
+}
+function arcNormalizeText(v){
+  return String(v||'').normalize('NFKC').toLowerCase().replace(/[_|]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function arcSafeDate(item){
+  try{
+    if(item?.updatedAt?.toDate) return item.updatedAt.toDate();
+    if(item?.createdAt?.toDate) return item.createdAt.toDate();
+  }catch(e){}
+  return new Date(0);
+}
+function arcFormatDate(item){
+  const d = arcSafeDate(item);
+  if(!d || !isFinite(d.getTime())) return '';
+  const now = new Date();
+  const diffDays = Math.floor((now - d) / 86400000);
+  if(diffDays === 0) return '오늘';
+  if(diffDays === 1) return '어제';
+  if(diffDays <= 6) return `${diffDays}일 전`;
+  return d.toLocaleString('ko-KR',{month:'short',day:'numeric'});
+}
+function arcTokenize(text){
+  return [...new Set(
+    arcNormalizeText(text).replace(/[^\p{L}\p{N}@#._:/-]+/gu,' ').split(' ').map(s=>s.trim()).filter(v=>v && v.length>=2 && !ARC_STOPWORDS.has(v))
+  )];
+}
+function arcExtractMentions(text){
+  const m = String(text||'').match(/@([가-힣\w.-]+)/g) || [];
+  return [...new Set(m.map(v=>v.replace('@','')).filter(v=>!ARC_STOPWORDS.has(arcNormalizeText(v))))].slice(0,8);
+}
+function arcExtractHashTags(text){
+  const m = String(text||'').match(/#([가-힣\w.-]+)/g) || [];
+  return [...new Set(m.map(v=>v.replace('#','')).filter(v=>!ARC_STOPWORDS.has(arcNormalizeText(v))))].slice(0,10);
+}
+function arcExtractWikiLinks(text){
+  const m = String(text||'').match(/\[\[([^\]]+)\]\]/g) || [];
+  return [...new Set(m.map(v=>v.replace(/\[\[|\]\]/g,'').trim()).filter(Boolean))].slice(0,8);
+}
+function arcSummarizeFallback(text){
+  const clean = String(text||'').replace(/\s+/g,' ').trim();
+  if(!clean) return '';
+  return clean.length > 96 ? clean.slice(0,96) + '…' : clean;
+}
+function arcGuessTags(title, content, type){
+  const raw = arcNormalizeText([title, content].join(' '));
+  const map = [
+    ['업무',['회의','계약','현장','공사','시공','분양','임대','투자','제안','리포트','보고','pm','budget','cost']],
+    ['가족',['가족','아이','아들','딸','엄마','아빠','학교','학원','레슨']],
+    ['학습',['공부','학습','강의','리서치','연구','책','독서','강좌']],
+    ['아이디어',['아이디어','기획','컨셉','브레인스토밍','초안','컨셉트']],
+    ['링크',['http://','https://','www.','링크']],
+    ['자료',['pdf','.pdf','문서','파일','보고서','자료','참고']],
+    ['회의',['회의','미팅','콜','논의','agenda','minutes','sync','kickoff']],
+    ['나중에보기',['나중에','읽기','읽을거리','watch later','bookmark']],
+    ['프로젝트',['프로젝트','사업','개발','런칭','launch']]
+  ];
+  const out = [];
+  if(type==='url') out.push('링크');
+  if(type==='file') out.push('자료');
+  if(type==='image') out.push('이미지');
+  if(type==='video') out.push('영상');
+  map.forEach(([tag,keys])=>{ if(keys.some(k=>raw.includes(k))) out.push(tag); });
+  return [...new Set(out)].slice(0,8);
+}
+function arcGuessKind(title, content, type){
+  const raw = arcNormalizeText([title, content].join(' '));
+  const meetingScore = ['회의','미팅','콜','agenda','minutes','sync','kickoff','회의록'].reduce((n,k)=>n+(raw.includes(k)?1:0),0);
+  const ideaScore = ['아이디어','기획','브레인','아이템','초안','가설','생각'].reduce((n,k)=>n+(raw.includes(k)?1:0),0);
+  const materialScore = ['자료','pdf','문서','파일','링크','참고','보고서'].reduce((n,k)=>n+(raw.includes(k)?1:0),0) + (type==='url'||type==='file'?1:0);
+  if(meetingScore >= ideaScore && meetingScore >= materialScore && meetingScore>0) return 'meeting';
+  if(ideaScore > meetingScore && ideaScore >= materialScore) return 'idea';
+  return 'material';
+}
+function arcGuessProject(title, content, tags, mentions){
+  const explicit = arcExtractWikiLinks([title, content].join(' '));
+  if(explicit.length) return explicit[0].slice(0,28);
+  const mentionPriority = (mentions||[]).filter(v=>!['개인','가족','업무','today','archive'].includes(v));
+  if(mentionPriority.length) return mentionPriority[0].slice(0,24);
+  const tagPriority = (tags||[]).filter(v=>!['링크','자료','회의','아이디어','업무','가족','나중에보기'].includes(v));
+  if(tagPriority.length) return tagPriority[0].slice(0,20);
+  const words = arcTokenize([title, content].join(' ')).filter(w => w.length >= 2 && !['자료','회의','아이디어','링크','업무','개인','가족','프로젝트'].includes(w));
+  return words[0] ? words[0].slice(0,20) : '';
 }
 
-/* ── 카운트 배지 업데이트 ── */
+// arcInferProject: arcGuessProject의 공개 래퍼 (외부 호출용)
+function arcInferProject(item) {
+  const title = item.title || '';
+  const content = item.content || '';
+  const tags = item.tags || [];
+  const mentions = item.mentions || [];
+  return arcGuessProject(title + ' ' + content, content, tags, mentions);
+}
+function arcComputeCollection(item){
+  if(item.kind==='meeting') return '회의';
+  if(item.kind==='idea') return '아이디어';
+  if(item.type==='url') return '읽을거리';
+  if(arcIsPdf(item)) return '문서함';
+  if(item.project) return '프로젝트';
+  return '자료';
+}
+function arcBuildSearchBlob(item){
+  return arcNormalizeText([
+    item.title, item.content, item.summary, item.aiTag, item.project, item.collection, item.kindLabel,
+    (item.tags||[]).join(' '), (item.mentions||[]).join(' '), (item.wikiLinks||[]).join(' '), item.domain
+  ].join(' '));
+}
+function arcEnrichItem(item){
+  const title = (item.title || '').trim() || (item.type==='url' ? arcGetDomain(item.content||item.url||'') : '제목 없는 항목');
+  const content = item.content || '';
+  const mentions = [...new Set([...(item.mentions||[]), ...arcExtractMentions(title+' '+content)])].slice(0,8);
+  const tags = [...new Set([...(item.tags||[]), ...arcExtractHashTags(title+' '+content), ...arcGuessTags(title, content, item.type)])].slice(0,8);
+  const wikiLinks = [...new Set([...(item.wikiLinks||[]), ...arcExtractWikiLinks(title+' '+content)])].slice(0,8);
+  const kind = item.kind || arcGuessKind(title, content, item.type);
+  const kindLabel = kind==='meeting' ? '회의' : kind==='idea' ? '아이디어' : '자료';
+  const project = item.project || arcGuessProject(title + ' ' + wikiLinks.join(' '), content, tags, mentions);
+  const domain = arcGetDomain(item.content||item.url||'');
+  const collection = item.collection || arcComputeCollection({type:item.type, kind, title, content, project});
+  const summary = item.summary || arcSummarizeFallback(content);
+  const searchBlob = arcBuildSearchBlob({ ...item, title, content, summary, project, collection, kindLabel, tags, mentions, domain, wikiLinks });
+  return { ...item, title, content, summary, kind, kindLabel, tags, mentions, wikiLinks, project, collection, domain, searchBlob };
+}
+function arcSearchScore(item, query){
+  if(!query) return 1;
+  const q = arcNormalizeText(query);
+  if(!q) return 1;
+  const title = arcNormalizeText(item.title);
+  const summary = arcNormalizeText(item.summary);
+  const blob = item.searchBlob || arcBuildSearchBlob(item);
+  const tokens = arcTokenize(q);
+  let score = 0;
+  if(title===q) score += 160;
+  if(title.startsWith(q)) score += 110;
+  if(title.includes(q)) score += 88;
+  if(arcNormalizeText(item.project)===q) score += 120;
+  if(summary.includes(q)) score += 34;
+  if(blob.includes(q)) score += 20;
+  tokens.forEach(t=>{
+    if(title.includes(t)) score += 24;
+    if(summary.includes(t)) score += 11;
+    if(blob.includes(t)) score += 7;
+    if((item.tags||[]).some(v=>arcNormalizeText(v).includes(t))) score += 14;
+    if((item.mentions||[]).some(v=>arcNormalizeText(v).includes(t))) score += 16;
+    if((item.wikiLinks||[]).some(v=>arcNormalizeText(v).includes(t))) score += 16;
+    if(arcNormalizeText(item.project).includes(t)) score += 18;
+    if(arcNormalizeText(item.collection).includes(t)) score += 10;
+    if(arcNormalizeText(item.domain).includes(t)) score += 8;
+  });
+  const ageDays = Math.max(0, (Date.now() - arcSafeDate(item).getTime()) / 86400000);
+  if(ageDays <= 7) score += 6;
+  if(ageDays <= 2) score += 4;
+  if(item.pinned) score += 12;
+  if(item.favorite) score += 8;
+  return score;
+}
+function arcApplySmartFilter(items){
+  const now = Date.now();
+  if(currentArcSmartFilter === 'recent7') return items.filter(i => now - arcSafeDate(i).getTime() <= 7*24*60*60*1000);
+  if(currentArcSmartFilter === 'meeting') return items.filter(i => i.kind === 'meeting');
+  if(currentArcSmartFilter === 'material') return items.filter(i => i.kind === 'material');
+  if(currentArcSmartFilter === 'idea') return items.filter(i => i.kind === 'idea');
+  if(currentArcSmartFilter === 'pdf') return items.filter(i => arcIsPdf(i));
+  if(currentArcSmartFilter === 'ai') return items.filter(i => i.summary || i.aiTag || (i.tags||[]).length);
+  return items;
+}
+function arcApplyProjectAndKindFilter(items){
+  return items.filter(i => {
+    const okProject = !currentArcProjectFilter || i.project === currentArcProjectFilter;
+    const okKind = !currentArcKindFilter || i.kind === currentArcKindFilter;
+    return okProject && okKind;
+  });
+}
 function updateArcCounts() {
   const counts = { all: arcItems.length, note:0, url:0, image:0, video:0, file:0, pinned:0 };
   arcItems.forEach(i => {
@@ -2348,105 +2850,381 @@ function updateArcCounts() {
     if(el) el.textContent = counts[k];
   });
 }
-
-/* ── 정렬 ── */
 function sortArcItems(items) {
-  if(arcSortMode === 'oldest') return [...items].sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
-  if(arcSortMode === 'pinned') return [...items].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
-  return [...items].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  if(arcSortMode === 'oldest') return [...items].sort((a,b)=>arcSafeDate(a)-arcSafeDate(b));
+  if(arcSortMode === 'pinned') return [...items].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0) || (arcSafeDate(b)-arcSafeDate(a)));
+  return [...items].sort((a,b)=>arcSafeDate(b)-arcSafeDate(a));
 }
-
-/* ── 렌더 ── */
+function arcGetYoutubeThumb(url){
+  try{
+    const u = new URL(url);
+    let id = '';
+    if(u.hostname.includes('youtu.be')) id = u.pathname.slice(1);
+    if(u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || '';
+    return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
+  }catch(e){ return ''; }
+}
+function arcFindRelatedDocs(item){
+  const scores = arcItems
+    .filter(v => v.id !== item.id)
+    .map(v => {
+      let score = 0;
+      if(item.project && v.project === item.project) score += 6;
+      if(item.domain && v.domain && item.domain === v.domain) score += 3;
+      if((item.tags||[]).some(t => (v.tags||[]).includes(t))) score += 4;
+      if((item.mentions||[]).some(m => (v.mentions||[]).includes(m))) score += 4;
+      if(item.kind && v.kind === item.kind) score += 1;
+      return {item:v, score};
+    })
+    .filter(v => v.score > 0)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,3)
+    .map(v => v.item);
+  return scores;
+}
+function arcFindRelatedBrainDumps(item){
+  const itemBlob = arcBuildSearchBlob(item);
+  return bdItems
+    .map(b => {
+      const txt = arcNormalizeText(b.text);
+      let score = 0;
+      if(item.project && txt.includes(arcNormalizeText(item.project))) score += 5;
+      (item.tags||[]).forEach(t => { if(txt.includes(arcNormalizeText(t))) score += 3; });
+      (item.mentions||[]).forEach(m => { if(txt.includes(arcNormalizeText(m))) score += 3; });
+      const titleTokens = arcTokenize(item.title).slice(0,5);
+      titleTokens.forEach(t => { if(txt.includes(t)) score += 2; });
+      return {item:b, score};
+    })
+    .filter(v => v.score > 0)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,2)
+    .map(v => v.item);
+}
+function arcKindStats(items){
+  return {
+    meeting: items.filter(i=>i.kind==='meeting').length,
+    material: items.filter(i=>i.kind==='material').length,
+    idea: items.filter(i=>i.kind==='idea').length
+  };
+}
+function arcTopProjects(items){
+  const map = new Map();
+  items.forEach(i=>{
+    if(!i.project) return;
+    if(!map.has(i.project)) map.set(i.project, {name:i.project, count:0, meetings:0, materials:0, ideas:0, recent:null});
+    const v = map.get(i.project);
+    v.count++;
+    if(i.kind==='meeting') v.meetings++;
+    if(i.kind==='idea') v.ideas++;
+    if(i.kind==='material') v.materials++;
+    const d = arcSafeDate(i);
+    if(!v.recent || d > arcSafeDate(v.recent)) v.recent = i;
+  });
+  return [...map.values()].sort((a,b)=>b.count-a.count).slice(0,6);
+}
+function renderArcHub(allItems){
+  const hub = document.getElementById('arcHub');
+  if(!hub) return;
+  const enriched = allItems.map(arcEnrichItem);
+  const stats = arcKindStats(enriched);
+  const topProjects = arcTopProjects(enriched);
+  const activeProject = currentArcProjectFilter || (topProjects[0]?.name || '');
+  const activeProjectItems = activeProject ? enriched.filter(i=>i.project===activeProject) : enriched.slice(0,6);
+  const activeStats = arcKindStats(activeProjectItems);
+  const latest = sortArcItems(activeProjectItems)[0];
+  hub.innerHTML = `
+    <div class="arc-hub-top">
+      <div class="arc-hub-card">
+        <div class="arc-hub-label">총 아카이브</div>
+        <div class="arc-hub-value">${enriched.length}</div>
+        <div class="arc-hub-sub">최근 7일 ${arcApplySmartFilter(enriched.filter(()=>true).map(v=>v)).filter(i=>Date.now()-arcSafeDate(i).getTime()<=7*24*60*60*1000).length}개 저장</div>
+      </div>
+      <div class="arc-hub-card">
+        <div class="arc-hub-label">프로젝트 축</div>
+        <div class="arc-hub-value">${topProjects.length}</div>
+        <div class="arc-hub-sub">${topProjects[0] ? `가장 큰 축: ${escHtml(topProjects[0].name)}` : '아직 자동 분류 중'}</div>
+      </div>
+    </div>
+    <div class="arc-focus-card">
+      <div class="arc-focus-row">
+        <div>
+          <div class="arc-focus-title">${escHtml(activeProject || '전체 허브')}</div>
+          <div class="arc-focus-sub">${latest ? `${arcFormatDate(latest)} · 최근 문서 "${escHtml(latest.title)}"` : '회의 · 자료 · 아이디어를 한 화면에서 관리합니다.'}</div>
+        </div>
+        <div class="arc-focus-actions"><button class="arc-hub-action secondary" id="arcProjectOpen">프로젝트 보기</button><button class="arc-hub-action" id="arcGraphLaunch">허브 보기</button></div>
+      </div>
+      <div class="arc-pill-row" style="margin-top:12px">
+        <span class="arc-pill">회의 ${activeStats.meeting}</span>
+        <span class="arc-pill">자료 ${activeStats.material}</span>
+        <span class="arc-pill">아이디어 ${activeStats.idea}</span>
+        ${activeProject ? `<span class="arc-pill project">프로젝트 ${escHtml(activeProject)}</span>` : ''}
+      </div>
+    </div>
+    <div>
+      <div class="arc-section-title">자동 프로젝트</div>
+      <div class="arc-projects">
+        <button class="arc-project-chip ${!currentArcProjectFilter?'active':''}" data-project="">전체</button>
+        ${topProjects.map(p => `<button class="arc-project-chip ${currentArcProjectFilter===p.name?'active':''}" data-project="${escHtml(p.name)}">${escHtml(p.name)} · ${p.count}</button>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div class="arc-section-title">한눈에 보기</div>
+      <div class="arc-kinds">
+        <button class="arc-kind-chip ${!currentArcKindFilter?'active':''}" data-kind="">전체<small>${enriched.length}</small></button>
+        <button class="arc-kind-chip ${currentArcKindFilter==='meeting'?'active':''}" data-kind="meeting">회의<small>${stats.meeting}</small></button>
+        <button class="arc-kind-chip ${currentArcKindFilter==='material'?'active':''}" data-kind="material">자료<small>${stats.material}</small></button>
+        <button class="arc-kind-chip ${currentArcKindFilter==='idea'?'active':''}" data-kind="idea">아이디어<small>${stats.idea}</small></button>
+      </div>
+    </div>
+  `;
+  const launch = document.getElementById('arcGraphLaunch');
+  if(launch) launch.onclick = ()=>{ haptic.medium(); openArcGraph(); };
+  const openBtn = document.getElementById('arcProjectOpen');
+  if(openBtn) openBtn.onclick = ()=>{ haptic.medium(); openArcProjectSheet(activeProject || topProjects[0]?.name || ''); };
+  hub.querySelectorAll('.arc-project-chip').forEach(btn=>btn.addEventListener('click', ()=>{
+    haptic.light();
+    currentArcProjectFilter = btn.dataset.project || '';
+    renderArcGrid(arcSearch.value);
+  }));
+  hub.querySelectorAll('.arc-kind-chip').forEach(btn=>btn.addEventListener('click', ()=>{
+    haptic.light();
+    currentArcKindFilter = btn.dataset.kind || '';
+    renderArcGrid(arcSearch.value);
+  }));
+}
+function renderArcGraph(){
+  const svg = document.getElementById('arcGraphSvg');
+  const list = document.getElementById('arcProjectList');
+  if(!svg || !list) return;
+  const topProjects = arcTopProjects(arcItems.map(arcEnrichItem));
+  const focus = currentArcProjectFilter || (topProjects[0]?.name || 'Archive');
+  const related = topProjects.slice(0,5);
+  const center = {x:180,y:170,r:48,label:focus};
+  const orbit = [
+    {x:90,y:90,r:28,label:related[0]?.name || '회의'},
+    {x:270,y:88,r:28,label:related[1]?.name || '자료'},
+    {x:82,y:255,r:26,label:related[2]?.name || '아이디어'},
+    {x:275,y:250,r:26,label:related[3]?.name || '링크'},
+    {x:180,y:300,r:24,label:related[4]?.name || '문서'}
+  ];
+  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="arcG" x1="0" x2="1"><stop offset="0%" stop-color="#5b72ee"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+    </defs>
+    ${orbit.map(n=>`<line x1="${center.x}" y1="${center.y}" x2="${n.x}" y2="${n.y}" stroke="rgba(91,114,238,.22)" stroke-width="2"/>`).join('')}
+    <circle cx="${center.x}" cy="${center.y}" r="${center.r}" fill="url(#arcG)"></circle>
+    <text x="${center.x}" y="${center.y+5}" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">${esc(focus).slice(0,12)}</text>
+    ${orbit.map((n,idx)=>`
+      <g class="arc-node" data-project="${esc(related[idx]?.name || '')}">
+        <circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="rgba(91,114,238,.11)" stroke="rgba(91,114,238,.25)"></circle>
+        <text x="${n.x}" y="${n.y+4}" text-anchor="middle" fill="currentColor" font-size="11" font-weight="700">${esc(n.label).slice(0,10)}</text>
+      </g>`).join('')}
+  `;
+  svg.querySelectorAll('.arc-node').forEach(node=>{
+    node.style.cursor='pointer';
+    node.addEventListener('click', ()=>{
+      const p = node.getAttribute('data-project');
+      if(p){
+        currentArcProjectFilter = p;
+        closeArcGraph();
+        renderArcGrid(arcSearch.value);
+      }
+    });
+  });
+  list.innerHTML = topProjects.map(p=>`
+    <div class="arc-project-item">
+      <div>
+        <div class="arc-project-name">${escHtml(p.name)}</div>
+        <div class="arc-project-meta">회의 ${p.meetings} · 자료 ${p.materials} · 아이디어 ${p.ideas}</div>
+      </div>
+      <button class="arc-project-open" onclick="window.arcSetProjectFilter('${escHtml(p.name).replace(/'/g,"\\'")}')">열기</button>
+    </div>
+  `).join('') || `<div class="arc-project-item"><div><div class="arc-project-name">아직 프로젝트 축이 없습니다</div><div class="arc-project-meta">@멘션, #태그, [[프로젝트명]]을 쓰면 자동으로 모입니다.</div></div></div>`;
+}
+function openArcGraph(){
+  renderArcGraph();
+  document.getElementById('arcGraphSheet')?.classList.remove('hidden');
+}
+function closeArcGraph(){
+  document.getElementById('arcGraphSheet')?.classList.add('hidden');
+}
+window.arcSetProjectFilter = (project)=>{
+  currentArcProjectFilter = project || '';
+  closeArcGraph();
+  renderArcGrid(arcSearch.value);
+};
+function arcProjectOverview(project){
+  const items = sortArcItems(arcItems.map(arcEnrichItem).filter(i=>i.project===project));
+  const stats = arcKindStats(items);
+  const tagsMap = new Map();
+  const mentionsMap = new Map();
+  items.forEach(i=>{
+    (i.tags||[]).forEach(t=> tagsMap.set(t, (tagsMap.get(t)||0)+1));
+    (i.mentions||[]).forEach(m=> mentionsMap.set(m, (mentionsMap.get(m)||0)+1));
+  });
+  const topTags = [...tagsMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([name,count])=>({name,count,type:'tag'}));
+  const topMentions = [...mentionsMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([name,count])=>({name,count,type:'mention'}));
+  const dumpMatches = bdItems.map(b=>{
+    const txt = arcNormalizeText(b.text);
+    let score = 0;
+    if(txt.includes(arcNormalizeText(project))) score += 6;
+    topTags.forEach(t=>{ if(txt.includes(arcNormalizeText(t.name))) score += 2; });
+    topMentions.forEach(m=>{ if(txt.includes(arcNormalizeText(m.name))) score += 2; });
+    return {item:b, score};
+  }).filter(v=>v.score>0).sort((a,b)=>b.score-a.score).slice(0,4).map(v=>v.item);
+  return {items, stats, topTags, topMentions, dumpMatches};
+}
+function openArcProjectSheet(project){
+  if(!project) return;
+  const sheet = document.getElementById('arcProjectSheet');
+  if(!sheet) return;
+  const {items, stats, topTags, topMentions, dumpMatches} = arcProjectOverview(project);
+  const latest = items[0];
+  const docs = items.slice(0,5);
+  document.getElementById('arcProjectTitle').textContent = project;
+  document.getElementById('arcProjectSub').textContent = latest ? `${arcFormatDate(latest)} 최신 업데이트 · ${items.length}개 문서 연결됨` : '연결된 문서가 아직 없습니다.';
+  document.getElementById('arcProjectStatAll').textContent = items.length;
+  document.getElementById('arcProjectStatMeeting').textContent = stats.meeting;
+  document.getElementById('arcProjectStatMaterial').textContent = stats.material;
+  document.getElementById('arcProjectStatIdea').textContent = stats.idea;
+  document.getElementById('arcProjectSignals').innerHTML =
+    [...topTags.map(v=>`<span class="arc-pill">#${escHtml(v.name)} · ${v.count}</span>`),
+     ...topMentions.map(v=>`<span class="arc-pill">@${escHtml(v.name)} · ${v.count}</span>`)].join('') || `<span class="arc-mini-note">태그와 멘션이 더 쌓이면 정확도가 올라갑니다.</span>`;
+  document.getElementById('arcProjectInsight').textContent =
+    items.length ? `${stats.meeting ? '회의 맥락이 살아 있고' : '회의 문서는 아직 적고'}, ${stats.idea ? '아이디어 씨앗도 유지되고' : '아이디어 수집은 더 필요하고'}, 최근 문서는 ${latest ? `"${latest.title}"` : '없습니다'}.` : '아직 이 프로젝트로 묶인 문서가 없습니다.';
+  document.getElementById('arcProjectDocs').innerHTML = docs.map(v=>`
+    <div class="arc-project-list-item">
+      <div>
+        <div class="arc-project-name">${escHtml(v.title)}</div>
+        <div class="arc-project-meta">${arcFormatDate(v)} · ${escHtml(v.kindLabel)}${v.summary ? ` · ${escHtml(v.summary)}` : ''}</div>
+      </div>
+      <button onclick="haptic.light(); arcEdit('${v.id}')">열기</button>
+    </div>
+  `).join('') || `<div class="arc-mini-note">문서가 없습니다.</div>`;
+  document.getElementById('arcProjectTimeline').innerHTML = items.slice(0,6).map(v=>`
+    <div class="arc-project-list-item">
+      <div>
+        <div class="arc-project-name">${arcFormatDate(v)} · ${escHtml(v.title)}</div>
+        <div class="arc-project-meta">${escHtml(v.kindLabel)}${v.collection ? ` · ${escHtml(v.collection)}` : ''}</div>
+      </div>
+      <button onclick="haptic.medium(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; closeArcProjectSheet(); renderArcGrid(arcSearch.value)">필터</button>
+    </div>
+  `).join('') || `<div class="arc-mini-note">타임라인이 없습니다.</div>`;
+  document.getElementById('arcProjectDumps').innerHTML = dumpMatches.map(v=>`
+    <div class="arc-project-list-item">
+      <div>
+        <div class="arc-project-name">${escHtml((v.text||'').slice(0,26))}</div>
+        <div class="arc-project-meta">${v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : ''}</div>
+      </div>
+      <button onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value); closeArcProjectSheet()">열기</button>
+    </div>
+  `).join('') || `<div class="arc-mini-note">BrainDump 연결은 프로젝트명이 본문에 들어갈수록 더 잘 잡힙니다.</div>`;
+  currentArcProjectSheet = project;
+  sheet.classList.remove('hidden');
+}
+function closeArcProjectSheet(){
+  document.getElementById('arcProjectSheet')?.classList.add('hidden');
+  currentArcProjectSheet = '';
+}
+function arcRenderLinkPreview(item){
+  const url = item.content || item.url || '';
+  const domain = item.domain || arcGetDomain(url);
+  const favicon = arcGetFavicon(url);
+  const yt = arcGetYoutubeThumb(url);
+  const thumb = yt || favicon;
+  const title = item.summary || item.title;
+  return `
+    <div class="arc-link-card" onclick="haptic.medium(); arcOpenUrl('${escHtml(url).replace(/'/g,"\\'")}')">
+      <div class="arc-link-thumb">${yt ? `<img src="${yt}" alt="">` : (favicon ? `<img src="${favicon}" alt="" onerror="this.parentNode.innerHTML='🔗'">` : '🔗')}</div>
+      <div class="arc-link-body">
+        <div class="arc-link-domain">${favicon ? `<img class="arc-link-favicon" src="${favicon}" onerror="this.style.display='none'" loading="lazy">` : ''}${escHtml(domain || '링크')}</div>
+        <div class="arc-link-title">${escHtml(title || item.title)}</div>
+        <div class="arc-link-url">${escHtml(url)}</div>
+      </div>
+    </div>`;
+}
+function arcRenderBody(item){
+  if(item.type==='url') return arcRenderLinkPreview(item);
+  if(item.type==='image' && item.url) return `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
+  if(item.url && arcIsPdf(item)) return `<div class="arc-link-card"><div class="arc-link-thumb">📄</div><div class="arc-link-body"><div class="arc-link-domain">PDF 문서</div><div class="arc-link-title">${escHtml(item.title)}</div><div class="arc-link-url">${escHtml(item.url)}</div></div></div>`;
+  const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
+  return `<div class="arc-item-preview">${preview}</div>`;
+}
 function renderArcGrid(filter='') {
-  const kw = filter.toLowerCase();
-  let items;
-  if(currentArcCat === 'pinned') {
-    items = arcItems.filter(i=>i.pinned);
+  const kw = arcNormalizeText(filter);
+  let items = arcItems.map(arcEnrichItem);
+  if(currentArcCat === 'pinned') items = items.filter(i=>i.pinned);
+  else if(currentArcCat !== 'all') items = items.filter(i=>i.type===currentArcCat);
+  items = arcApplySmartFilter(items);
+  items = arcApplyProjectAndKindFilter(items);
+  if(kw) {
+    items = items
+      .map(i => ({...i, _score: arcSearchScore(i, kw)}))
+      .filter(i => i._score > 0)
+      .sort((a,b)=>b._score-a._score || (arcSafeDate(b)-arcSafeDate(a)));
   } else {
-    items = currentArcCat==='all' ? arcItems : arcItems.filter(i=>i.type===currentArcCat);
+    items = sortArcItems(items);
   }
-  if(kw) items = items.filter(i=>(i.title+(i.content||'')).toLowerCase().includes(kw));
-  items = sortArcItems(items);
   updateArcCounts();
-
+  renderArcHub(arcItems);
+  document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.smart===currentArcSmartFilter);
+  });
   if(!items.length) {
-    arcGrid.innerHTML = `<div class="arc-empty"><div class="arc-empty-icon">🗂</div><div>아직 저장된 항목이 없습니다</div></div>`;
+    arcGrid.innerHTML = `<div class="arc-empty"><div class="arc-empty-icon">🧠</div><div style='font-weight:600;margin-bottom:6px;font-size:15px'>🔍 조건에 맞는 자료가 없습니다</div><div style='font-size:12px;color:var(--text3);margin-bottom:8px'>검색어, 카테고리, 필터를 바꿔보세요</div><div style="margin-top:8px;font-size:13px">검색어를 바꾸거나 스마트 필터를 해제해보세요.</div></div>`;
     return;
   }
   const typeIcon  = { note:'📝', url:'🔗', image:'🖼', video:'🎬', file:'📄' };
   const typeClass = { note:'arc-type-note', url:'arc-type-url', image:'arc-type-image', video:'arc-type-video', file:'arc-type-file' };
-
   arcGrid.innerHTML = items.map(item=>{
-    const ts = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString('ko-KR',{month:'short',day:'numeric'}) : '';
-    const pinnedClass = item.pinned ? ' pinned' : '';
-    const pinBadge = item.pinned ? `<div class="arc-pin-badge">⭐</div>` : '';
-
-    let bodyHtml = '';
-
-    if(item.type === 'url' && item.content) {
-      // 링크 미리보기 카드
-      const domain  = arcGetDomain(item.content);
-      const favicon = arcGetFavicon(item.content);
-      const safeUrl = escHtml(item.content);
-      bodyHtml = `
-        <div class="arc-link-card" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">
-          <div class="arc-link-accent"></div>
-          <div class="arc-link-body">
-            <div class="arc-link-domain">
-              <img class="arc-link-favicon" src="${favicon}" onerror="this.style.display='none'" loading="lazy">
-              ${escHtml(domain)}
-            </div>
-            <div class="arc-link-url">${safeUrl}</div>
-          </div>
-          <div class="arc-link-open-icon">↗</div>
-        </div>`;
-    } else if(item.type === 'image' && item.url) {
-      bodyHtml = `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
-    } else if(item.content) {
-      const preview = item.content.slice(0,150);
-      bodyHtml = `<div class="arc-item-preview">${escHtml(preview)}${item.content.length>150?'…':''}</div>`;
-    }
-
-    const metaTag = item.aiTag ? `<span class="arc-ai-tag">🤖 ${escHtml(item.aiTag)}</span>` : '';
-
+    const relatedDocs = arcFindRelatedDocs(item);
+    const relatedBD = arcFindRelatedBrainDumps(item);
     return `
-      <div class="arc-item${pinnedClass}" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
-        ${pinBadge}
+      <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="if('${item.type}'==='url'){haptic.medium();arcOpenUrl('${(item.content||item.url||'')'.replace(/'/g,'\\'')}')}else{arcShowCtx(event,'${item.id}')}" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${typeIcon[item.type]||'📝'}</div>
           <div class="arc-item-info">
             <div class="arc-item-title">${escHtml(item.title)}</div>
-            <div class="arc-item-meta">${ts}${metaTag ? ' · ' : ''}${metaTag || escHtml(item.type)}</div>
+            <div class="arc-item-meta">
+              <span>${arcFormatDate(item)}</span>
+              <span>·</span>
+              <span>${escHtml(item.kindLabel || item.collection || item.type)}</span>
+              ${item.aiTag ? `<span>·</span><span class="arc-ai-tag">🤖 ${escHtml(item.aiTag)}</span>` : ''}
+            </div>
           </div>
         </div>
-        ${bodyHtml}
+        ${item.summary ? `<div class="arc-summary">${escHtml(item.summary)}</div>` : ''}
+        ${arcRenderBody(item)}
+        <div class="arc-pill-row">
+          ${item.project ? `<button class="arc-pill project" onclick="event.stopPropagation(); haptic.light(); openArcDashboard('${escHtml(item.project).replace(/'/g,"\\'")}')">${escHtml(item.project)}</button>` : ''}
+          ${(item.mentions||[]).slice(0,3).map(v=>`<span class="arc-pill">@${escHtml(v)}</span>`).join('')}
+          ${(item.tags||[]).slice(0,3).map(v=>`<span class="arc-pill">#${escHtml(v)}</span>`).join('')}
+          ${item.collection ? `<span class="arc-pill">${escHtml(item.collection)}</span>` : ''}
+          ${(item.wikiLinks||[]).slice(0,2).map(v=>`<span class="arc-pill project">[[${escHtml(v)}]]</span>`).join('')}
+        </div>
+        ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
+        ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">🔗 열기</button>` : ''}
-          <button class="arc-action-btn" onclick="haptic.light(); arcEdit('${item.id}')">✏️ 편집</button>
-          <button class="arc-action-btn" onclick="haptic.medium(); arcTogglePin('${item.id}')">${item.pinned ? '★ 핀해제' : '☆ 핀'}</button>
-          <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">📅</button>
-          <button class="arc-action-btn danger" onclick="haptic.error(); arcDel('${item.id}')">🗑</button>
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : arcIsPdf(item) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.url).replace(/'/g,"\\'")}')">PDF 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
+          <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
+          ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
+          <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:event?.clientY||220},'${item.id}')">⋯</button>
         </div>
       </div>`;
   }).join('');
 }
-
-/* ── URL 열기 ── */
 window.arcOpenUrl = (url) => {
   if(!url) return;
-  const u = url.trim();
+  const u = String(url).trim();
   if(arcIsUrl(u)) window.open(u, '_blank');
 };
-
-/* ── 핀 토글 ── */
-window.arcTogglePin = async(id) => {
+window.arcTogglePin = async(id) => { haptic.medium();
   const item = arcItems.find(i=>i.id===id);
   if(!item) return;
-  await updateDoc(arcPath(id), { pinned: !item.pinned });
+  await updateDoc(arcPath(id), { pinned: !item.pinned, updatedAt: serverTimestamp() });
   showSaved();
 };
-
-/* ── 편집 ── */
 window.arcEdit = (id) => {
   const item = arcItems.find(i=>i.id===id);
   if(!item) return;
@@ -2460,45 +3238,44 @@ window.arcEdit = (id) => {
   document.getElementById('arcFileField').style.display = isFile ? '' : 'none';
   document.getElementById('arcOverlay').classList.remove('hidden');
 };
+// arcEditItem: arcEdit 함수의 별칭 (하위 호환성)
+window.arcEditItem = window.arcEdit;
 
-/* ── 컨텍스트 메뉴 ── */
 let arcLongPressTimer = null;
 window.arcTouchStart = (e, id) => {
   arcLongPressTimer = setTimeout(()=>{
     haptic.longpress();
-    arcShowCtx(e.touches[0], id);
+    const t = e.touches?.[0];
+    arcShowCtx({clientX:t?.clientX || window.innerWidth/2, clientY:t?.clientY || window.innerHeight/2}, id);
   }, 550);
 };
-window.arcTouchEnd = (e) => {
-  clearTimeout(arcLongPressTimer);
-};
+window.arcTouchEnd = () => clearTimeout(arcLongPressTimer);
 window.arcShowCtx = (e, id) => {
   arcCtxTargetId = id;
-  const item = arcItems.find(i=>i.id===id);
+  const item = arcItems.map(arcEnrichItem).find(i=>i.id===id);
   const menu = document.getElementById('arcCtxMenu');
   const overlay = document.getElementById('arcCtxOverlay');
-  // 링크 열기 항목 표시 여부
-  document.getElementById('arcCtxOpen').style.display = (item && item.type==='url') ? '' : 'none';
-  // 핀 텍스트
+  if(!menu || !overlay) return;
+  document.getElementById('arcCtxOpen').style.display = (item && (item.type==='url' || (arcIsPdf(item)&&item.url))) ? '' : 'none';
+  document.getElementById('arcCtxOpen').textContent = item && arcIsPdf(item) ? '📄 PDF 열기' : '🔗 링크 열기';
   document.getElementById('arcCtxPin').textContent = (item && item.pinned) ? '★ 즐겨찾기 해제' : '⭐ 즐겨찾기 추가';
-  // 위치
-  const x = e.clientX || e.pageX || window.innerWidth/2;
-  const y = e.clientY || e.pageY || window.innerHeight/2;
-  menu.style.left = Math.min(x, window.innerWidth-200)+'px';
-  menu.style.top  = Math.min(y, window.innerHeight-220)+'px';
+  const x = e.clientX || window.innerWidth/2;
+  const y = e.clientY || window.innerHeight/2;
+  menu.style.left = Math.min(x, window.innerWidth-210)+'px';
+  menu.style.top  = Math.min(y, window.innerHeight-260)+'px';
   menu.classList.remove('hidden');
   overlay.classList.remove('hidden');
 };
 function closeArcCtx() {
-  document.getElementById('arcCtxMenu').classList.add('hidden');
-  document.getElementById('arcCtxOverlay').classList.add('hidden');
+  document.getElementById('arcCtxMenu')?.classList.add('hidden');
+  document.getElementById('arcCtxOverlay')?.classList.add('hidden');
   arcCtxTargetId = null;
 }
 document.getElementById('arcCtxOverlay').addEventListener('click', closeArcCtx);
 document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
   haptic.medium();
-  const item = arcItems.find(i=>i.id===arcCtxTargetId);
-  if(item) arcOpenUrl(item.content);
+  const item = arcItems.map(arcEnrichItem).find(i=>i.id===arcCtxTargetId);
+  if(item) arcOpenUrl(item.url || item.content);
   closeArcCtx();
 });
 document.getElementById('arcCtxPin').addEventListener('click', ()=>{
@@ -2521,42 +3298,11 @@ document.getElementById('arcCtxDel').addEventListener('click', ()=>{
   if(arcCtxTargetId) arcDel(arcCtxTargetId);
   closeArcCtx();
 });
-
-/* ── 정렬 버튼 ── */
-document.getElementById('arcSortBtn').addEventListener('click', (e)=>{
+document.getElementById('arcSortBtn').addEventListener('click', ()=>{
   haptic.light();
-  const existing = document.getElementById('arcSortMenu');
-  if(existing) { existing.remove(); return; }
-  const menu = document.createElement('div');
-  menu.id = 'arcSortMenu';
-  menu.className = 'arc-sort-menu';
-  const opts = [
-    { key:'newest', label:'🕐 최신순' },
-    { key:'oldest', label:'🕰 오래된순' },
-    { key:'pinned', label:'⭐ 즐겨찾기 우선' },
-  ];
-  opts.forEach(o=>{
-    const el = document.createElement('div');
-    el.className = 'arc-sort-item' + (arcSortMode===o.key ? ' active' : '');
-    el.textContent = o.label;
-    el.addEventListener('click', ()=>{
-      haptic.light();
-      arcSortMode = o.key;
-      menu.remove();
-      renderArcGrid(arcSearch.value);
-    });
-    menu.appendChild(el);
-  });
-  document.getElementById('pane-archive').style.position = 'relative';
-  document.getElementById('pane-archive').appendChild(menu);
-  // 외부 클릭 닫기
-  setTimeout(()=>{
-    document.addEventListener('click', function handler(ev){
-      if(!menu.contains(ev.target)) { menu.remove(); document.removeEventListener('click', handler); }
-    });
-  }, 50);
+  arcSortMode = arcSortMode==='newest' ? 'pinned' : arcSortMode==='pinned' ? 'oldest' : 'newest';
+  renderArcGrid(arcSearch.value);
 });
-
 arcSearch.addEventListener('input', ()=>renderArcGrid(arcSearch.value));
 document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -2567,13 +3313,23 @@ document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
     renderArcGrid(arcSearch.value);
   });
 });
-window.arcDel = async(id)=>{ if(confirm('삭제하시겠습니까?')) { await deleteDoc(arcPath(id)); showSaved(); } };
+document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    haptic.light();
+    currentArcSmartFilter = btn.dataset.smart || 'all';
+    renderArcGrid(arcSearch.value);
+  });
+});
+window.arcDel = async(id)=>{
+  if(confirm('삭제하시겠습니까?')) {
+    await deleteDoc(arcPath(id));
+    showSaved();
+  }
+};
 window.arcToToday = (id)=>{
   const item = arcItems.find(i=>i.id===id);
   if(item) openMoveSheet(item.id, 'today');
 };
-
-/* ── Archive Upload ── */
 document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
   haptic.medium();
   document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
@@ -2585,12 +3341,10 @@ document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
   document.getElementById('arcFileField').style.display = 'none';
   document.getElementById('arcOverlay').classList.remove('hidden');
 });
-// URL 자동 감지 (내용 입력 시)
 document.getElementById('arcContent').addEventListener('input', ()=>{
   const val = document.getElementById('arcContent').value.trim();
   if(arcIsUrl(val)) {
     document.getElementById('arcType').value = 'url';
-    // 제목이 비어있으면 도메인으로 자동 채우기
     if(!document.getElementById('arcTitle').value.trim()) {
       document.getElementById('arcTitle').value = arcGetDomain(val);
     }
@@ -2602,51 +3356,518 @@ document.getElementById('arcType').addEventListener('change', e=>{
   document.getElementById('arcFileField').style.display    = ['image','video','file'].includes(t) ? '' : 'none';
 });
 document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
-document.getElementById('arcSave').addEventListener('click', async()=>{ haptic.success();
-  let type    = document.getElementById('arcType').value;
-  const title   = document.getElementById('arcTitle').value.trim();
-  let content = document.getElementById('arcContent').value.trim();
-  const file    = document.getElementById('arcFile').files[0];
-  const editId  = document.getElementById('arcEditId').value;
-  if(!title) { alert('제목을 입력해주세요'); return; }
-  // URL 자동 감지
-  if(arcIsUrl(content) && type === 'note') type = 'url';
-  let url = '', aiTag = '';
-  // AI classify
-  if(openAiKey) {
-    try {
-      const r = await fetch('https://api.openai.com/v1/chat/completions', {
-        method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
-        body: JSON.stringify({ model:'gpt-4o-mini', max_tokens:20,
-          messages:[{role:'user',content:`다음 항목을 한 단어 카테고리로 분류해줘 (예: 업무, 개인, 건강, 재정, 학습, 여행, 쇼핑): "${title} ${content.slice(0,100)}"`}]
-        })
-      });
-      const j = await r.json();
-      aiTag = j.choices?.[0]?.message?.content?.trim().slice(0,10)||'';
-    } catch(e) {}
+async function arcEnrichWithAI({title, content, type}) {
+  if(!openAiKey) return null;
+  try {
+    const prompt = `다음 아카이브 항목을 JSON으로 정리해줘. 키는 summary,tags,project,kind,aiTag만 사용. summary는 한국어 1문장 40자 이내. tags는 한국어 배열 최대 4개. project는 없으면 빈문자열. kind는 meeting/material/idea 중 하나. aiTag는 최대 8자.\n제목:${title}\n유형:${type}\n본문:${String(content||'').slice(0,1200)}`;
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        max_tokens:180,
+        messages:[
+          {role:'system',content:'출력은 JSON만 반환한다.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    const j = await r.json();
+    const raw = j.choices?.[0]?.message?.content?.trim() || '';
+    const match = raw.match(/\{[\s\S]*\}/);
+    if(!match) return null;
+    return JSON.parse(match[0]);
+  } catch(e) {
+    return null;
   }
-  // File upload
+}
+document.getElementById('arcSave').addEventListener('click', async()=>{ haptic.success();
+  let type = document.getElementById('arcType').value;
+  let title = document.getElementById('arcTitle').value.trim();
+  let content = document.getElementById('arcContent').value.trim();
+  const file = document.getElementById('arcFile').files[0];
+  const editId = document.getElementById('arcEditId').value;
+  if(!title && !content && !file) { showSaved('제목 또는 내용을 입력해주세요'); return; }
+  if(arcIsUrl(content) && type === 'note') type = 'url';
+  let url = '';
+  const heuristicMentions = arcExtractMentions(title + ' ' + content);
+  const heuristicTags = [...new Set([...arcExtractHashTags(title+' '+content), ...arcGuessTags(title, content, type)])].slice(0,8);
+  const heuristicKind = arcGuessKind(title, content, type);
+  const heuristicProject = arcGuessProject(title, content, heuristicTags, heuristicMentions);
+  let summary = arcSummarizeFallback(content);
+  let aiTag = '';
+  let project = heuristicProject;
+  let kind = heuristicKind;
+  let tags = heuristicTags;
+  let mentions = heuristicMentions;
+  let wikiLinks = arcExtractWikiLinks(title + ' ' + content);
   if(file && ['image','video','file'].includes(type)) {
     try {
       const sRef = storageRef(storage, `users/${uid()}/archive/${Date.now()}_${file.name}`);
       await uploadBytes(sRef, file);
       url = await getDownloadURL(sRef);
-    } catch(e) { url=''; }
+      if(!title) title = file.name.replace(/\.[^.]+$/, '');
+      if(!content) content = file.name;
+    } catch(e) {}
   }
+  const ai = await arcEnrichWithAI({title, content, type});
+  if(ai){
+    summary = ai.summary || summary;
+    aiTag = ai.aiTag || aiTag;
+    project = ai.project || project;
+    kind = ['meeting','material','idea'].includes(ai.kind) ? ai.kind : kind;
+    tags = [...new Set([...(Array.isArray(ai.tags)?ai.tags:[]), ...tags])].slice(0,8);
+  }
+  if(!title) title = type==='url' ? arcGetDomain(content) || '새 링크' : '새 메모';
+  const collection = arcComputeCollection({type, kind, title, content});
+  const payload = { type, title, content, url, aiTag, summary, project, kind, collection, tags, mentions, wikiLinks, pinned:false, updatedAt: serverTimestamp() };
   if(editId) {
-    // 편집 모드
-    await updateDoc(arcPath(editId), { type, title, content, aiTag, updatedAt: serverTimestamp() });
+    if(!url) delete payload.url;
+    delete payload.pinned;
+    await updateDoc(arcPath(editId), payload);
   } else {
-    // 신규 저장
-    await addDoc(arcCol(), { type, title, content, url, aiTag, pinned: false, createdAt: serverTimestamp() });
+    payload.createdAt = serverTimestamp();
+    await addDoc(arcCol(), payload);
   }
   document.getElementById('arcEditId').value = '';
   document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
   document.getElementById('arcOverlay').classList.add('hidden');
+  document.getElementById('arcFile').value = '';
   showSaved();
+});
+document.getElementById('arcGraphClose')?.addEventListener('click', closeArcGraph);
+document.getElementById('arcProjectClose')?.addEventListener('click', closeArcProjectSheet);
+document.getElementById('arcGraphSheet')?.addEventListener('click', (e)=>{
+  if(e.target.id==='arcGraphSheet') closeArcGraph();
+});
+document.getElementById('arcProjectSheet')?.addEventListener('click', (e)=>{
+  if(e.target.id==='arcProjectSheet') closeArcProjectSheet();
+});
+/* ═══════════════════════════════════════════════════════════
+   ARCHIVE v22 — Project Dashboard + Meeting Summary + Quick Convert
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Project Dashboard (replaces/augments arcProjectSheet) ── */
+function openArcDashboard(project) {
+  if(!project) return;
+  const sheet = document.getElementById('arcDashSheet');
+  if(!sheet) return;
+  const body = document.getElementById('arcDashBody');
+  const enriched = arcItems.map(arcEnrichItem);
+  const projItems = sortArcItems(enriched.filter(i=>i.project===project));
+  const stats = arcKindStats(projItems);
+  const total = projItems.length;
+  const recent7 = projItems.filter(i=>Date.now()-arcSafeDate(i)<7*86400000).length;
+  const progress = total ? Math.round((stats.material+stats.meeting)/Math.max(total,1)*100) : 0;
+
+  // Build top tags and mentions
+  const tagsMap = new Map(), mentMap = new Map();
+  projItems.forEach(i=>{
+    (i.tags||[]).forEach(t=>tagsMap.set(t,(tagsMap.get(t)||0)+1));
+    (i.mentions||[]).forEach(m=>mentMap.set(m,(mentMap.get(m)||0)+1));
+  });
+  const topTags = [...tagsMap].sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const topMents = [...mentMap].sort((a,b)=>b[1]-a[1]).slice(0,4);
+
+  // Meeting items
+  const meetings = projItems.filter(i=>i.kind==='meeting');
+  const ideas = projItems.filter(i=>i.kind==='idea');
+  const materials = projItems.filter(i=>i.kind==='material');
+
+  // Connected BrainDumps
+  const dumpMatches = bdItems.map(b=>{
+    const txt = arcNormalizeText(b.text);
+    let sc = 0;
+    if(txt.includes(arcNormalizeText(project))) sc+=6;
+    topTags.forEach(([t])=>{ if(txt.includes(arcNormalizeText(t))) sc+=2; });
+    return {b, sc};
+  }).filter(v=>v.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,3).map(v=>v.b);
+
+  // Insight text
+  const insight = total===0
+    ? '이 프로젝트로 묶인 문서가 아직 없습니다. 저장 시 [[프로젝트명]] 또는 @멘션을 쓰면 자동으로 연결됩니다.'
+    : `${meetings.length}개의 회의, ${materials.length}개의 자료, ${ideas.length}개의 아이디어가 쌓여 있어요. ${recent7>0?`최근 7일간 ${recent7}개가 추가됐어요.`:'최근엔 새 항목이 없어요.'}`;
+
+  // Timeline dots
+  const tlDotClass = k=> k==='meeting'?'meeting':k==='idea'?'idea':'';
+  const typeIcons = {note:'📝',url:'🔗',image:'🖼',video:'🎬',file:'📄'};
+
+  body.innerHTML = `
+    <div class="arc-dash-hero">
+      <div class="arc-dash-icon">🗂</div>
+      <div class="arc-dash-hero-text">
+        <div class="arc-dash-title">${escHtml(project)}</div>
+        <div class="arc-dash-sub">${total}개 문서 · 최근 7일 ${recent7}개</div>
+      </div>
+      <button class="arc-dash-close" onclick="closeArcDashboard()">✕</button>
+    </div>
+
+    <div class="arc-dash-stat-grid">
+      <div class="arc-dash-stat"><div class="arc-dash-stat-num">${total}</div><div class="arc-dash-stat-label">전체</div></div>
+      <div class="arc-dash-stat"><div class="arc-dash-stat-num" style="color:#f59e0b">${stats.meeting}</div><div class="arc-dash-stat-label">회의</div></div>
+      <div class="arc-dash-stat"><div class="arc-dash-stat-num" style="color:var(--accent)">${stats.material}</div><div class="arc-dash-stat-label">자료</div></div>
+      <div class="arc-dash-stat"><div class="arc-dash-stat-num" style="color:#10b981">${stats.idea}</div><div class="arc-dash-stat-label">아이디어</div></div>
+    </div>
+
+    <div class="arc-dash-insight">${escHtml(insight)}</div>
+
+    <div class="arc-dash-progress">
+      <div class="arc-dash-progress-fill" style="width:${progress}%"></div>
+    </div>
+
+    <div class="arc-dash-action-row">
+      <button class="arc-dash-action-btn primary" onclick="haptic.medium(); closeArcDashboard(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; renderArcGrid(arcSearch.value)">
+        <div class="dab-icon">🔍</div>
+        <div>전체 보기</div>
+      </button>
+      ${meetings.length ? `<button class="arc-dash-action-btn secondary" onclick="haptic.medium(); openArcDashboard('${escHtml(project).replace(/'/g,"\\'")}'); arcDashScrollTo('sec-meetings')">
+        <div class="dab-icon">📋</div>
+        <div>회의 ${meetings.length}개</div>
+      </button>` : ''}
+      <button class="arc-dash-action-btn secondary" onclick="haptic.light(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+        <div class="dab-icon">🧠</div>
+        <div>BrainDump</div>
+      </button>
+    </div>
+
+    ${meetings.length ? `
+    <div class="arc-dash-sec" id="sec-meetings">
+      <div class="arc-dash-sec-title">
+        📋 회의 <span style="font-size:11px;color:var(--text3);font-weight:600">${meetings.length}개</span>
+      </div>
+      ${meetings.slice(0,4).map(v=>`
+        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+          <div class="arc-dash-doc-icon">📋</div>
+          <div class="arc-dash-doc-body">
+            <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
+            <div class="arc-dash-doc-meta">${arcFormatDate(v)}${v.summary?' · '+escHtml(v.summary.slice(0,40)):''}</div>
+          </div>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openMeetingSummary('${v.id}')">요약</button>
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${materials.length ? `
+    <div class="arc-dash-sec">
+      <div class="arc-dash-sec-title">📄 자료 <span style="font-size:11px;color:var(--text3);font-weight:600">${materials.length}개</span></div>
+      ${materials.slice(0,4).map(v=>`
+        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+          <div class="arc-dash-doc-icon">${typeIcons[v.type]||'📄'}</div>
+          <div class="arc-dash-doc-body">
+            <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
+            <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
+          </div>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">변환</button>
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${ideas.length ? `
+    <div class="arc-dash-sec">
+      <div class="arc-dash-sec-title">💡 아이디어 <span style="font-size:11px;color:var(--text3);font-weight:600">${ideas.length}개</span></div>
+      ${ideas.slice(0,3).map(v=>`
+        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+          <div class="arc-dash-doc-icon">💡</div>
+          <div class="arc-dash-doc-body">
+            <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
+            <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
+          </div>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">할 일화</button>
+        </div>`).join('')}
+    </div>` : ''}
+
+    <div class="arc-dash-sec">
+      <div class="arc-dash-sec-title">🕐 타임라인</div>
+      <div class="arc-dash-timeline">
+        ${projItems.slice(0,8).map(v=>`
+          <div class="arc-dash-tl-item">
+            <div class="arc-dash-tl-dot ${tlDotClass(v.kind)}"></div>
+            <div class="arc-dash-tl-text">
+              <div class="arc-dash-tl-title">${escHtml(v.title)}</div>
+              <div class="arc-dash-tl-meta">${arcFormatDate(v)} · ${escHtml(v.kindLabel||v.collection||v.type)}</div>
+            </div>
+          </div>`).join('')||'<div style="color:var(--text3);font-size:13px">문서가 없습니다.</div>'}
+      </div>
+    </div>
+
+    ${(topTags.length||topMents.length) ? `
+    <div class="arc-dash-sec">
+      <div class="arc-dash-sec-title">🏷 핵심 신호</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${topTags.map(([t,c])=>`<span class="arc-pill">#${escHtml(t)} · ${c}</span>`).join('')}
+        ${topMents.map(([m,c])=>`<span class="arc-pill">@${escHtml(m)} · ${c}</span>`).join('')}
+      </div>
+    </div>` : ''}
+
+    ${dumpMatches.length ? `
+    <div class="arc-dash-sec">
+      <div class="arc-dash-sec-title">🧠 연결된 BrainDump</div>
+      ${dumpMatches.map(v=>`
+        <div class="arc-dash-doc-row" onclick="haptic.medium(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+          <div class="arc-dash-doc-icon">🧠</div>
+          <div class="arc-dash-doc-body">
+            <div class="arc-dash-doc-title">${escHtml((v.text||'').slice(0,36))}</div>
+            <div class="arc-dash-doc-meta">${v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : ''}</div>
+          </div>
+        </div>`).join('')}
+    </div>` : ''}
+  `;
+  sheet.classList.remove('hidden');
+}
+window.openArcDashboard = openArcDashboard;
+
+function closeArcDashboard() {
+  document.getElementById('arcDashSheet')?.classList.add('hidden');
+}
+window.closeArcDashboard = closeArcDashboard;
+
+/* ── Meeting Summary ── */
+async function openMeetingSummary(id) {
+  const item = arcItems.map(arcEnrichItem).find(i=>i.id===id);
+  if(!item) return;
+  const sheet = document.getElementById('arcMeetSheet');
+  const body = document.getElementById('arcMeetBody');
+  const sub = document.getElementById('arcMeetHeadSub');
+  if(!sheet||!body) return;
+  sub.textContent = escHtml(item.title);
+  body.innerHTML = '<div class="arc-meet-loading"><div class="spin">⏳</div><div>AI 회의 요약 분석 중...</div></div>';
+  sheet.classList.remove('hidden');
+
+  let result = null;
+  if(openAiKey) {
+    try {
+      const prompt = `다음 회의 노트를 JSON으로 정리해줘. 키: summary(한 문장 요약), decisions(결정사항 배열, 한국어, 최대5개), actionItems(액션아이템 배열 {text,person}, 최대6개), attendees(언급된 사람 배열, @없이), keyPoints(핵심 포인트 배열, 최대4개).\n제목: ${item.title}\n내용: ${String(item.content||'').slice(0,2000)}`;
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+        body:JSON.stringify({model:'gpt-4o-mini',max_tokens:400,messages:[{role:'system',content:'JSON만 반환한다.'},{role:'user',content:prompt}]})
+      });
+      const j = await r.json();
+      const raw = (j.choices?.[0]?.message?.content||'').match(/\{[\s\S]*\}/);
+      if(raw) result = JSON.parse(raw[0]);
+    } catch(e) {}
+  }
+
+  // Fallback: local parse
+  if(!result) {
+    const lines = String(item.content||'').split('\n').filter(l=>l.trim());
+    result = {
+      summary: item.summary || lines[0]?.slice(0,60) || '회의 내용 요약',
+      decisions: lines.filter(l=>/결정|확정|합의|승인/.test(l)).slice(0,4).map(l=>l.trim().replace(/^[-*•]/,'')),
+      actionItems: lines.filter(l=>/해야|필요|준비|보내|연락|확인/.test(l)).slice(0,5).map(l=>({text:l.trim().replace(/^[-*•]/,''),person:''})),
+      attendees: (item.mentions||[]).map(m=>m.replace('@','')),
+      keyPoints: lines.slice(0,4).map(l=>l.trim().replace(/^[-*•]/,'')).filter(l=>l.length>5),
+    };
+  }
+
+  const actionItems = (result.actionItems||[]);
+  const decisions = (result.decisions||[]);
+  const keyPoints = (result.keyPoints||[]);
+  const attendees = (result.attendees||[]);
+
+  body.innerHTML = `
+    <div class="arc-meet-block">
+      <div class="arc-meet-block-title"><span>1</span> 한 줄 요약</div>
+      <div class="arc-meet-box">${escHtml(result.summary||'')}</div>
+    </div>
+
+    ${keyPoints.length ? `
+    <div class="arc-meet-block">
+      <div class="arc-meet-block-title"><span>2</span> 핵심 포인트</div>
+      <div class="arc-meet-box"><ul style="padding-left:16px;margin:0">${keyPoints.map(k=>`<li style="margin-bottom:5px">${escHtml(k)}</li>`).join('')}</ul></div>
+    </div>` : ''}
+
+    ${decisions.length ? `
+    <div class="arc-meet-block">
+      <div class="arc-meet-block-title"><span>3</span> 결정 사항 ${decisions.length}개</div>
+      ${decisions.map(d=>`<div class="arc-meet-box" style="margin-bottom:6px">✅ ${escHtml(d)}</div>`).join('')}
+    </div>` : ''}
+
+    ${actionItems.length ? `
+    <div class="arc-meet-block">
+      <div class="arc-meet-block-title"><span>4</span> 액션 아이템 ${actionItems.length}개</div>
+      <div id="arcMeetActionList">
+        ${actionItems.map((a,i)=>`
+          <div class="arc-meet-action-row" id="arcMeetAct-${i}" onclick="toggleMeetAction(${i})">
+            <div class="arc-meet-action-check" id="arcMeetActChk-${i}"></div>
+            <div class="arc-meet-action-text">${escHtml(a.text||a)}${a.person?` <span style="font-size:11px;color:var(--text3)">— ${escHtml(a.person)}</span>`:''}</div>
+          </div>`).join('')}
+      </div>
+      <button class="arc-meet-send-btn" onclick="sendMeetActionsToToday(${JSON.stringify(actionItems).replace(/"/g,'&quot;')})">
+        📅 선택 항목을 Today로 보내기
+      </button>
+    </div>` : ''}
+
+    ${attendees.length ? `
+    <div class="arc-meet-block">
+      <div class="arc-meet-block-title"><span>5</span> 참석자</div>
+      <div class="arc-meet-person-chips">
+        ${attendees.map(a=>`<span class="arc-meet-person-chip">👤 ${escHtml(a)}</span>`).join('')}
+      </div>
+    </div>` : ''}
+  `;
+  document.getElementById('arcMeetClose')?.addEventListener('click', ()=>sheet.classList.add('hidden'), {once:true});
+}
+window.openMeetingSummary = openMeetingSummary;
+
+const _meetChecked = new Set();
+window.toggleMeetAction = (idx) => {
+  const row = document.getElementById(`arcMeetAct-${idx}`);
+  const chk = document.getElementById(`arcMeetActChk-${idx}`);
+  if(!row) return;
+  if(_meetChecked.has(idx)) { _meetChecked.delete(idx); row.classList.remove('done'); chk.textContent=''; }
+  else { _meetChecked.add(idx); row.classList.add('done'); chk.textContent='✓'; }
+};
+
+window.sendMeetActionsToToday = async(actions) => { haptic.medium();
+  const items = Array.isArray(actions)?actions:[];
+  const selected = items.filter((_,i)=>_meetChecked.has(i));
+  const toSend = selected.length ? selected : items.slice(0,3);
+  if(!toSend.length) { showSaved(); return; }
+  // Use first Today card or fallback
+  const cardId = CARDS[0]?.id;
+  if(!cardId) { showSaved(); return; }
+  for(const a of toSend) {
+    const text = typeof a==='string'?a:a.text;
+    if(text?.trim()) await addTask(cardId, text.trim());
+  }
+  document.getElementById('arcMeetSheet')?.classList.add('hidden');
+  _meetChecked.clear();
+  showSaved('Today에 추가됨 ✓');
+};
+
+/* ── Quick Convert (자료→할 일/일정 즉시 변환) ── */
+let _convSelectedItems = new Set();
+let _convDest = 'today'; // 'today' | 'schedule'
+
+async function openQuickConvert(id) {
+  const item = arcItems.map(arcEnrichItem).find(i=>i.id===id);
+  if(!item) return;
+  const sheet = document.getElementById('arcConvSheet');
+  const body = document.getElementById('arcConvBody');
+  if(!sheet||!body) return;
+  _convSelectedItems = new Set();
+  _convDest = 'today';
+  sheet.classList.remove('hidden');
+
+  body.innerHTML = `
+    <div class="arc-conv-source">${escHtml((item.summary||item.content||item.title).slice(0,160))}</div>
+    <div class="arc-conv-ai-label">⏳ AI가 할 일을 추출 중...</div>
+    <div id="arcConvItemList" style="opacity:.4;pointer-events:none"></div>
+    <div class="arc-conv-dest-row" id="arcConvDestRow" style="opacity:.4;pointer-events:none">
+      <button class="arc-conv-dest-btn active" data-dest="today" onclick="setConvDest('today')">
+        <div class="arc-conv-dest-icon">📅</div>
+        <div class="arc-conv-dest-label">Today</div>
+        <div class="arc-conv-dest-sub">오늘 할 일로</div>
+      </button>
+      <button class="arc-conv-dest-btn" data-dest="schedule" onclick="setConvDest('schedule')">
+        <div class="arc-conv-dest-icon">🗓</div>
+        <div class="arc-conv-dest-label">일정</div>
+        <div class="arc-conv-dest-sub">스케줄에 등록</div>
+      </button>
+    </div>
+    <button class="arc-conv-go-btn" id="arcConvGoBtn" style="opacity:.4;pointer-events:none" onclick="execConvert('${item.id}')">
+      ⚡ 변환하기
+    </button>
+  `;
+
+  // Extract action items with AI or fallback
+  let tasks = [];
+  if(openAiKey) {
+    try {
+      const prompt = `다음 내용에서 실행 가능한 할 일 항목을 추출해줘. JSON 배열로만 반환. 예: ["항목1","항목2"]. 최대 6개. 한국어. 짧게.\n제목: ${item.title}\n내용: ${String(item.content||'').slice(0,1500)}`;
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+        body:JSON.stringify({model:'gpt-4o-mini',max_tokens:200,messages:[{role:'system',content:'JSON 배열만 반환.'},{role:'user',content:prompt}]})
+      });
+      const j = await r.json();
+      const raw = (j.choices?.[0]?.message?.content||'').match(/\[[\s\S]*\]/);
+      if(raw) tasks = JSON.parse(raw[0]).filter(t=>typeof t==='string'&&t.trim());
+    } catch(e){}
+  }
+  if(!tasks.length) {
+    // Local fallback: split by newlines and take action-like lines
+    tasks = String(item.content||item.title).split('\n')
+      .map(l=>l.trim().replace(/^[-*•\d.]+\s*/,''))
+      .filter(l=>l.length>4&&l.length<80).slice(0,5);
+    if(!tasks.length) tasks = [item.title];
+  }
+
+  // Select all by default
+  tasks.forEach((_,i)=>_convSelectedItems.add(i));
+
+  const listEl = document.getElementById('arcConvItemList');
+  const destRow = document.getElementById('arcConvDestRow');
+  const goBtn = document.getElementById('arcConvGoBtn');
+  const aiLabel = body.querySelector('.arc-conv-ai-label');
+  if(aiLabel) aiLabel.textContent = `AI가 ${tasks.length}개의 항목을 찾았어요`;
+
+  if(listEl) {
+    listEl.innerHTML = tasks.map((t,i)=>`
+      <div class="arc-conv-item selected" id="arcConvIt-${i}" onclick="toggleConvItem(${i})">
+        <div class="arc-conv-item-check">✓</div>
+        <div class="arc-conv-item-text">${escHtml(t)}</div>
+      </div>`).join('');
+    listEl.style.opacity='1'; listEl.style.pointerEvents='auto';
+  }
+  if(destRow) { destRow.style.opacity='1'; destRow.style.pointerEvents='auto'; }
+  if(goBtn) { goBtn.style.opacity='1'; goBtn.style.pointerEvents='auto'; }
+}
+window.openQuickConvert = openQuickConvert;
+
+window.toggleConvItem = (idx) => {
+  const el = document.getElementById(`arcConvIt-${idx}`);
+  if(!el) return;
+  if(_convSelectedItems.has(idx)) { _convSelectedItems.delete(idx); el.classList.remove('selected'); el.querySelector('.arc-conv-item-check').textContent=''; }
+  else { _convSelectedItems.add(idx); el.classList.add('selected'); el.querySelector('.arc-conv-item-check').textContent='✓'; }
+};
+
+window.setConvDest = (dest) => {
+  _convDest = dest;
+  document.querySelectorAll('.arc-conv-dest-btn').forEach(b=>b.classList.toggle('active', b.dataset.dest===dest));
+};
+
+window.execConvert = async(sourceId) => {
+  const listEl = document.getElementById('arcConvItemList');
+  if(!listEl) return;
+  const allItems = [...listEl.querySelectorAll('.arc-conv-item')].map(el=>el.querySelector('.arc-conv-item-text')?.textContent?.trim()).filter(Boolean);
+  const selected = allItems.filter((_,i)=>_convSelectedItems.has(i));
+  if(!selected.length) { showSaved('선택된 항목 없음'); return; }
+
+  if(_convDest==='today') {
+    const cardId = CARDS[0]?.id;
+    if(cardId) { for(const t of selected) await addTask(cardId, t); }
+    showSaved(`📅 Today에 ${selected.length}개 추가됨`);
+  } else {
+    // Schedule: open the event sheet for the first item
+    const first = selected[0];
+    openEventSheet(null, null);
+    setTimeout(()=>{ const titleEl = document.getElementById('eventTitle'); if(titleEl) titleEl.value=first; }, 200);
+    // 나머지 항목들은 Today에 자동 추가
+    if(selected.length>1) {
+      const cardId = CARDS[0]?.id;
+      if(cardId) { for(const t of selected.slice(1)) await addTask(cardId, t); }
+      showSaved(`📅 일정 1개 + Today ${selected.length-1}개 추가됨`);
+    } else {
+      showSaved('📅 일정에 추가 중...');
+    }
+  }
+  document.getElementById('arcConvSheet')?.classList.add('hidden');
+};
+
+/* ── Wire up v22 close buttons ── */
+document.getElementById('arcMeetClose')?.addEventListener('click', ()=>document.getElementById('arcMeetSheet')?.classList.add('hidden'));
+document.getElementById('arcConvClose')?.addEventListener('click', ()=>document.getElementById('arcConvSheet')?.classList.add('hidden'));
+document.getElementById('arcDashSheet')?.addEventListener('click', e=>{ if(e.target.id==='arcDashSheet') closeArcDashboard(); });
+document.getElementById('arcMeetSheet')?.addEventListener('click', e=>{ if(e.target.id==='arcMeetSheet') document.getElementById('arcMeetSheet').classList.add('hidden'); });
+document.getElementById('arcConvSheet')?.addEventListener('click', e=>{ if(e.target.id==='arcConvSheet') document.getElementById('arcConvSheet').classList.add('hidden'); });
+
+/* ── Hook "프로젝트 보기" to open Dashboard instead of old project sheet ── */
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('[data-arc-proj]');
+  if(btn) { haptic.light(); openArcDashboard(btn.dataset.arcProj); }
 });
 
 /* ── AI REMINDER ── */
+
 async function loadAiReminder() {
   if(!openAiKey || !currentUser) {
     aiItems.innerHTML = `<div class="ai-loading">AI 키가 설정되지 않았습니다. Setting에서 설정해주세요.</div>`;
