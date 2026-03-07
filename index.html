@@ -6,7 +6,7 @@
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v8'));
+    const oldKeys = keys.filter(k => !k.includes('pwa-v9'));
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       const regs = await navigator.serviceWorker.getRegistrations();
@@ -428,6 +428,7 @@ body {
 .add-row {
   display: flex; align-items: center;
   padding: 12px 14px; background: var(--surface);
+  border-top: 1px solid var(--line);
 }
 .add-input {
   flex: 1; border: none; outline: none; background: transparent;
@@ -1483,9 +1484,8 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
   <div class="hdr" id="mainHdr">
     <div class="hdr-top">
       <div class="hdr-logo">
-        <img src="/images/jf_os_header_light_1x.png"
-             srcset="/images/jf_os_header_light_1x.png 1x, /images/jf_os_header_light_2x.png 2x, /images/jf_os_header_light_3x.png 3x"
-             alt="JF OS" height="36" id="hdrLogoImg">
+        <img src="/icons/favicon-48.png"
+             alt="JF OS" height="36" id="hdrLogoImg" style="border-radius:8px;">
       </div>
       <div class="hdr-date-nav">
         <button class="hdr-nav-btn" id="btnPrev">‹</button>
@@ -2329,6 +2329,7 @@ function renderTodayCards() {
       if(e.key==='Enter' && inp.value.trim()) {
         addTask(card.id, inp.value.trim());
         inp.value = '';
+        inp.focus();
       }
     });
     // Check
