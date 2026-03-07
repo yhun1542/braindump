@@ -6,7 +6,7 @@
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v6'));
+    const oldKeys = keys.filter(k => !k.includes('pwa-v7'));
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       const regs = await navigator.serviceWorker.getRegistrations();
@@ -3189,7 +3189,7 @@ function renderArcGrid(filter='') {
     const relatedDocs = arcFindRelatedDocs(item);
     const relatedBD = arcFindRelatedBrainDumps(item);
     return `
-      <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="if('${item.type}'==='url'){haptic.medium();arcOpenUrl('${(item.content||item.url||'')'.replace(/'/g,'\\'')}')}else{arcShowCtx(event,'${item.id}')}" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
+      <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="arcItemDblClick(event,'${item.id}',item.type,item.content||item.url||'')" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${typeIcon[item.type]||'📝'}</div>
           <div class="arc-item-info">
@@ -3222,6 +3222,15 @@ function renderArcGrid(filter='') {
       </div>`;
   }).join('');
 }
+window.arcItemDblClick = (event, id, type, url) => {
+  if (type === 'url' && url) {
+    haptic.medium();
+    arcOpenUrl(url);
+  } else {
+    arcShowCtx(event, id);
+  }
+};
+
 window.arcOpenUrl = (url) => {
   if(!url) return;
   const u = String(url).trim();
