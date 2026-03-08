@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v33';
+const CACHE_VERSION = 'pwa-v34';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -43,10 +43,11 @@ self.addEventListener('install', (event) => {
           })
         )
       );
+    }).then(() => {
+      // 캐싱 완료 후 즉시 활성화 (waiting 상태 없이)
+      return self.skipWaiting();
     })
   );
-  // 새 버전 즉시 활성화 — waiting 상태 없이 바로 적용
-  self.skipWaiting();
 });
 
 // ── Activate: 구버전 캐시 정리 ──────────────────────────────────────────────

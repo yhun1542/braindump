@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v22 fix)
-const CURRENT_CACHE = 'pwa-v33';
+// SW 캐시 강제 무효화 (pwa-v34)
+const CURRENT_CACHE = 'pwa-v34';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -1899,7 +1899,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
       <div class="sheet-label">메모</div>
       <textarea class="sheet-textarea" id="eventNote" placeholder="메모..."></textarea>
     </div>
-        <div class="sheet-field alarm-row" id="alarmRow" onclick="try{(window.haptic||haptic).light()}catch(_){}; openAlarmSheet()">
+        <div class="sheet-field alarm-row" id="alarmRow" onclick="window.haptic?.light(); window.openAlarmSheet?.()">
       <span class="alarm-label">알림</span>
       <span style="display:flex;align-items:center;gap:2px">
         <span class="alarm-value" id="alarmValueText">없음</span>
@@ -2967,7 +2967,7 @@ document.getElementById('eventSave').addEventListener('click', async()=>{ window
   if(!title) return;
 
   // alarm 저장
-  const alarmData = selectedAlarm === 'none' ? null : selectedAlarm;
+  const alarmData = (window.selectedAlarm ?? 'none') === 'none' ? null : window.selectedAlarm;
   const data = {
     title,
     date:     document.getElementById('eventDate').value,
@@ -5268,6 +5268,7 @@ window.escHtml = escHtml;
    ALARM FEATURE - JS
    ══════════════════════════════════════════ */
 let selectedAlarm = 'none';
+window.selectedAlarm = selectedAlarm; // module 스크립트 접근용
 
 const ALARM_LABELS = {
   none:          '없음',
@@ -5289,6 +5290,7 @@ function alarmLabel(alarm) {
 
 function setAlarmUI(alarm) {
   selectedAlarm = alarm || 'none';
+  window.selectedAlarm = selectedAlarm; // 동기화
   const el = document.getElementById('alarmValueText');
   if (el) el.textContent = alarmLabel(selectedAlarm);
   document.querySelectorAll('.alarm-option').forEach(btn => {
@@ -5299,6 +5301,7 @@ function setAlarmUI(alarm) {
   });
 }
 
+window.openAlarmSheet = openAlarmSheet; // HTML onclick에서 접근용
 function openAlarmSheet() {
   const ov = document.getElementById('alarmSheetOverlay');
   if (ov) ov.classList.add('open');
