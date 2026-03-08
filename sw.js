@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v31';
+const CACHE_VERSION = 'pwa-v32';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -45,8 +45,8 @@ self.addEventListener('install', (event) => {
       );
     })
   );
-  // skipWaiting은 메시지 핸들러(SKIP_WAITING)에서만 실행
-  // install 단계에서 강제 활성화하면 이미 열려있는 탭이 깨질 수 있음
+  // 새 버전 즉시 활성화 — waiting 상태 없이 바로 적용
+  self.skipWaiting();
 });
 
 // ── Activate: 구버전 캐시 정리 ──────────────────────────────────────────────
