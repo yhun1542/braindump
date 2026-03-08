@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v21 fix)
-const CURRENT_CACHE = 'pwa-v21';
+// SW 캐시 강제 무효화 (pwa-v22 fix)
+const CURRENT_CACHE = 'pwa-v22';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -2229,7 +2229,7 @@ function arcOpenFileViewerById(id) {
   arcOpenFileViewer(item);
 }
 async function arcOpenFileViewer(item) {
-  const _esc = window.escHtml || (s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'));
+  const _esc = window.escHtml || (s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'));
   const sheet = document.getElementById('arcFvSheet');
   const body  = document.getElementById('arcFvBody');
   const title = document.getElementById('arcFvTitle');
@@ -2238,27 +2238,46 @@ async function arcOpenFileViewer(item) {
   const url = item?.url || item?.content || '';
   const ft  = arcGetFileType(item);
   if (title) title.textContent = item?.title || '파일';
-  if (dlBtn) { dlBtn.style.display = url ? '' : 'none'; dlBtn.onclick = () => { const a=document.createElement('a'); a.href=url; a.download=item?.title||'file'; a.target='_blank'; a.click(); }; }
+  window._arcFvCurrentItem = item;
+  if (dlBtn) {
+    dlBtn.style.display = url ? '' : 'none';
+    dlBtn.onclick = () => { if(window.arcDownloadFile) { window.arcDownloadFile(); } else { const a=document.createElement('a'); a.href=url; a.download=item?.title||'file'; a.target='_blank'; a.click(); } };
+  }
   sheet.classList.remove('hidden');
+  haptic.medium();
   if (ft === 'img') {
-    body.innerHTML = `<div style="background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center">
-      <img class="arc-fv-img" src="${_esc(url)}" alt="${_esc(item?.title||'')}" style="max-width:100%;max-height:80dvh;object-fit:contain;border-radius:8px;">
-    </div>`;
+    body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>이미지 로딩 중...</div></div>';
+    const img = new Image();
+    img.onload = () => {
+      body.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center;padding:8px';
+      img.style.cssText = 'max-width:100%;max-height:80dvh;object-fit:contain;border-radius:8px;display:block';
+      img.className = 'arc-fv-img';
+      wrap.appendChild(img);
+      body.appendChild(wrap);
+    };
+    img.onerror = () => {
+      body.innerHTML = '<div style="padding:32px;text-align:center;color:#f66;font-size:14px">🖼 이미지를 불러올 수 없습니다.<br><br><a href="' + url + '" target="_blank" style="color:#4f8ef7;text-decoration:underline">직접 열기</a></div>';
+    };
+    img.src = url;
   } else if (ft === 'video') {
-    body.innerHTML = `<video controls autoplay style="width:100%;max-height:80dvh;background:#000;border-radius:8px"><source src="${_esc(url)}"><p>동영상을 재생할 수 없습니다.</p></video>`;
+    body.innerHTML = `<video controls autoplay playsinline style="width:100%;max-height:80dvh;background:#000;border-radius:8px"><source src="${url}"><p>동영상을 재생할 수 없습니다.</p></video>`;
   } else if (ft === 'txt') {
-    body.innerHTML = `<div style="padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6">⏳ 텍스트 로딩 중...</div>`;
+    body.innerHTML = '<div style="padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6">⏳ 텍스트 로딩 중...</div>';
     try {
       const r = await fetch(url);
       const txt = await r.text();
       body.innerHTML = `<pre style="padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6;word-break:break-all">${_esc(txt)}</pre>`;
     } catch(e) { body.innerHTML = `<div style="padding:16px;color:#f66">텍스트 로드 실패: ${_esc(e.message)}</div>`; }
-  } else if (ft === 'pdf' || ft === 'doc' || ft === 'ppt' || ft === 'xls') {
+  } else if (ft === 'pdf') {
+    body.innerHTML = `<iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true" style="width:100%;height:80dvh;border:none;border-radius:8px"></iframe>`;
+  } else if (ft === 'doc' || ft === 'ppt' || ft === 'xls') {
     body.innerHTML = `<iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true" style="width:100%;height:80dvh;border:none;border-radius:8px"></iframe>`;
   } else if (url) {
     body.innerHTML = `<iframe src="${_esc(url)}" style="width:100%;height:80dvh;border:none;border-radius:8px" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>`;
   } else {
-    body.innerHTML = `<div style="padding:32px;text-align:center;color:#888">미리보기를 지원하지 않는 파일 형식입니다.</div>`;
+    body.innerHTML = '<div style="padding:32px;text-align:center;color:#888">미리보기를 지원하지 않는 파일 형식입니다.</div>';
   }
 }
 window.arcOpenFileViewer = arcOpenFileViewer;
@@ -3525,7 +3544,7 @@ function renderArcGrid(filter='') {
           ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
           <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
           ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
-          <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:220},'${item.id}')">⋯</button>
+          <button class="arc-action-btn ghost" onclick="haptic.light(); (function(btn,id){const r=btn.getBoundingClientRect();arcShowCtx({clientX:r.left,clientY:r.bottom},id);})(this,'${item.id}')">⋯</button>
         </div>
       </div>`;
   }).join('');
@@ -3599,14 +3618,18 @@ window.arcShowCtx = (e, id) => {
   const menu = document.getElementById('arcCtxMenu');
   const overlay = document.getElementById('arcCtxOverlay');
   if(!menu || !overlay) return;
-  const hasOpenable = item && (item.type==='url' || ((item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url));
+  // image 타입도 파일 보기 가능하도록 수정
+  const hasOpenable = item && (item.type==='url' || ((item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url));
   document.getElementById('arcCtxOpen').style.display = hasOpenable ? '' : 'none';
   document.getElementById('arcCtxOpen').textContent = item && item.type==='url' ? '🔗 링크 열기' : `${arcFileIcon(item)} ${arcFileLabel(item)} 보기`;
   document.getElementById('arcCtxPin').textContent = (item && item.pinned) ? '★ 즐겨찾기 해제' : '⭐ 즐겨찾기 추가';
   const x = e.clientX || window.innerWidth/2;
   const y = e.clientY || window.innerHeight/2;
-  menu.style.left = Math.min(x, window.innerWidth-210)+'px';
-  menu.style.top  = Math.min(y, window.innerHeight-260)+'px';
+  // 메뉴가 화면 밖으로 나가지 않도록 위치 조정
+  menu.style.left = Math.min(Math.max(x, 8), window.innerWidth-218)+'px';
+  const menuH = 260; // 예상 메뉴 높이
+  const topPos = y + menuH > window.innerHeight ? Math.max(y - menuH, 8) : y;
+  menu.style.top = topPos+'px';
   menu.classList.remove('hidden');
   overlay.classList.remove('hidden');
 };
@@ -3621,7 +3644,7 @@ document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
   const item = arcItems.map(arcEnrichItem).find(i=>i.id===arcCtxTargetId);
   if(item) {
     if(item.type==='url') { arcOpenUrl(item.content); }
-    else if((item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url) { arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type}); }
+    else if((item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url) { arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type}); }
     else { arcOpenUrl(item.url || item.content); }
   }
   closeArcCtx();
@@ -5379,108 +5402,6 @@ function arcFileIconClass(item) {
   return cls[t] || 'default';
 }
 
-// 파일 뷰어 열기
-window.arcOpenFileViewerById = function(id) {
-  const item = (window._arcItems||[]).find(i => i.id === id);
-  if (!item) { arcShowToast('아이템을 찾을 수 없습니다'); return; }
-  arcOpenFileViewer({id: item.id, url: item.url, title: item.title, type: item.type});
-};
-
-window.arcOpenFileViewerById = function(id) {
-  const item = (window._arcItems||[]).find(i => i.id === id);
-  if (!item) { arcShowToast('아이템을 찾을 수 없습니다'); return; }
-  arcOpenFileViewer({id: item.id, url: item.url, title: item.title, type: item.type});
-};
-
-window.arcOpenFileViewer = async function(item) {
-  if (!item) return;
-  const url = item.url || item.content || '';
-  // escHtml이 module 스크립트에 있어서 window를 통해 접근
-  const _esc = window.escHtml || (s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'));
-  if (!url) { arcShowToast('파일 URL이 없습니다'); return; }
-  
-  const sheet = document.getElementById('arcFvSheet');
-  const body = document.getElementById('arcFvBody');
-  const title = document.getElementById('arcFvTitle');
-  if(!sheet || !body) { console.error('arcFvSheet 요소 없음'); return; }
-  
-  title.textContent = item.title || '파일 보기';
-  body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>';
-  window._arcFvCurrentItem = item;
-  sheet.classList.remove('hidden');
-  haptic.medium();
-  
-  const ft = arcGetFileType(item);
-  
-  try {
-    if (ft === 'img') {
-      // 현재 파일 URL 저장 (다운로드용)
-      window._arcFvCurrentItem = item;
-      body.innerHTML = `<div style="background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center">
-        <img class="arc-fv-img" src="${_esc(url)}" alt="${_esc(item.title||'')}" loading="lazy" style="max-height:75dvh;width:100%;object-fit:contain">
-      </div>`;
-    } else if (ft === 'pdf') {
-      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}" allowfullscreen></iframe>`;
-    } else if (ft === 'doc') {
-      // mammoth.js로 DOCX 텍스트 추출
-      body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>Word 문서 변환 중...</div></div>';
-      try {
-        const resp = await fetch(url);
-        const ab = await resp.arrayBuffer();
-        if (typeof mammoth !== 'undefined') {
-          const result = await mammoth.convertToHtml({ arrayBuffer: ab });
-          body.innerHTML = `<div class="arc-fv-doc-body">${result.value}</div>`;
-        } else {
-          body.innerHTML = `<div class="arc-fv-error">mammoth.js 로드 실패. <a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-        }
-      } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">Word 문서를 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-      }
-    } else if (ft === 'xls') {
-      // SheetJS로 Excel/CSV 표 렌더링
-      body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>스프레드시트 로딩 중...</div></div>';
-      try {
-        const resp = await fetch(url);
-        const ab = await resp.arrayBuffer();
-        if (typeof XLSX !== 'undefined') {
-          const wb = XLSX.read(ab, { type: 'array' });
-          const ws = wb.Sheets[wb.SheetNames[0]];
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-          let html = '<div class="arc-fv-table-wrap"><table class="arc-fv-table">';
-          data.slice(0, 200).forEach((row, ri) => {
-            html += ri === 0 ? '<tr>' + (row||[]).map(c=>`<th>${_esc(String(c??''))}</th>`).join('') + '</tr>'
-                             : '<tr>' + (row||[]).map(c=>`<td>${_esc(String(c??''))}</td>`).join('') + '</tr>';
-          });
-          html += '</table></div>';
-          body.innerHTML = html;
-        } else {
-          body.innerHTML = `<div class="arc-fv-error">SheetJS 로드 실패. <a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-        }
-      } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">스프레드시트를 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-      }
-    } else if (ft === 'txt') {
-      try {
-        const resp = await fetch(url);
-        const text = await resp.text();
-        body.innerHTML = `<div class="arc-fv-txt">${_esc(text.slice(0, 50000))}</div>`;
-      } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">텍스트 파일을 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-      }
-    } else if (ft === 'ppt') {
-      // PPT는 Google Docs Viewer로 렌더링
-      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
-    } else if (ft === 'video') {
-      body.innerHTML = `<video class="arc-fv-img" src="${_esc(url)}" controls autoplay style="max-height:70dvh;width:100%;background:#000"></video>`;
-    } else {
-      // 기타 파일: Google Docs Viewer 시도
-      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
-    }
-  } catch(e) {
-    body.innerHTML = `<div class="arc-fv-error">파일을 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
-  }
-};
-
 // 파일 다운로드
 function arcDownloadFile() {
   const item = window._arcFvCurrentItem;
@@ -5539,6 +5460,9 @@ function arcShowToast(msg, duration=2200) {
   el._t = setTimeout(() => el.classList.remove('show'), duration);
 }
 
+// window에 노출 (module 스크립트에서 접근 가능하도록)
+window.arcDownloadFile = arcDownloadFile;
+window.closeArcFv = closeArcFv;
 // 파일 뷰어 이벤트
 document.getElementById('arcFvClose')?.addEventListener('click', closeArcFv);
 document.getElementById('arcFvSheet')?.addEventListener('click', e => { if (e.target.id === 'arcFvSheet') closeArcFv(); });
