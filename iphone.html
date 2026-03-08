@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v18';
+const CURRENT_CACHE = 'pwa-v19';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -14,7 +14,7 @@ const CURRENT_CACHE = 'pwa-v18';
       // SW 재등록은 하지 않음 - sw.js의 activate 이벤트가 처리함
       // location.reload() 제거 - 무한 루프 원인
     }
-  } catch(e) {}
+  } catch(e) { console.error('[PWA] Cache cleanup error:', e); }
 })();
 </script>
 <meta charset="UTF-8">
@@ -90,6 +90,9 @@ const haptic = (() => {
   --text:       #111111;
   --text2:      #555555;
   --text3:      #aaaaaa;
+  --bg2: var(--surface);
+  --bg3: var(--bg);
+  --muted: var(--text3);
   --done-color: #c0c0c0;
   --shadow:     0 2px 16px rgba(0,0,0,0.07);
   --font:       'Inter', -apple-system, sans-serif;
@@ -667,7 +670,7 @@ body {
 .arc-item {
   background: var(--surface); border-radius: 16px;
   border: 1.5px solid var(--border-mid);
-  margin-bottom: 12px; overflow: hidden;
+  margin-bottom: 12px; overflow: visible;
   box-shadow: var(--shadow);
   transition: transform 0.15s, box-shadow 0.15s;
   position: relative;
@@ -767,7 +770,7 @@ body {
   display: flex; border-top: 1px solid var(--line);
 }
 .arc-action-btn {
-  flex: 1; padding: 11px 6px; border: none; background: transparent;
+  flex: 1; padding: 11px 10px; border: none; background: transparent;
   font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer;
   border-right: 1px solid var(--line);
   display: flex; align-items: center; justify-content: center; gap: 3px;
@@ -2052,7 +2055,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
     <div class="sheet-title" id="arcOverlayTitle">아카이브에 추가</div>
     <!-- 유형은 시스템 자동 감지 - hidden input으로 처리 -->
     <input type="hidden" id="arcType" value="note">
-    <div id="arcTypeBadge" style="display:none; margin-bottom:10px; padding:6px 12px; background:var(--bg); border:1.5px solid var(--border-mid); border-radius:10px; font-size:13px; color:var(--text2); display:flex; align-items:center; gap:6px;">
+    <div id="arcTypeBadge" style="display:none; margin-bottom:10px; padding:6px 12px; background:var(--bg); border:1.5px solid var(--border-mid); border-radius:10px; font-size:13px; color:var(--text2); align-items:center; gap:6px;">
       <span id="arcTypeBadgeIcon">📝</span>
       <span id="arcTypeBadgeLabel">자동 감지됨</span>
     </div>
@@ -2297,7 +2300,7 @@ onAuthStateChanged(auth, async user => {
   }
 });
 /* ── Firestore paths ── */
-const uid = () => currentUser.uid;
+const uid = () => currentUser?.uid || null;
 const todayPath  = (dateStr, cardId) => doc(db,`users/${uid()}/today/${dateStr}/cards/${cardId}`);
 const taskPath   = (dateStr, cardId, taskId) => doc(db,`users/${uid()}/today/${dateStr}/cards/${cardId}/tasks/${taskId}`);
 const eventsCol  = () => collection(db,`users/${uid()}/events`);
@@ -3553,12 +3556,12 @@ document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
 let _arcDelPendingId = null;
 window.arcDel = (id)=>{
   _arcDelPendingId = id;
-  document.getElementById('arcDelSheetOverlay').classList.remove('hidden');
+  document.getElementById('arcDelSheetOverlay')?.classList.remove('hidden');
 };
 // 삭제 확인 시트 이벤트 (module 스크립트는 DOM 준비 후 실행)
 document.getElementById('arcDelCancel')?.addEventListener('click', ()=>{
   _arcDelPendingId = null;
-  document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+  document.getElementById('arcDelSheetOverlay')?.classList.add('hidden');
 });
 document.getElementById('arcDelConfirmBtn')?.addEventListener('click', async()=>{
   if(_arcDelPendingId) {
@@ -3566,12 +3569,12 @@ document.getElementById('arcDelConfirmBtn')?.addEventListener('click', async()=>
     showSaved();
     _arcDelPendingId = null;
   }
-  document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+  document.getElementById('arcDelSheetOverlay')?.classList.add('hidden');
 });
 document.getElementById('arcDelSheetOverlay')?.addEventListener('click', (e)=>{
   if(e.target === document.getElementById('arcDelSheetOverlay')) {
     _arcDelPendingId = null;
-    document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+    document.getElementById('arcDelSheetOverlay')?.classList.add('hidden');
   }
 });
 window.arcToToday = (id)=>{
@@ -5140,7 +5143,7 @@ window.arcOpenFileViewer = async function(item) {
   const sheet = document.getElementById('arcFvSheet');
   const body = document.getElementById('arcFvBody');
   const title = document.getElementById('arcFvTitle');
-  if (!sheet || !body) return;
+  if(!sheet || !body) { console.error('arcFvSheet 요소 없음'); return; }
   
   title.textContent = item.title || '파일 보기';
   body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>';
