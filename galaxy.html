@@ -1420,6 +1420,41 @@ body {
 /* ── v22 card action enhancement ── */
 .arc-action-btn.convert{color:#7c3aed}
 .arc-action-btn.meeting{color:#f59e0b}
+/* ── 파일 뷰어 시트 (pwa-v12) ── */
+.arc-fv-sheet{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end}
+.arc-fv-sheet.hidden{display:none}
+.arc-fv-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:92dvh;display:flex;flex-direction:column;overflow:hidden}
+.arc-fv-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+.arc-fv-title{font-size:15px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arc-fv-close{width:32px;height:32px;border:none;background:var(--surface);border-radius:50%;font-size:16px;cursor:pointer;color:var(--text2);flex:0 0 auto}
+.arc-fv-body{flex:1;overflow:auto;padding:0}
+.arc-fv-iframe{width:100%;height:70dvh;border:none;background:#fff}
+.arc-fv-txt{padding:16px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:70dvh;overflow:auto}
+.arc-fv-img{width:100%;max-height:70dvh;object-fit:contain;display:block;background:#000}
+.arc-fv-table-wrap{overflow:auto;max-height:70dvh;padding:8px}
+.arc-fv-table{border-collapse:collapse;font-size:12px;width:100%}
+.arc-fv-table th,.arc-fv-table td{border:1px solid var(--border-mid);padding:6px 10px;color:var(--text);text-align:left}
+.arc-fv-table th{background:var(--surface);font-weight:700}
+.arc-fv-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;color:var(--text2);font-size:14px}
+.arc-fv-error{padding:24px;color:#e53e3e;font-size:14px;text-align:center}
+.arc-fv-doc-body{padding:16px;max-height:70dvh;overflow:auto;font-size:13px;line-height:1.7;color:var(--text)}
+.arc-fv-doc-body h1,.arc-fv-doc-body h2,.arc-fv-doc-body h3{margin:12px 0 6px;font-weight:700}
+.arc-fv-doc-body p{margin:6px 0}
+.arc-fv-doc-body table{border-collapse:collapse;width:100%;margin:8px 0}
+.arc-fv-doc-body td,.arc-fv-doc-body th{border:1px solid var(--border-mid);padding:4px 8px}
+/* 파일 카드 미리보기 */
+.arc-file-card{display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:12px;border:1px solid var(--border-mid);cursor:pointer;transition:background .15s}
+.arc-file-card:active{background:var(--line)}
+.arc-file-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
+.arc-file-icon.pdf{background:#fff0f0}.arc-file-icon.doc{background:#e8f0fe}.arc-file-icon.ppt{background:#fff3e0}.arc-file-icon.xls{background:#e8f5e9}.arc-file-icon.txt{background:#f5f5f5}.arc-file-icon.zip{background:#f3e5f5}.arc-file-icon.img{background:#fce4ec}.arc-file-icon.video{background:#f3e5f5}.arc-file-icon.hwp{background:#e3f2fd}.arc-file-icon.default{background:#f0f0f0}
+.arc-file-meta{flex:1;min-width:0}
+.arc-file-type-label{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.arc-file-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arc-file-excerpt{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* 토스트 알림 */
+#arcToast{position:fixed;bottom:max(80px,env(safe-area-inset-bottom)+70px);left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.92);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:90vw;text-align:center}
+#arcToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 .arc-v22-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:7px;font-size:10px;font-weight:800;background:rgba(245,158,11,.12);color:#b45309;margin-left:4px}
 .arc-meet-loading{text-align:center;padding:28px 0;color:var(--text3);font-size:14px}
 .arc-meet-loading .spin{display:inline-block;animation:spin 1s linear infinite;font-size:24px;margin-bottom:8px}
@@ -1579,6 +1614,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
         <button class="arc-smart-btn" data-smart="material">자료</button>
         <button class="arc-smart-btn" data-smart="idea">아이디어</button>
         <button class="arc-smart-btn" data-smart="pdf">PDF</button>
+        <button class="arc-smart-btn" data-smart="docs">📁 문서</button>
         <button class="arc-smart-btn" data-smart="ai">AI 정리됨</button>
       </div>
       <div class="arc-hub" id="arcHub"></div>
@@ -1939,6 +1975,22 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
   </div>
 </div>
 
+
+<!-- ═══ pwa-v12: 파일 뷰어 시트 ═══ -->
+<div class="arc-fv-sheet hidden" id="arcFvSheet">
+  <div class="arc-fv-panel">
+    <div class="arc-dash-handle" style="margin:12px auto 0"></div>
+    <div class="arc-fv-head">
+      <div class="arc-fv-title" id="arcFvTitle">파일 보기</div>
+      <button class="arc-fv-close" id="arcFvClose">✕</button>
+    </div>
+    <div class="arc-fv-body" id="arcFvBody">
+      <div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>
+    </div>
+  </div>
+</div>
+<!-- 토스트 알림 -->
+<div id="arcToast"></div>
 <!-- Archive Upload Sheet -->
 <div class="arc-overlay hidden" id="arcOverlay">
   <div class="sheet">
@@ -1952,6 +2004,13 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
         <option value="image">🖼 사진</option>
         <option value="video">🎬 동영상</option>
         <option value="file">📄 파일</option>
+        <option value="file-pdf">📕 PDF 문서</option>
+        <option value="file-doc">📘 Word 문서</option>
+        <option value="file-ppt">📙 PowerPoint</option>
+        <option value="file-xls">📗 Excel/CSV</option>
+        <option value="file-txt">📄 텍스트</option>
+        <option value="file-hwp">📃 한글 문서</option>
+        <option value="file-zip">🗜 압축 파일</option>
       </select>
     </div>
     <div class="sheet-field">
@@ -1964,7 +2023,8 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
     </div>
     <div class="sheet-field" id="arcFileField" style="display:none">
       <div class="sheet-label">파일 선택</div>
-      <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border-mid);border-radius:10px;color:var(--text);">
+      <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.hwp,.hwpx,.zip,.rar" style="width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border-mid);border-radius:10px;color:var(--text);">
+      <div id="arcFilePreview"></div>
     </div>
     <input type="hidden" id="arcEditId" value="">
     <div class="sheet-btns">
@@ -2711,6 +2771,9 @@ function arcIsUrl(str) {
 function arcIsPdf(item){
   return /\.pdf(\?|#|$)/i.test(item?.url || item?.content || item?.title || '');
 }
+function arcIsFileType(item){
+  return item?.type === 'file' || (item?.url && arcGetFileType(item));
+}
 function arcNormalizeText(v){
   return String(v||'').normalize('NFKC').toLowerCase().replace(/[_|]+/g,' ').replace(/\s+/g,' ').trim();
 }
@@ -2768,7 +2831,17 @@ function arcGuessTags(title, content, type){
   ];
   const out = [];
   if(type==='url') out.push('링크');
-  if(type==='file') out.push('자료');
+  if(type==='file') {
+    out.push('자료');
+    const src = arcNormalizeText([title, content].join(' '));
+    if(src.includes('.pdf') || src.includes('pdf')) out.push('pdf');
+    if(src.includes('.doc') || src.includes('word') || src.includes('docx')) out.push('문서');
+    if(src.includes('.ppt') || src.includes('pptx') || src.includes('발표')) out.push('발표');
+    if(src.includes('.xls') || src.includes('xlsx') || src.includes('excel') || src.includes('스프레드')) out.push('표');
+    if(src.includes('.txt') || src.includes('텍스트')) out.push('텍스트');
+    if(src.includes('.hwp') || src.includes('한글')) out.push('한글');
+    if(src.includes('.zip') || src.includes('압축')) out.push('압축');
+  }
   if(type==='image') out.push('이미지');
   if(type==='video') out.push('영상');
   map.forEach(([tag,keys])=>{ if(keys.some(k=>raw.includes(k))) out.push(tag); });
@@ -2807,12 +2880,20 @@ function arcComputeCollection(item){
   if(item.kind==='idea') return '아이디어';
   if(item.type==='url') return '읽을거리';
   if(arcIsPdf(item)) return '문서함';
+  if(item.type === 'file') {
+    const ft = arcGetFileType(item);
+    if(ft === 'doc' || ft === 'ppt' || ft === 'xls' || ft === 'txt' || ft === 'hwp') return '문서함';
+    if(ft === 'img') return '이미지';
+    if(ft === 'video') return '영상';
+    if(ft === 'zip') return '압축파일';
+  }
   if(item.project) return '프로젝트';
   return '자료';
 }
 function arcBuildSearchBlob(item){
   return arcNormalizeText([
     item.title, item.content, item.summary, item.aiTag, item.project, item.collection, item.kindLabel,
+    item.fileText || '',
     (item.tags||[]).join(' '), (item.mentions||[]).join(' '), (item.wikiLinks||[]).join(' '), item.domain
   ].join(' '));
 }
@@ -2871,6 +2952,10 @@ function arcApplySmartFilter(items){
   if(currentArcSmartFilter === 'material') return items.filter(i => i.kind === 'material');
   if(currentArcSmartFilter === 'idea') return items.filter(i => i.kind === 'idea');
   if(currentArcSmartFilter === 'pdf') return items.filter(i => arcIsPdf(i));
+  if(currentArcSmartFilter === 'docs') return items.filter(i => {
+    const ft = arcGetFileType(i);
+    return arcIsPdf(i) || ['doc','ppt','xls','txt','hwp'].includes(ft);
+  });
   if(currentArcSmartFilter === 'ai') return items.filter(i => i.summary || i.aiTag || (i.tags||[]).length);
   return items;
 }
@@ -3188,8 +3273,15 @@ function arcRenderLinkPreview(item){
 }
 function arcRenderBody(item){
   if(item.type==='url') return arcRenderLinkPreview(item);
-  if(item.type==='image' && item.url) return `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy"></div>`;
-  if(item.url && arcIsPdf(item)) return `<div class="arc-link-card"><div class="arc-link-thumb">📄</div><div class="arc-link-body"><div class="arc-link-domain">PDF 문서</div><div class="arc-link-title">${escHtml(item.title)}</div><div class="arc-link-url">${escHtml(item.url)}</div></div></div>`;
+  if(item.type==='image' && item.url) return `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewer(${JSON.stringify({id:item.id,url:item.url,title:item.title,type:'image'})})" style="cursor:pointer"></div>`;
+  if(item.url && (item.type==='file' || item.type==='video' || arcIsPdf(item))) {
+    const ft = arcGetFileType(item);
+    const icon = arcFileIcon(item);
+    const label = arcFileLabel(item);
+    const cls = arcFileIconClass(item);
+    const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content ? escHtml(item.content.slice(0,120)) : '');
+    return `<div class="arc-file-card" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\'")}',title:'${escHtml(item.title).replace(/'/g,"\'")}',type:'${item.type}'})"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
+  }
   const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
   return `<div class="arc-item-preview">${preview}</div>`;
 }
@@ -3219,13 +3311,18 @@ function renderArcGrid(filter='') {
   }
   const typeIcon  = { note:'📝', url:'🔗', image:'🖼', video:'🎬', file:'📄' };
   const typeClass = { note:'arc-type-note', url:'arc-type-url', image:'arc-type-image', video:'arc-type-video', file:'arc-type-file' };
+  // 파일 형식별 아이콘 오버라이드
+  const getItemIcon = (item) => {
+    if(item.type==='file') return arcFileIcon(item);
+    return typeIcon[item.type] || '📝';
+  };
   arcGrid.innerHTML = items.map(item=>{
     const relatedDocs = arcFindRelatedDocs(item);
     const relatedBD = arcFindRelatedBrainDumps(item);
     return `
       <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="arcItemDblClick(event,'${item.id}',item.type,item.content||item.url||'')" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
         <div class="arc-item-header">
-          <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${typeIcon[item.type]||'📝'}</div>
+          <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${getItemIcon(item)}</div>
           <div class="arc-item-info">
             <div class="arc-item-title">${escHtml(item.title)}</div>
             <div class="arc-item-meta">
@@ -3248,7 +3345,7 @@ function renderArcGrid(filter='') {
         ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
         ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : arcIsPdf(item) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.url).replace(/'/g,"\\'")}')">PDF 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',title:'${escHtml(item.title).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',type:'${item.type}'})">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
           <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
           ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
           <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:event?.clientY||220},'${item.id}')">⋯</button>
@@ -3260,6 +3357,10 @@ window.arcItemDblClick = (event, id, type, url) => {
   if (type === 'url' && url) {
     haptic.medium();
     arcOpenUrl(url);
+  } else if ((type === 'file' || type === 'video') && url) {
+    haptic.medium();
+    const item = arcItems.find(i=>i.id===id);
+    if(item) arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type});
   } else {
     arcShowCtx(event, id);
   }
@@ -3307,8 +3408,9 @@ window.arcShowCtx = (e, id) => {
   const menu = document.getElementById('arcCtxMenu');
   const overlay = document.getElementById('arcCtxOverlay');
   if(!menu || !overlay) return;
-  document.getElementById('arcCtxOpen').style.display = (item && (item.type==='url' || (arcIsPdf(item)&&item.url))) ? '' : 'none';
-  document.getElementById('arcCtxOpen').textContent = item && arcIsPdf(item) ? '📄 PDF 열기' : '🔗 링크 열기';
+  const hasOpenable = item && (item.type==='url' || ((item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url));
+  document.getElementById('arcCtxOpen').style.display = hasOpenable ? '' : 'none';
+  document.getElementById('arcCtxOpen').textContent = item && item.type==='url' ? '🔗 링크 열기' : `${arcFileIcon(item)} ${arcFileLabel(item)} 보기`;
   document.getElementById('arcCtxPin').textContent = (item && item.pinned) ? '★ 즐겨찾기 해제' : '⭐ 즐겨찾기 추가';
   const x = e.clientX || window.innerWidth/2;
   const y = e.clientY || window.innerHeight/2;
@@ -3326,7 +3428,11 @@ document.getElementById('arcCtxOverlay').addEventListener('click', closeArcCtx);
 document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
   haptic.medium();
   const item = arcItems.map(arcEnrichItem).find(i=>i.id===arcCtxTargetId);
-  if(item) arcOpenUrl(item.url || item.content);
+  if(item) {
+    if(item.type==='url') { arcOpenUrl(item.content); }
+    else if((item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url) { arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type}); }
+    else { arcOpenUrl(item.url || item.content); }
+  }
   closeArcCtx();
 });
 document.getElementById('arcCtxPin').addEventListener('click', ()=>{
@@ -3403,8 +3509,11 @@ document.getElementById('arcContent').addEventListener('input', ()=>{
 });
 document.getElementById('arcType').addEventListener('change', e=>{
   const t = e.target.value;
-  document.getElementById('arcContentField').style.display = ['image','video','file'].includes(t) ? 'none' : '';
-  document.getElementById('arcFileField').style.display    = ['image','video','file'].includes(t) ? '' : 'none';
+  const isFile = ['image','video','file','file-pdf','file-doc','file-ppt','file-xls','file-txt','file-hwp','file-zip'].includes(t);
+  document.getElementById('arcContentField').style.display = isFile ? 'none' : '';
+  document.getElementById('arcFileField').style.display    = isFile ? '' : 'none';
+  const previewEl = document.getElementById('arcFilePreview');
+  if(previewEl) previewEl.innerHTML = '';
 });
 document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
 async function arcEnrichWithAI({title, content, type}) {
@@ -3437,6 +3546,9 @@ document.getElementById('arcSave').addEventListener('click', async()=>{
   if(btn.disabled) return;
   haptic.success();
   let type = document.getElementById('arcType').value;
+  // file-* 타입을 file로 정규화 (저장 시)
+  const fileSubtype = type.startsWith('file-') ? type : null;
+  if(type.startsWith('file-')) type = 'file';
   let title = document.getElementById('arcTitle').value.trim();
   let content = document.getElementById('arcContent').value.trim();
   const file = document.getElementById('arcFile').files[0];
@@ -3467,6 +3579,25 @@ document.getElementById('arcSave').addEventListener('click', async()=>{
         if(!content) content = file.name;
       } catch(e) { console.warn('파일 업로드 실패:', e); }
     }
+    // 파일 텍스트 추출 (검색용)
+    let fileText = '';
+    if(file && type === 'file') {
+      try {
+        const fname = file.name.toLowerCase();
+        if(/\.(txt|md|log)$/.test(fname)) {
+          fileText = await file.text();
+          fileText = fileText.slice(0, 8000);
+        } else if(/\.(doc|docx)$/.test(fname) && typeof mammoth !== 'undefined') {
+          const ab = await file.arrayBuffer();
+          const r = await mammoth.extractRawText({ arrayBuffer: ab });
+          fileText = (r.value || '').slice(0, 8000);
+        } else if(/\.(xls|xlsx|csv)$/.test(fname) && typeof XLSX !== 'undefined') {
+          const ab = await file.arrayBuffer();
+          const wb = XLSX.read(ab, { type: 'array' });
+          fileText = wb.SheetNames.map(n => XLSX.utils.sheet_to_csv(wb.Sheets[n])).join('\n').slice(0, 8000);
+        }
+      } catch(e) { console.warn('파일 텍스트 추출 실패:', e); }
+    }
     const ai = await arcEnrichWithAI({title, content, type});
     if(ai){
       summary = ai.summary || summary;
@@ -3477,7 +3608,7 @@ document.getElementById('arcSave').addEventListener('click', async()=>{
     }
     if(!title) title = type==='url' ? arcGetDomain(content) || '새 링크' : '새 메모';
     const collection = arcComputeCollection({type, kind, title, content});
-    const payload = { type, title, content, url, aiTag, summary, project, kind, collection, tags, mentions, wikiLinks, pinned:false, updatedAt: serverTimestamp() };
+    const payload = { type, title, content, url, aiTag, summary, project, kind, collection, tags, mentions, wikiLinks, fileText: fileText || '', pinned:false, updatedAt: serverTimestamp() };
     if(editId) {
       if(!url) delete payload.url;
       delete payload.pinned;
@@ -3490,10 +3621,12 @@ document.getElementById('arcSave').addEventListener('click', async()=>{
     document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
     document.getElementById('arcOverlay').classList.add('hidden');
     document.getElementById('arcFile').value = '';
-    showSaved();
+    const prevEl = document.getElementById('arcFilePreview');
+    if(prevEl) prevEl.innerHTML = '';
+    arcShowToast('✅ 저장 완료');
   } catch(e) {
     console.error('저장 오류:', e);
-    showSaved('저장 실패: ' + (e.message || '오류가 발생했습니다'));
+    arcShowToast('❌ 저장 실패: ' + (e.message || '오류가 발생했습니다'));
   } finally {
     btn.disabled = false;
     btn.textContent = '저장 + AI 분류';
@@ -4201,8 +4334,8 @@ document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light(
 })();
 
 /* ── UTILS ── */
-function showSaved() {
-  // saveIndicator removed
+function showSaved(msg) {
+  arcShowToast(msg || '✅ 저장 완료');
 }
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -4807,5 +4940,195 @@ function scheduleNotification(title, eventDate, alarm) {
 }
 
 </script>
+  <!-- pwa-v12: 파일 형식 라이브러리 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+// ═══ pwa-v12: 파일 형식 감지 & 뷰어 ═══
+
+// 파일 형식 감지 함수
+function arcGetFileType(item) {
+  const src = (item?.url || item?.content || item?.title || '').toLowerCase();
+  if (/\.pdf(\?|#|$)/.test(src)) return 'pdf';
+  if (/\.(doc|docx)(\?|#|$)/.test(src)) return 'doc';
+  if (/\.(ppt|pptx)(\?|#|$)/.test(src)) return 'ppt';
+  if (/\.(xls|xlsx|csv)(\?|#|$)/.test(src)) return 'xls';
+  if (/\.(txt|md|log)(\?|#|$)/.test(src)) return 'txt';
+  if (/\.(hwp|hwpx)(\?|#|$)/.test(src)) return 'hwp';
+  if (/\.(zip|rar|7z|tar|gz)(\?|#|$)/.test(src)) return 'zip';
+  if (/\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?|#|$)/.test(src)) return 'img';
+  if (/\.(mp4|mov|avi|mkv|webm)(\?|#|$)/.test(src)) return 'video';
+  return null;
+}
+
+// 파일 형식별 아이콘
+function arcFileIcon(item) {
+  const t = arcGetFileType(item);
+  const icons = { pdf:'📕', doc:'📘', ppt:'📙', xls:'📗', txt:'📄', hwp:'📃', zip:'🗜', img:'🖼', video:'🎬' };
+  return icons[t] || '📄';
+}
+
+// 파일 형식별 레이블
+function arcFileLabel(item) {
+  const t = arcGetFileType(item);
+  const labels = { pdf:'PDF 문서', doc:'Word 문서', ppt:'PowerPoint', xls:'Excel/CSV', txt:'텍스트', hwp:'한글 문서', zip:'압축 파일', img:'이미지', video:'동영상' };
+  return labels[t] || '파일';
+}
+
+// 파일 형식별 아이콘 CSS 클래스
+function arcFileIconClass(item) {
+  const t = arcGetFileType(item);
+  const cls = { pdf:'pdf', doc:'doc', ppt:'ppt', xls:'xls', txt:'txt', hwp:'hwp', zip:'zip', img:'img', video:'video' };
+  return cls[t] || 'default';
+}
+
+// 파일 뷰어 열기
+window.arcOpenFileViewer = async function(item) {
+  if (!item) return;
+  const url = item.url || item.content || '';
+  if (!url) { arcShowToast('파일 URL이 없습니다'); return; }
+  
+  const sheet = document.getElementById('arcFvSheet');
+  const body = document.getElementById('arcFvBody');
+  const title = document.getElementById('arcFvTitle');
+  if (!sheet || !body) return;
+  
+  title.textContent = item.title || '파일 보기';
+  body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>';
+  sheet.classList.remove('hidden');
+  haptic.medium();
+  
+  const ft = arcGetFileType(item);
+  
+  try {
+    if (ft === 'img') {
+      body.innerHTML = `<img class="arc-fv-img" src="${escHtml(url)}" alt="${escHtml(item.title||'')}" loading="lazy">`;
+    } else if (ft === 'pdf') {
+      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}" allowfullscreen></iframe>`;
+    } else if (ft === 'doc') {
+      // mammoth.js로 DOCX 텍스트 추출
+      body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>Word 문서 변환 중...</div></div>';
+      try {
+        const resp = await fetch(url);
+        const ab = await resp.arrayBuffer();
+        if (typeof mammoth !== 'undefined') {
+          const result = await mammoth.convertToHtml({ arrayBuffer: ab });
+          body.innerHTML = `<div class="arc-fv-doc-body">${result.value}</div>`;
+        } else {
+          body.innerHTML = `<div class="arc-fv-error">mammoth.js 로드 실패. <a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+        }
+      } catch(e) {
+        body.innerHTML = `<div class="arc-fv-error">Word 문서를 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+      }
+    } else if (ft === 'xls') {
+      // SheetJS로 Excel/CSV 표 렌더링
+      body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>스프레드시트 로딩 중...</div></div>';
+      try {
+        const resp = await fetch(url);
+        const ab = await resp.arrayBuffer();
+        if (typeof XLSX !== 'undefined') {
+          const wb = XLSX.read(ab, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          let html = '<div class="arc-fv-table-wrap"><table class="arc-fv-table">';
+          data.slice(0, 200).forEach((row, ri) => {
+            html += ri === 0 ? '<tr>' + (row||[]).map(c=>`<th>${escHtml(String(c??''))}</th>`).join('') + '</tr>'
+                             : '<tr>' + (row||[]).map(c=>`<td>${escHtml(String(c??''))}</td>`).join('') + '</tr>';
+          });
+          html += '</table></div>';
+          body.innerHTML = html;
+        } else {
+          body.innerHTML = `<div class="arc-fv-error">SheetJS 로드 실패. <a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+        }
+      } catch(e) {
+        body.innerHTML = `<div class="arc-fv-error">스프레드시트를 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+      }
+    } else if (ft === 'txt') {
+      try {
+        const resp = await fetch(url);
+        const text = await resp.text();
+        body.innerHTML = `<div class="arc-fv-txt">${escHtml(text.slice(0, 50000))}</div>`;
+      } catch(e) {
+        body.innerHTML = `<div class="arc-fv-error">텍스트 파일을 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+      }
+    } else if (ft === 'ppt') {
+      // PPT는 Google Docs Viewer로 렌더링
+      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
+    } else if (ft === 'video') {
+      body.innerHTML = `<video class="arc-fv-img" src="${escHtml(url)}" controls autoplay style="max-height:70dvh;width:100%;background:#000"></video>`;
+    } else {
+      // 기타 파일: Google Docs Viewer 시도
+      body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
+    }
+  } catch(e) {
+    body.innerHTML = `<div class="arc-fv-error">파일을 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+  }
+};
+
+// 파일 뷰어 닫기
+function closeArcFv() {
+  document.getElementById('arcFvSheet')?.classList.add('hidden');
+  const body = document.getElementById('arcFvBody');
+  if (body) body.innerHTML = '';
+}
+
+// 토스트 알림
+function arcShowToast(msg, duration=2200) {
+  let el = document.getElementById('arcToast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// 파일 뷰어 이벤트
+document.getElementById('arcFvClose')?.addEventListener('click', closeArcFv);
+document.getElementById('arcFvSheet')?.addEventListener('click', e => { if (e.target.id === 'arcFvSheet') closeArcFv(); });
+
+// 파일 선택 시 자동 타입 감지
+document.getElementById('arcFile')?.addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const name = file.name.toLowerCase();
+  const typeEl = document.getElementById('arcType');
+  const titleEl = document.getElementById('arcTitle');
+  
+  // 자동 타입 설정
+  if (/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/.test(name)) {
+    typeEl.value = 'image';
+  } else if (/\.(mp4|mov|avi|mkv|webm)$/.test(name)) {
+    typeEl.value = 'video';
+  } else {
+    typeEl.value = 'file';
+  }
+  
+  // 파일 필드 표시
+  document.getElementById('arcContentField').style.display = 'none';
+  document.getElementById('arcFileField').style.display = '';
+  
+  // 제목 자동 설정
+  if (!titleEl.value.trim()) {
+    titleEl.value = file.name.replace(/\.[^.]+$/, '');
+  }
+  
+  // 이미지 미리보기
+  const previewEl = document.getElementById('arcFilePreview');
+  if (previewEl) {
+    if (/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/.test(name)) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewEl.innerHTML = `<img src="${e.target.result}" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:8px">`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const ft = name.split('.').pop().toUpperCase();
+      const icons = { PDF:'📕', DOC:'📘', DOCX:'📘', PPT:'📙', PPTX:'📙', XLS:'📗', XLSX:'📗', CSV:'📗', TXT:'📄', HWP:'📃', HWPX:'📃', ZIP:'🗜', RAR:'🗜' };
+      const icon = icons[ft] || '📄';
+      previewEl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface);border-radius:10px;margin-top:8px"><span style="font-size:28px">${icon}</span><div><div style="font-size:13px;font-weight:700;color:var(--text)">${escHtml(file.name)}</div><div style="font-size:11px;color:var(--text3)">${(file.size/1024).toFixed(1)} KB · ${ft}</div></div></div>`;
+    }
+  }
+});
+
 </body>
 </html>
