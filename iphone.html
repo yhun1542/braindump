@@ -806,12 +806,12 @@ body {
 .arc-ctx-item.danger { color: #e74c3c; }
 .arc-del-sheet-overlay { position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:flex;align-items:flex-end;justify-content:center; }
 .arc-del-sheet-overlay.hidden { display:none; }
-.arc-del-sheet { background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;text-align:center; }
+.arc-del-sheet { background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;text-align:center; }
 .arc-del-sheet h3 { font-size:17px;font-weight:700;margin:0 0 8px; }
 .arc-del-sheet p { font-size:14px;color:var(--text3);margin:0 0 24px; }
 .arc-del-sheet-btns { display:flex;gap:10px; }
 .arc-del-sheet-btns button { flex:1;padding:14px;border-radius:12px;border:none;font-size:16px;font-weight:600;cursor:pointer; }
-.arc-del-cancel { background:var(--line);color:var(--text1); }
+.arc-del-cancel { background:var(--line);color:var(--text); }
 .arc-del-confirm { background:#e74c3c;color:#fff; }
 .arc-ctx-overlay {
   position: fixed; inset: 0; z-index: 9998;
@@ -3338,7 +3338,7 @@ function arcRenderBody(item){
     const label = arcFileLabel(item);
     const cls = arcFileIconClass(item);
     const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content ? escHtml(item.content.slice(0,120)) : '');
-    return `<div class="arc-file-card" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\'")}',title:'${escHtml(item.title).replace(/'/g,"\'")}',type:'${item.type}'})"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
+    return `<div class="arc-file-card" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
   }
   const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
   return `<div class="arc-item-preview">${preview}</div>`;
@@ -3403,7 +3403,7 @@ function renderArcGrid(filter='') {
         ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
         ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',title:'${escHtml(item.title).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',type:'${item.type}'})">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
           <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
           ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
           <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:event?.clientY||220},'${item.id}')">⋯</button>
