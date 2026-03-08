@@ -2233,6 +2233,19 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 <script type="module">
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  browserLocalPersistence, browserSessionPersistence, setPersistence
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import {
+  getFirestore, collection, doc, setDoc, getDoc, getDocs,
+  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
 // ── 파일 형식 감지 & 아이콘 (module 스코프에서 직접 사용) ──
 function arcGetFileType(item) {
   if (item?.type === 'image') return 'img';
@@ -2420,18 +2433,6 @@ window.arcFileIcon = arcFileIcon;
 window.arcFileLabel = arcFileLabel;
 window.arcFileIconClass = arcFileIconClass;
 
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import {
-  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  browserLocalPersistence, browserSessionPersistence, setPersistence
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import {
-  getFirestore, collection, doc, setDoc, getDoc, getDocs,
-  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import {
-  getStorage, ref as storageRef, uploadBytes, getDownloadURL
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 /* ── Firebase Init ── */
 const fbApp = getApps().length > 0 ? getApp() : initializeApp({
