@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v14';
+const CURRENT_CACHE = 'pwa-v15';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -5049,6 +5049,9 @@ function scheduleNotification(title, eventDate, alarm) {
 
 // 파일 형식 감지 함수
 function arcGetFileType(item) {
+  // item.type 기반 우선 판별 (Firebase Storage URL은 확장자가 없을 수 있음)
+  if (item?.type === \'image\') return \'img\';
+  if (item?.type === \'video\') return \'video\';
   const src = (item?.url || item?.content || item?.title || '').toLowerCase();
   if (/\.pdf(\?|#|$)/.test(src)) return 'pdf';
   if (/\.(doc|docx)(\?|#|$)/.test(src)) return 'doc';
