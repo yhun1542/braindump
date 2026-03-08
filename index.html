@@ -16,6 +16,7 @@ const CURRENT_CACHE = 'pwa-v21';
     }
   } catch(e) { console.error('[PWA] Cache cleanup error:', e); }
 })();
+window.haptic = haptic; // module 스크립트에서 접근 가능하도록 노출
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -2188,6 +2189,20 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 <script type="module">
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  browserLocalPersistence, browserSessionPersistence, setPersistence
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import {
+  getFirestore, collection, doc, setDoc, getDoc, getDocs,
+  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+
 // ── 파일 형식 감지 & 아이콘 (module 스코프에서 직접 사용) ──
 function arcGetFileType(item) {
   if (item?.type === 'image') return 'img';
@@ -2274,19 +2289,6 @@ window.arcFileIcon = arcFileIcon;
 window.arcFileLabel = arcFileLabel;
 window.arcFileIconClass = arcFileIconClass;
 
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import {
-  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  browserLocalPersistence, browserSessionPersistence, setPersistence
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import {
-  getFirestore, collection, doc, setDoc, getDoc, getDocs,
-  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import {
-  getStorage, ref as storageRef, uploadBytes, getDownloadURL
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
-
 /* ── Firebase Init ── */
 const fbApp = getApps().length > 0 ? getApp() : initializeApp({
   apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
@@ -2352,7 +2354,7 @@ const arcSearch     = document.getElementById('arcSearch');
 const aiItems       = document.getElementById('aiReminderItems');
 
 /* ── Login ── */
-loginBtn.addEventListener('click', async () => { haptic.medium();
+loginBtn.addEventListener('click', async () => { window.haptic?.medium();
   const email = loginEmail.value.trim();
   const pw    = loginPw.value;
   loginError.classList.add('hidden');
@@ -2574,7 +2576,7 @@ function renderTodayCards() {
       cb.addEventListener('change', () => toggleTask(card.id, cb.dataset.tid, cb.checked));
     });
     // Edit card header
-    div.querySelector('.card-hdr-edit').addEventListener('click', () => { haptic.light();
+    div.querySelector('.card-hdr-edit').addEventListener('click', () => { window.haptic?.light();
       editingCardId = card.id;
       openTaskSheet(null, card.id);
     });
@@ -2670,12 +2672,12 @@ function openTaskSheet(taskId, cardId) {
   document.getElementById('taskOverlay').classList.remove('hidden');
   setTimeout(()=>document.getElementById('taskEditText').focus(), 100);
 }
-document.getElementById('taskCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('taskOverlay').classList.add('hidden'); });
-document.getElementById('taskDel').addEventListener('click', async()=>{ haptic.error();
+document.getElementById('taskCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('taskOverlay').classList.add('hidden'); });
+document.getElementById('taskDel').addEventListener('click', async()=>{ window.haptic?.error();
   if(editingTaskId && editingCardId) await deleteTask(editingCardId, editingTaskId);
   document.getElementById('taskOverlay').classList.add('hidden');
 });
-document.getElementById('taskSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('taskSave').addEventListener('click', async()=>{ window.haptic?.success();
   const text = document.getElementById('taskEditText').value.trim();
   if(!text) return;
   await saveTask(editingCardId, editingTaskId, text, document.getElementById('taskEditPri').value);
@@ -2695,12 +2697,12 @@ function attachSwipe(row) {
       row.querySelector('.task-swipe-actions')?.classList.remove('open');
     }
   }, {passive:true});
-  row.addEventListener('touchend', ()=>{ if(swiping) haptic.longpress(); swiping=false; });
-  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{ haptic.medium();
+  row.addEventListener('touchend', ()=>{ if(swiping) window.haptic?.longpress(); swiping=false; });
+  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{ window.haptic?.medium();
     openTaskSheet(row.dataset.tid, row.dataset.cid);
     row.querySelector('.task-swipe-actions')?.classList.remove('open');
   });
-  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{ haptic.error();
+  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{ window.haptic?.error();
     deleteTask(row.dataset.cid, row.dataset.tid);
   });
 }
@@ -2747,7 +2749,7 @@ function renderCalendar() {
         ${allEvs.length>maxShow?`<div class="cal-more">+${allEvs.length-maxShow}개</div>`:''}
       </div>`;
     if(!cell.other) {
-      d.addEventListener('click', e => { haptic.light();
+      d.addEventListener('click', e => { window.haptic?.light();
         if(e.target.classList.contains('cal-event-tag')) {
           openEventEdit(e.target.dataset.eid);
         } else {
@@ -2759,16 +2761,16 @@ function renderCalendar() {
   });
 }
 
-document.getElementById('calPrev').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('calPrev').addEventListener('click', ()=>{ window.haptic?.light();
   calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar();
 });
-document.getElementById('calNext').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('calNext').addEventListener('click', ()=>{ window.haptic?.light();
   calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar();
 });
-document.getElementById('calFab').addEventListener('click', ()=>{ haptic.medium();
+document.getElementById('calFab').addEventListener('click', ()=>{ window.haptic?.medium();
   openEventSheet(null, dateStr(new Date()));
 });
-calMonthTitle.addEventListener('click', ()=>{ haptic.light();
+calMonthTitle.addEventListener('click', ()=>{ window.haptic?.light();
   calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCalendar();
 });
 
@@ -2804,18 +2806,18 @@ function openEventSheet(eventId, defaultDate) {
 window.openEventEdit = (id) => openEventSheet(id, null);
 
 document.querySelectorAll('.color-dot').forEach(dot=>{
-  dot.addEventListener('click', ()=>{ haptic.light();
+  dot.addEventListener('click', ()=>{ window.haptic?.light();
     selectedColorIdx = parseInt(dot.dataset.ci);
     document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('selected', d===dot));
   });
 });
-document.getElementById('eventCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('eventOverlay').classList.add('hidden'); });
-document.getElementById('eventDel').addEventListener('click', async()=>{ haptic.error();
+document.getElementById('eventCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('eventOverlay').classList.add('hidden'); });
+document.getElementById('eventDel').addEventListener('click', async()=>{ window.haptic?.error();
   if(editingEventId) await deleteDoc(eventPath(editingEventId));
   document.getElementById('eventOverlay').classList.add('hidden');
   showSaved();
 });
-document.getElementById('eventSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('eventSave').addEventListener('click', async()=>{ window.haptic?.success();
   const title = document.getElementById('eventTitle').value.trim();
   if(!title) return;
 
@@ -2845,7 +2847,7 @@ bdTextarea.addEventListener('input', ()=>{
   bdTextarea.style.height = 'auto';
   bdTextarea.style.height = bdTextarea.scrollHeight + 'px';
 });
-document.getElementById('bdAddBtn').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('bdAddBtn').addEventListener('click', async()=>{ window.haptic?.success();
   const text = bdTextarea.value.trim();
   if(!text) return;
   await addDoc(bdCol(), { text, createdAt: serverTimestamp() });
@@ -2877,9 +2879,9 @@ function renderBdList(filter='') {
         </div>
       </div>`;
   }).join('');
-  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'today'); }));
-  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'schedule'); }));
-  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{ haptic.error();
+  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>{ window.haptic?.medium(); openMoveSheet(btn.dataset.bid,'today'); }));
+  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>{ window.haptic?.medium(); openMoveSheet(btn.dataset.bid,'schedule'); }));
+  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{ window.haptic?.error();
     await deleteDoc(bdPath(btn.dataset.bid)); showSaved();
   }));
 }
@@ -2907,8 +2909,8 @@ function updateMoveFields(dest) {
   }
 }
 document.getElementById('moveDest').addEventListener('change', e=>updateMoveFields(e.target.value));
-document.getElementById('moveCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('moveOverlay').classList.add('hidden'); });
-document.getElementById('moveConfirm').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('moveCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('moveOverlay').classList.add('hidden'); });
+document.getElementById('moveConfirm').addEventListener('click', async()=>{ window.haptic?.success();
   const item = bdItems.find(i=>i.id===movingBdId);
   if(!item) return;
   const dest = document.getElementById('moveDest').value;
@@ -3279,16 +3281,16 @@ function renderArcHub(allItems){
     </div>
   `;
   const launch = document.getElementById('arcGraphLaunch');
-  if(launch) launch.onclick = ()=>{ haptic.medium(); openArcGraph(); };
+  if(launch) launch.onclick = ()=>{ window.haptic?.medium(); openArcGraph(); };
   const openBtn = document.getElementById('arcProjectOpen');
-  if(openBtn) openBtn.onclick = ()=>{ haptic.medium(); openArcProjectSheet(activeProject || topProjects[0]?.name || ''); };
+  if(openBtn) openBtn.onclick = ()=>{ window.haptic?.medium(); openArcProjectSheet(activeProject || topProjects[0]?.name || ''); };
   hub.querySelectorAll('.arc-project-chip').forEach(btn=>btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcProjectFilter = btn.dataset.project || '';
     renderArcGrid(arcSearch.value);
   }));
   hub.querySelectorAll('.arc-kind-chip').forEach(btn=>btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcKindFilter = btn.dataset.kind || '';
     renderArcGrid(arcSearch.value);
   }));
@@ -3400,7 +3402,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${escHtml(v.title)}</div>
         <div class="arc-project-meta">${arcFormatDate(v)} · ${escHtml(v.kindLabel)}${v.summary ? ` · ${escHtml(v.summary)}` : ''}</div>
       </div>
-      <button onclick="haptic.light(); arcEdit('${v.id}')">열기</button>
+      <button onclick="window.haptic?.light(); arcEdit('${v.id}')">열기</button>
     </div>
   `).join('') || `<div class="arc-mini-note">문서가 없습니다.</div>`;
   document.getElementById('arcProjectTimeline').innerHTML = items.slice(0,6).map(v=>`
@@ -3409,7 +3411,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${arcFormatDate(v)} · ${escHtml(v.title)}</div>
         <div class="arc-project-meta">${escHtml(v.kindLabel)}${v.collection ? ` · ${escHtml(v.collection)}` : ''}</div>
       </div>
-      <button onclick="haptic.medium(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; closeArcProjectSheet(); renderArcGrid(arcSearch.value)">필터</button>
+      <button onclick="window.haptic?.medium(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; closeArcProjectSheet(); renderArcGrid(arcSearch.value)">필터</button>
     </div>
   `).join('') || `<div class="arc-mini-note">타임라인이 없습니다.</div>`;
   document.getElementById('arcProjectDumps').innerHTML = dumpMatches.map(v=>`
@@ -3418,7 +3420,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${escHtml((v.text||'').slice(0,26))}</div>
         <div class="arc-project-meta">${v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : ''}</div>
       </div>
-      <button onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value); closeArcProjectSheet()">열기</button>
+      <button onclick="window.haptic?.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value); closeArcProjectSheet()">열기</button>
     </div>
   `).join('') || `<div class="arc-mini-note">BrainDump 연결은 프로젝트명이 본문에 들어갈수록 더 잘 잡힙니다.</div>`;
   currentArcProjectSheet = project;
@@ -3436,7 +3438,7 @@ function arcRenderLinkPreview(item){
   const thumb = yt || favicon;
   const title = item.summary || item.title;
   return `
-    <div class="arc-link-card" onclick="haptic.medium(); arcOpenUrl('${escHtml(url).replace(/'/g,"\\'")}')">
+    <div class="arc-link-card" onclick="window.haptic?.medium(); arcOpenUrl('${escHtml(url).replace(/'/g,"\\'")}')">
       <div class="arc-link-thumb">${yt ? `<img src="${yt}" alt="">` : (favicon ? `<img src="${favicon}" alt="" onerror="this.parentNode.innerHTML='🔗'">` : '🔗')}</div>
       <div class="arc-link-body">
         <div class="arc-link-domain">${favicon ? `<img class="arc-link-favicon" src="${favicon}" onerror="this.style.display='none'" loading="lazy">` : ''}${escHtml(domain || '링크')}</div>
@@ -3449,7 +3451,7 @@ function arcRenderBody(item){
   if(item.type==='url') return arcRenderLinkPreview(item);
   if(item.type==='image' && item.url) {
     const safeId = escHtml(item.id||'');
-    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')">🔍 크게 보기</button></div>`;
+    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="window.haptic?.medium(); arcOpenFileViewerById('${safeId}')" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="window.haptic?.medium(); arcOpenFileViewerById('${safeId}')">🔍 크게 보기</button></div>`;
   }
   if(item.url && (item.type==='file' || item.type==='video' || arcIsPdf(item))) {
     const ft = arcGetFileType(item);
@@ -3457,7 +3459,7 @@ function arcRenderBody(item){
     const label = arcFileLabel(item);
     const cls = arcFileIconClass(item);
     const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content ? escHtml(item.content.slice(0,120)) : '');
-    return `<div class="arc-file-card" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
+    return `<div class="arc-file-card" onclick="window.haptic?.medium(); arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
   }
   const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
   return `<div class="arc-item-preview">${preview}</div>`;
@@ -3513,29 +3515,29 @@ function renderArcGrid(filter='') {
         ${item.summary ? `<div class="arc-summary">${escHtml(item.summary)}</div>` : ''}
         ${arcRenderBody(item)}
         <div class="arc-pill-row">
-          ${item.project ? `<button class="arc-pill project" onclick="event.stopPropagation(); haptic.light(); openArcDashboard('${escHtml(item.project).replace(/'/g,"\\'")}')">${escHtml(item.project)}</button>` : ''}
+          ${item.project ? `<button class="arc-pill project" onclick="event.stopPropagation(); window.haptic?.light(); openArcDashboard('${escHtml(item.project).replace(/'/g,"\\'")}')">${escHtml(item.project)}</button>` : ''}
           ${(item.mentions||[]).slice(0,3).map(v=>`<span class="arc-pill">@${escHtml(v)}</span>`).join('')}
           ${(item.tags||[]).slice(0,3).map(v=>`<span class="arc-pill">#${escHtml(v)}</span>`).join('')}
           ${item.collection ? `<span class="arc-pill">${escHtml(item.collection)}</span>` : ''}
           ${(item.wikiLinks||[]).slice(0,2).map(v=>`<span class="arc-pill project">[[${escHtml(v)}]]</span>`).join('')}
         </div>
-        ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
-        ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
+        ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="window.haptic?.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
+        ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="window.haptic?.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
-          <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
-          ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
-          <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:220},'${item.id}')">⋯</button>
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="window.haptic?.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="window.haptic?.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="window.haptic?.light(); arcEdit('${item.id}')">열기</button>`}
+          <button class="arc-action-btn" onclick="window.haptic?.medium(); arcToToday('${item.id}')">Today</button>
+          ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="window.haptic?.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="window.haptic?.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
+          <button class="arc-action-btn ghost" onclick="window.haptic?.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:220},'${item.id}')">⋯</button>
         </div>
       </div>`;
   }).join('');
 }
 window.arcItemDblClick = (event, id, type, url) => {
   if (type === 'url' && url) {
-    haptic.medium();
+    window.haptic?.medium();
     arcOpenUrl(url);
   } else if ((type === 'file' || type === 'video' || type === 'image') && url) {
-    haptic.medium();
+    window.haptic?.medium();
     const item = arcItems.find(i=>i.id===id);
     if(item) arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type});
   } else {
@@ -3548,7 +3550,7 @@ window.arcOpenUrl = (url) => {
   const u = String(url).trim();
   if(arcIsUrl(u)) window.open(u, '_blank');
 };
-window.arcTogglePin = async(id) => { haptic.medium();
+window.arcTogglePin = async(id) => { window.haptic?.medium();
   const item = arcItems.find(i=>i.id===id);
   if(!item) return;
   await updateDoc(arcPath(id), { pinned: !item.pinned, updatedAt: serverTimestamp() });
@@ -3587,7 +3589,7 @@ window.arcEditItem = window.arcEdit;
 let arcLongPressTimer = null;
 window.arcTouchStart = (e, id) => {
   arcLongPressTimer = setTimeout(()=>{
-    haptic.longpress();
+    window.haptic?.longpress();
     const t = e.touches?.[0];
     arcShowCtx({clientX:t?.clientX || window.innerWidth/2, clientY:t?.clientY || window.innerHeight/2}, id);
   }, 550);
@@ -3617,7 +3619,7 @@ function closeArcCtx() {
 }
 document.getElementById('arcCtxOverlay').addEventListener('click', closeArcCtx);
 document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   const item = arcItems.map(arcEnrichItem).find(i=>i.id===arcCtxTargetId);
   if(item) {
     if(item.type==='url') { arcOpenUrl(item.content); }
@@ -3627,34 +3629,34 @@ document.getElementById('arcCtxOpen').addEventListener('click', ()=>{
   closeArcCtx();
 });
 document.getElementById('arcCtxPin').addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   if(arcCtxTargetId) arcTogglePin(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxEdit').addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   if(arcCtxTargetId) arcEdit(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxToday').addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   if(arcCtxTargetId) arcToToday(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxDel').addEventListener('click', ()=>{
-  haptic.error();
+  window.haptic?.error();
   if(arcCtxTargetId) arcDel(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcSortBtn').addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   arcSortMode = arcSortMode==='newest' ? 'pinned' : arcSortMode==='pinned' ? 'oldest' : 'newest';
   renderArcGrid(arcSearch.value);
 });
 arcSearch.addEventListener('input', ()=>renderArcGrid(arcSearch.value));
 document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     document.querySelectorAll('.arc-cat-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentArcCat = btn.dataset.cat;
@@ -3663,7 +3665,7 @@ document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
 });
 document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcSmartFilter = btn.dataset.smart || 'all';
     renderArcGrid(arcSearch.value);
   });
@@ -3697,7 +3699,7 @@ window.arcToToday = (id)=>{
   if(item) openMoveSheet(item.id, 'today');
 };
 document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
   document.getElementById('arcEditId').value = '';
   document.getElementById('arcType').value = 'note';
@@ -3740,15 +3742,15 @@ document.getElementById('arcContent').addEventListener('input', ()=>{
 });
 // arcType은 hidden input - 직접 변경 이벤트 없음
 // 파일 선택 시 arcFile change 이벤트에서 자동 처리됨
-document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
+document.getElementById('arcCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
 // 파일 첨부 버튼 클릭 → 파일 선택창 열기
 document.getElementById('arcAttachBtn')?.addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   document.getElementById('arcFile').click();
 });
 // 파일 제거 버튼
 document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   const arcFileEl = document.getElementById('arcFile');
   if(arcFileEl) arcFileEl.value = '';
   document.getElementById('arcFilePreview').innerHTML = '';
@@ -3801,13 +3803,13 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   qSave.addEventListener('click', () => arcQuickSaveText());
 
   // 📎 파일 버튼
-  qFile.addEventListener('click', () => { haptic.light(); qFileIn.click(); });
+  qFile.addEventListener('click', () => { window.haptic?.light(); qFileIn.click(); });
   qFileIn.addEventListener('change', function() {
     if (this.files[0]) arcQuickSaveFile(this.files[0]);
   });
 
   // 📷 사진 버튼
-  qPhoto.addEventListener('click', () => { haptic.light(); qPhotoIn.click(); });
+  qPhoto.addEventListener('click', () => { window.haptic?.light(); qPhotoIn.click(); });
   qPhotoIn.addEventListener('change', function() {
     if (this.files[0]) arcQuickSaveFile(this.files[0]);
   });
@@ -3816,7 +3818,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   async function arcQuickSaveText() {
     const val = qInput.value.trim();
     if (!val) return;
-    haptic.medium();
+    window.haptic?.medium();
     qInput.value = '';
     qSave.classList.remove('visible');
     qHint.classList.remove('visible');
@@ -3856,7 +3858,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
       await addDoc(arcCol(), payload);
       arcShowToast('✅ 저장됨');
-      haptic.success?.() || haptic.medium();
+      window.haptic?.success?.() || window.haptic?.medium();
     } catch(e) {
       arcShowToast('저장 실패: ' + e.message);
     }
@@ -3864,7 +3866,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
   // 파일 빠른 저장
   async function arcQuickSaveFile(file) {
-    haptic.medium();
+    window.haptic?.medium();
     const name = file.name.toLowerCase();
     const ext  = name.split('.').pop();
     const typeMap = {
@@ -3894,7 +3896,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
         updatedAt: serverTimestamp()
       });
       arcShowToast('✅ 파일 저장됨');
-      haptic.success?.() || haptic.medium();
+      window.haptic?.success?.() || window.haptic?.medium();
       // input 초기화
       qFileIn.value = '';
       qPhotoIn.value = '';
@@ -3932,7 +3934,7 @@ async function arcEnrichWithAI({title, content, type}) {
 document.getElementById('arcSave').addEventListener('click', async()=>{
   const btn = document.getElementById('arcSave');
   if(btn.disabled) return;
-  haptic.success();
+  window.haptic?.success();
   let type = document.getElementById('arcType').value;
   // file-* 타입을 file로 정규화 (저장 시)
   const fileSubtype = type.startsWith('file-') ? type : null;
@@ -4101,15 +4103,15 @@ function openArcDashboard(project) {
     </div>
 
     <div class="arc-dash-action-row">
-      <button class="arc-dash-action-btn primary" onclick="haptic.medium(); closeArcDashboard(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; renderArcGrid(arcSearch.value)">
+      <button class="arc-dash-action-btn primary" onclick="window.haptic?.medium(); closeArcDashboard(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; renderArcGrid(arcSearch.value)">
         <div class="dab-icon">🔍</div>
         <div>전체 보기</div>
       </button>
-      ${meetings.length ? `<button class="arc-dash-action-btn secondary" onclick="haptic.medium(); openArcDashboard('${escHtml(project).replace(/'/g,"\\'")}'); arcDashScrollTo('sec-meetings')">
+      ${meetings.length ? `<button class="arc-dash-action-btn secondary" onclick="window.haptic?.medium(); openArcDashboard('${escHtml(project).replace(/'/g,"\\'")}'); arcDashScrollTo('sec-meetings')">
         <div class="dab-icon">📋</div>
         <div>회의 ${meetings.length}개</div>
       </button>` : ''}
-      <button class="arc-dash-action-btn secondary" onclick="haptic.light(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+      <button class="arc-dash-action-btn secondary" onclick="window.haptic?.light(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
         <div class="dab-icon">🧠</div>
         <div>BrainDump</div>
       </button>
@@ -4121,13 +4123,13 @@ function openArcDashboard(project) {
         📋 회의 <span style="font-size:11px;color:var(--text3);font-weight:600">${meetings.length}개</span>
       </div>
       ${meetings.slice(0,4).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="window.haptic?.light(); arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">📋</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}${v.summary?' · '+escHtml(v.summary.slice(0,40)):''}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openMeetingSummary('${v.id}')">요약</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); window.haptic?.medium(); openMeetingSummary('${v.id}')">요약</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4135,13 +4137,13 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">📄 자료 <span style="font-size:11px;color:var(--text3);font-weight:600">${materials.length}개</span></div>
       ${materials.slice(0,4).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="window.haptic?.light(); arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">${typeIcons[v.type]||'📄'}</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">변환</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); window.haptic?.medium(); openQuickConvert('${v.id}')">변환</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4149,13 +4151,13 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">💡 아이디어 <span style="font-size:11px;color:var(--text3);font-weight:600">${ideas.length}개</span></div>
       ${ideas.slice(0,3).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="window.haptic?.light(); arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">💡</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">할 일화</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); window.haptic?.medium(); openQuickConvert('${v.id}')">할 일화</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4186,7 +4188,7 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">🧠 연결된 BrainDump</div>
       ${dumpMatches.map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.medium(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+        <div class="arc-dash-doc-row" onclick="window.haptic?.medium(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
           <div class="arc-dash-doc-icon">🧠</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml((v.text||'').slice(0,36))}</div>
@@ -4302,7 +4304,7 @@ window.toggleMeetAction = (idx) => {
   else { _meetChecked.add(idx); row.classList.add('done'); chk.textContent='✓'; }
 };
 
-window.sendMeetActionsToToday = async(actions) => { haptic.medium();
+window.sendMeetActionsToToday = async(actions) => { window.haptic?.medium();
   const items = Array.isArray(actions)?actions:[];
   const selected = items.filter((_,i)=>_meetChecked.has(i));
   const toSend = selected.length ? selected : items.slice(0,3);
@@ -4448,7 +4450,7 @@ document.getElementById('arcConvSheet')?.addEventListener('click', e=>{ if(e.tar
 /* ── Hook "프로젝트 보기" to open Dashboard instead of old project sheet ── */
 document.addEventListener('click', e=>{
   const btn = e.target.closest('[data-arc-proj]');
-  if(btn) { haptic.light(); openArcDashboard(btn.dataset.arcProj); }
+  if(btn) { window.haptic?.light(); openArcDashboard(btn.dataset.arcProj); }
 });
 
 /* ── AI REMINDER ── */
@@ -4515,7 +4517,7 @@ document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder
 
 /* ── SETTING ── */
 const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', ()=>{ haptic.medium();
+themeToggle.addEventListener('click', ()=>{ window.haptic?.medium();
   const isDark = document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme', isDark?'':'dark');
   themeToggle.classList.toggle('on', !isDark);
@@ -4538,18 +4540,18 @@ function updateLogoTheme() {
 }
 updateLogoTheme();
 themeToggle.addEventListener('change', ()=>{ setTimeout(updateLogoTheme, 50); });
-document.getElementById('logoutBtn').addEventListener('click', async()=>{ haptic.heavy();
+document.getElementById('logoutBtn').addEventListener('click', async()=>{ window.haptic?.heavy();
   await signOut(auth);
 });
-document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{ haptic.heavy();
+document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{ window.haptic?.heavy();
   await signOut(auth);
 });
-document.getElementById('openAiKeyItem').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('openAiKeyItem').addEventListener('click', ()=>{ window.haptic?.light();
   document.getElementById('openAiKeyInput').value = openAiKey||'';
   document.getElementById('openAiOverlay').classList.remove('hidden');
 });
-document.getElementById('openAiCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('openAiOverlay').classList.add('hidden'); });
-document.getElementById('openAiSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('openAiCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('openAiOverlay').classList.add('hidden'); });
+document.getElementById('openAiSave').addEventListener('click', async()=>{ window.haptic?.success();
   const key = document.getElementById('openAiKeyInput').value.trim();
   openAiKey = key;
   await setDoc(doc(db,'config','openai'), { key }, {merge:true});
@@ -4575,18 +4577,18 @@ function switchTab(tabName) {
   }
 }
 document.querySelectorAll('.tab-item').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ haptic.light(); switchTab(btn.dataset.tab); });
+  btn.addEventListener('click', ()=>{ window.haptic?.light(); switchTab(btn.dataset.tab); });
 });
 window.switchTab = switchTab;
 
 /* ── DATE NAV ── */
-document.getElementById('btnPrev').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('btnPrev').addEventListener('click', ()=>{ window.haptic?.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()-1);
     updateHeader(); resubscribeToday();
   }
 });
-document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('btnNext').addEventListener('click', ()=>{ window.haptic?.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()+1);
     updateHeader(); resubscribeToday();
@@ -4694,16 +4696,16 @@ document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light(
     document.getElementById('calYearView').style.display='';
     renderYearGrid();
   });
-  document.getElementById('calYearPrev').addEventListener('click', ()=>{ haptic.light(); calYearPageStart-=12; renderYearGrid(); });
-  document.getElementById('calYearNext').addEventListener('click', ()=>{ haptic.light(); calYearPageStart+=12; renderYearGrid(); });
-  document.getElementById('calPrevMonth').addEventListener('click', ()=>{ haptic.light();
+  document.getElementById('calYearPrev').addEventListener('click', ()=>{ window.haptic?.light(); calYearPageStart-=12; renderYearGrid(); });
+  document.getElementById('calYearNext').addEventListener('click', ()=>{ window.haptic?.light(); calYearPageStart+=12; renderYearGrid(); });
+  document.getElementById('calPrevMonth').addEventListener('click', ()=>{ window.haptic?.light();
     calPickMonth--; if(calPickMonth<0){calPickMonth=11;calPickYear--;} renderCalMonth();
   });
-  document.getElementById('calNextMonth').addEventListener('click', ()=>{ haptic.light();
+  document.getElementById('calNextMonth').addEventListener('click', ()=>{ window.haptic?.light();
     calPickMonth++; if(calPickMonth>11){calPickMonth=0;calPickYear++;} renderCalMonth();
   });
-  document.getElementById('calCancel').addEventListener('click', ()=>{ haptic.light(); closeCal(); });
-  document.getElementById('calGotoToday').addEventListener('click', ()=>{ haptic.medium();
+  document.getElementById('calCancel').addEventListener('click', ()=>{ window.haptic?.light(); closeCal(); });
+  document.getElementById('calGotoToday').addEventListener('click', ()=>{ window.haptic?.medium();
     const t = new Date();
     calPickYear=t.getFullYear(); calPickMonth=t.getMonth();
     calPickSelected=t; renderCalMonth();
@@ -4714,7 +4716,7 @@ document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light(
   });
 
   // 날짜 클릭 시 커스텀 달력 열기
-  hdrDateBig.addEventListener('click', ()=>{ haptic.light(); openCal(currentDate); });
+  hdrDateBig.addEventListener('click', ()=>{ window.haptic?.light(); openCal(currentDate); });
   if(document.getElementById('hdrDateSub'))
     document.getElementById('hdrDateSub').addEventListener('click', ()=>{ openCal(currentDate); });
 
@@ -4770,7 +4772,7 @@ function initGIS() {
     setTimeout(() => syncFromGCal(), 1500);
   }
 }
-document.getElementById('gcalConnectItem').addEventListener('click', () => { haptic.medium();
+document.getElementById('gcalConnectItem').addEventListener('click', () => { window.haptic?.medium();
   if (!GCAL_CLIENT_ID) { showToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
   if (gcalAccessToken) {
     if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
@@ -4790,7 +4792,7 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => { hap
   }
 });
 
-document.getElementById('gcalSyncItem').addEventListener('click', () => { haptic.medium();
+document.getElementById('gcalSyncItem').addEventListener('click', () => { window.haptic?.medium();
   if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
   syncFromGCal();
 });
