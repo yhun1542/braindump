@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v14 fix)
-const CURRENT_CACHE = 'pwa-v19';
+// SW 캐시 강제 무효화 (pwa-v21 fix)
+const CURRENT_CACHE = 'pwa-v21';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -1489,7 +1489,7 @@ body {
 /* ── v22 card action enhancement ── */
 .arc-action-btn.convert{color:#7c3aed}
 .arc-action-btn.meeting{color:#f59e0b}
-/* ── 파일 뷰어 시트 (pwa-v13) ── */
+/* ── 파일 뷰어 시트 (pwa-v21) ── */
 .arc-fv-sheet{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end}
 .arc-fv-sheet.hidden{display:none}
 .arc-fv-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:92dvh;display:flex;flex-direction:column;overflow:hidden}
@@ -2059,7 +2059,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 
-<!-- ═══ pwa-v13: 파일 뷰어 시트 ═══ -->
+<!-- ═══ pwa-v21: 파일 뷰어 시트 ═══ -->
 <div class="arc-fv-sheet hidden" id="arcFvSheet">
   <div class="arc-fv-panel">
     <div class="arc-dash-handle" style="margin:12px auto 0"></div>
@@ -2188,6 +2188,92 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 <script type="module">
+// ── 파일 형식 감지 & 아이콘 (module 스코프에서 직접 사용) ──
+function arcGetFileType(item) {
+  if (item?.type === 'image') return 'img';
+  if (item?.type === 'video') return 'video';
+  const src = (item?.url || item?.content || item?.title || '').toLowerCase();
+  if (/\.pdf(\?|#|$)/.test(src)) return 'pdf';
+  if (/\.(doc|docx)(\?|#|$)/.test(src)) return 'doc';
+  if (/\.(ppt|pptx)(\?|#|$)/.test(src)) return 'ppt';
+  if (/\.(xls|xlsx|csv)(\?|#|$)/.test(src)) return 'xls';
+  if (/\.(txt|md|log)(\?|#|$)/.test(src)) return 'txt';
+  if (/\.(hwp|hwpx)(\?|#|$)/.test(src)) return 'hwp';
+  if (/\.(zip|rar|7z|tar|gz)(\?|#|$)/.test(src)) return 'zip';
+  if (/\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?|#|$)/.test(src)) return 'img';
+  if (/\.(mp4|mov|avi|mkv|webm)(\?|#|$)/.test(src)) return 'video';
+  return null;
+}
+function arcFileIcon(item) {
+  const t = arcGetFileType(item);
+  const icons = { pdf:'📕', doc:'📘', ppt:'📙', xls:'📗', txt:'📄', hwp:'📃', zip:'🗜', img:'🖼', video:'🎬' };
+  return icons[t] || '📄';
+}
+function arcFileLabel(item) {
+  const t = arcGetFileType(item);
+  const labels = { pdf:'PDF 문서', doc:'Word 문서', ppt:'PowerPoint', xls:'Excel/CSV', txt:'텍스트', hwp:'한글 문서', zip:'압축 파일', img:'이미지', video:'동영상' };
+  return labels[t] || '파일';
+}
+function arcFileIconClass(item) {
+  const t = arcGetFileType(item);
+  const cls = { pdf:'pdf', doc:'doc', ppt:'ppt', xls:'xls', txt:'txt', hwp:'hwp', zip:'zip', img:'img', video:'video' };
+  return cls[t] || 'default';
+}
+function arcShowToast(msg, duration=2200) {
+  let el = document.getElementById('arcToast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+// ── 파일 뷰어 (module 스코프에서 직접 사용) ──
+function arcOpenFileViewerById(id) {
+  const item = (window._arcItems || []).find(i => i.id === id);
+  if (!item) { arcShowToast('항목을 찾을 수 없습니다'); return; }
+  arcOpenFileViewer(item);
+}
+async function arcOpenFileViewer(item) {
+  const _esc = window.escHtml || (s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'));
+  const sheet = document.getElementById('arcFvSheet');
+  const body  = document.getElementById('arcFvBody');
+  const title = document.getElementById('arcFvTitle');
+  const dlBtn = document.getElementById('arcFvDownload');
+  if (!sheet || !body) return;
+  const url = item?.url || item?.content || '';
+  const ft  = arcGetFileType(item);
+  if (title) title.textContent = item?.title || '파일';
+  if (dlBtn) { dlBtn.style.display = url ? '' : 'none'; dlBtn.onclick = () => { const a=document.createElement('a'); a.href=url; a.download=item?.title||'file'; a.target='_blank'; a.click(); }; }
+  sheet.classList.remove('hidden');
+  if (ft === 'img') {
+    body.innerHTML = `<div style="background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center">
+      <img class="arc-fv-img" src="${_esc(url)}" alt="${_esc(item?.title||'')}" style="max-width:100%;max-height:80dvh;object-fit:contain;border-radius:8px;">
+    </div>`;
+  } else if (ft === 'video') {
+    body.innerHTML = `<video controls autoplay style="width:100%;max-height:80dvh;background:#000;border-radius:8px"><source src="${_esc(url)}"><p>동영상을 재생할 수 없습니다.</p></video>`;
+  } else if (ft === 'txt') {
+    body.innerHTML = `<div style="padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6">⏳ 텍스트 로딩 중...</div>`;
+    try {
+      const r = await fetch(url);
+      const txt = await r.text();
+      body.innerHTML = `<pre style="padding:16px;white-space:pre-wrap;font-size:14px;line-height:1.6;word-break:break-all">${_esc(txt)}</pre>`;
+    } catch(e) { body.innerHTML = `<div style="padding:16px;color:#f66">텍스트 로드 실패: ${_esc(e.message)}</div>`; }
+  } else if (ft === 'pdf' || ft === 'doc' || ft === 'ppt' || ft === 'xls') {
+    body.innerHTML = `<iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true" style="width:100%;height:80dvh;border:none;border-radius:8px"></iframe>`;
+  } else if (url) {
+    body.innerHTML = `<iframe src="${_esc(url)}" style="width:100%;height:80dvh;border:none;border-radius:8px" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>`;
+  } else {
+    body.innerHTML = `<div style="padding:32px;text-align:center;color:#888">미리보기를 지원하지 않는 파일 형식입니다.</div>`;
+  }
+}
+window.arcOpenFileViewer = arcOpenFileViewer;
+window.arcOpenFileViewerById = arcOpenFileViewerById;
+window.arcShowToast = arcShowToast;
+window.arcGetFileType = arcGetFileType;
+window.arcFileIcon = arcFileIcon;
+window.arcFileLabel = arcFileLabel;
+window.arcFileIconClass = arcFileIconClass;
+
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
@@ -5146,12 +5232,12 @@ function scheduleNotification(title, eventDate, alarm) {
 }
 
 </script>
-  <!-- pwa-v13: 파일 형식 라이브러리 -->
+  <!-- pwa-v21: 파일 형식 라이브러리 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 
-// ═══ pwa-v13: 파일 형식 감지 & 뷰어 ═══
+// ═══ pwa-v21: 파일 형식 감지 & 뷰어 ═══
 
 // 파일 형식 감지 함수
 function arcGetFileType(item) {
