@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v16';
+const CURRENT_CACHE = 'pwa-v17';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -833,6 +833,15 @@ body {
 .arc-ctx-item:last-child { border-bottom: none; }
 .arc-ctx-item:active { background: var(--line); }
 .arc-ctx-item.danger { color: #e74c3c; }
+.arc-del-sheet-overlay { position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:flex;align-items:flex-end;justify-content:center; }
+.arc-del-sheet-overlay.hidden { display:none; }
+.arc-del-sheet { background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;text-align:center; }
+.arc-del-sheet h3 { font-size:17px;font-weight:700;margin:0 0 8px; }
+.arc-del-sheet p { font-size:14px;color:var(--text3);margin:0 0 24px; }
+.arc-del-sheet-btns { display:flex;gap:10px; }
+.arc-del-sheet-btns button { flex:1;padding:14px;border-radius:12px;border:none;font-size:16px;font-weight:600;cursor:pointer; }
+.arc-del-cancel { background:var(--line);color:var(--text1); }
+.arc-del-confirm { background:#e74c3c;color:#fff; }
 .arc-ctx-overlay {
   position: fixed; inset: 0; z-index: 9998;
   background: transparent;
@@ -2113,6 +2122,17 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
   <div class="arc-ctx-item danger" id="arcCtxDel">🗑 삭제</div>
 </div>
 
+<!-- 삭제 확인 시트 -->
+<div class="arc-del-sheet-overlay hidden" id="arcDelSheetOverlay">
+  <div class="arc-del-sheet">
+    <h3>삭제하시겠습니까?</h3>
+    <p>이 항목을 삭제하면 복구할 수 없습니다.</p>
+    <div class="arc-del-sheet-btns">
+      <button class="arc-del-cancel" id="arcDelCancel">취소</button>
+      <button class="arc-del-confirm" id="arcDelConfirmBtn">삭제</button>
+    </div>
+  </div>
+</div>
 <!-- Custom Date Picker -->
 <div class="date-overlay hidden" id="dateOverlay">
   <div class="cal-box" id="calBox">
@@ -3558,12 +3578,30 @@ document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
     renderArcGrid(arcSearch.value);
   });
 });
-window.arcDel = async(id)=>{
-  if(confirm('삭제하시겠습니까?')) {
-    await deleteDoc(arcPath(id));
-    showSaved();
-  }
+let _arcDelPendingId = null;
+window.arcDel = (id)=>{
+  _arcDelPendingId = id;
+  document.getElementById('arcDelSheetOverlay').classList.remove('hidden');
 };
+// 삭제 확인 시트 이벤트 (module 스크립트는 DOM 준비 후 실행)
+document.getElementById('arcDelCancel')?.addEventListener('click', ()=>{
+  _arcDelPendingId = null;
+  document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+});
+document.getElementById('arcDelConfirmBtn')?.addEventListener('click', async()=>{
+  if(_arcDelPendingId) {
+    await deleteDoc(arcPath(_arcDelPendingId));
+    showSaved();
+    _arcDelPendingId = null;
+  }
+  document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+});
+document.getElementById('arcDelSheetOverlay')?.addEventListener('click', (e)=>{
+  if(e.target === document.getElementById('arcDelSheetOverlay')) {
+    _arcDelPendingId = null;
+    document.getElementById('arcDelSheetOverlay').classList.add('hidden');
+  }
+});
 window.arcToToday = (id)=>{
   const item = arcItems.find(i=>i.id===id);
   if(item) openMoveSheet(item.id, 'today');
