@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v27';
+const CACHE_VERSION = 'pwa-v28';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
@@ -23,7 +23,12 @@ const SHELL_ASSETS = [
   '/icons/icon-512.png',
   '/icons/apple-touch-icon.png',
   '/favicon.ico',
-  '/images/og-image.png'
+  '/images/og-image.png',
+  '/fonts/GmarketSansMedium.otf',
+  '/fonts/GmarketSansBold.otf',
+  '/fonts/GmarketSansLight.otf',
+  '/fonts/GmarketSansTTFBold.ttf',
+  '/fonts/GmarketSansTTFLight.ttf'
 ];
 
 // ── Install: 셸 에셋 사전 캐시 ──────────────────────────────────────────────
@@ -40,8 +45,8 @@ self.addEventListener('install', (event) => {
       );
     })
   );
-  // 즉시 활성화 — waiting 없이 바로 새 SW 적용
-  self.skipWaiting();
+  // skipWaiting은 메시지 핸들러(SKIP_WAITING)에서만 실행
+  // install 단계에서 강제 활성화하면 이미 열려있는 탭이 깨질 수 있음
 });
 
 // ── Activate: 구버전 캐시 정리 ──────────────────────────────────────────────
