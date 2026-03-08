@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v24)
-const CURRENT_CACHE = 'pwa-v24';
+const CURRENT_CACHE = 'pwa-v25';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -1858,7 +1858,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
       <div class="sheet-label">메모</div>
       <textarea class="sheet-textarea" id="eventNote" placeholder="메모..."></textarea>
     </div>
-        <div class="sheet-field alarm-row" id="alarmRow" onclick="haptic.light(); openAlarmSheet()">
+        <div class="sheet-field alarm-row" id="alarmRow" onclick="try{(window.haptic||haptic).light()}catch(_){}; openAlarmSheet()">
       <span class="alarm-label">알림</span>
       <span style="display:flex;align-items:center;gap:2px">
         <span class="alarm-value" id="alarmValueText">없음</span>
@@ -3282,7 +3282,7 @@ function renderArcHub(allItems){
           <div class="arc-focus-title">${escHtml(activeProject || '전체 허브')}</div>
           <div class="arc-focus-sub">${latest ? `${arcFormatDate(latest)} · 최근 문서 "${escHtml(latest.title)}"` : '회의 · 자료 · 아이디어를 한 화면에서 관리합니다.'}</div>
         </div>
-        <div class="arc-focus-actions"><button class="arc-hub-action secondary" id="arcProjectOpen" onclick="haptic.light(); openArcDashboard(document.querySelector('.arc-project-chip.active')?.dataset?.project || arcTopProjects(arcItems.map(arcEnrichItem))[0]?.name || '')">프로젝트 보기</button><button class="arc-hub-action" id="arcGraphLaunch">허브 보기</button></div>
+        <div class="arc-focus-actions"><button class="arc-hub-action secondary" id="arcProjectOpen" onclick="try{(window.haptic||haptic).light()}catch(_){}; openArcDashboard(document.querySelector('.arc-project-chip.active')?.dataset?.project || arcTopProjects(arcItems.map(arcEnrichItem))[0]?.name || '')">프로젝트 보기</button><button class="arc-hub-action" id="arcGraphLaunch">허브 보기</button></div>
       </div>
       <div class="arc-pill-row" style="margin-top:12px">
         <span class="arc-pill">회의 ${activeStats.meeting}</span>
@@ -3295,7 +3295,7 @@ function renderArcHub(allItems){
       <div class="arc-section-title">자동 프로젝트</div>
       <div class="arc-projects">
         <button class="arc-project-chip ${!currentArcProjectFilter?'active':''}" data-project="">전체</button>
-        ${topProjects.map(p => `<button class="arc-project-chip ${currentArcProjectFilter===p.name?'active':''}" data-project="${escHtml(p.name)}" onclick="haptic.medium(); openArcDashboard('${escHtml(p.name).replace(/'/g,"\'")}')"><span style='pointer-events:none'>${escHtml(p.name)} · ${p.count}</span></button>`).join('')}
+        ${topProjects.map(p => `<button class="arc-project-chip ${currentArcProjectFilter===p.name?'active':''}" data-project="${escHtml(p.name)}" onclick="try{(window.haptic||haptic).medium()}catch(_){}; openArcDashboard('${escHtml(p.name).replace(/'/g,"\'")}')"><span style='pointer-events:none'>${escHtml(p.name)} · ${p.count}</span></button>`).join('')}
       </div>
     </div>
     <div>
@@ -3430,7 +3430,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${escHtml(v.title)}</div>
         <div class="arc-project-meta">${arcFormatDate(v)} · ${escHtml(v.kindLabel)}${v.summary ? ` · ${escHtml(v.summary)}` : ''}</div>
       </div>
-      <button onclick="haptic.light(); arcEdit('${v.id}')">열기</button>
+      <button onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${v.id}')">열기</button>
     </div>
   `).join('') || `<div class="arc-mini-note">문서가 없습니다.</div>`;
   document.getElementById('arcProjectTimeline').innerHTML = items.slice(0,6).map(v=>`
@@ -3439,7 +3439,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${arcFormatDate(v)} · ${escHtml(v.title)}</div>
         <div class="arc-project-meta">${escHtml(v.kindLabel)}${v.collection ? ` · ${escHtml(v.collection)}` : ''}</div>
       </div>
-      <button onclick="haptic.medium(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; closeArcProjectSheet(); renderArcGrid(arcSearch.value)">필터</button>
+      <button onclick="try{(window.haptic||haptic).medium()}catch(_){}; currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; closeArcProjectSheet(); renderArcGrid(arcSearch.value)">필터</button>
     </div>
   `).join('') || `<div class="arc-mini-note">타임라인이 없습니다.</div>`;
   document.getElementById('arcProjectDumps').innerHTML = dumpMatches.map(v=>`
@@ -3448,7 +3448,7 @@ function openArcProjectSheet(project){
         <div class="arc-project-name">${escHtml((v.text||'').slice(0,26))}</div>
         <div class="arc-project-meta">${v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : ''}</div>
       </div>
-      <button onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value); closeArcProjectSheet()">열기</button>
+      <button onclick="try{(window.haptic||haptic).medium()}catch(_){}; switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value); closeArcProjectSheet()">열기</button>
     </div>
   `).join('') || `<div class="arc-mini-note">BrainDump 연결은 프로젝트명이 본문에 들어갈수록 더 잘 잡힙니다.</div>`;
   currentArcProjectSheet = project;
@@ -3466,7 +3466,7 @@ function arcRenderLinkPreview(item){
   const thumb = yt || favicon;
   const title = item.summary || item.title;
   return `
-    <div class="arc-link-card" onclick="haptic.medium(); arcOpenUrl('${escHtml(url).replace(/'/g,"\\'")}')">
+    <div class="arc-link-card" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenUrl('${escHtml(url).replace(/'/g,"\\'")}')">
       <div class="arc-link-thumb">${yt ? `<img src="${yt}" alt="">` : (favicon ? `<img src="${favicon}" alt="" onerror="this.parentNode.innerHTML='🔗'">` : '🔗')}</div>
       <div class="arc-link-body">
         <div class="arc-link-domain">${favicon ? `<img class="arc-link-favicon" src="${favicon}" onerror="this.style.display='none'" loading="lazy">` : ''}${escHtml(domain || '링크')}</div>
@@ -3479,7 +3479,7 @@ function arcRenderBody(item){
   if(item.type==='url') return arcRenderLinkPreview(item);
   if(item.type==='image' && item.url) {
     const safeId = escHtml(item.id||'');
-    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')">🔍 크게 보기</button></div>`;
+    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${safeId}')" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${safeId}')">🔍 크게 보기</button></div>`;
   }
   if(item.url && (item.type==='file' || item.type==='video' || arcIsPdf(item))) {
     const ft = arcGetFileType(item);
@@ -3487,7 +3487,7 @@ function arcRenderBody(item){
     const label = arcFileLabel(item);
     const cls = arcFileIconClass(item);
     const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content ? escHtml(item.content.slice(0,120)) : '');
-    return `<div class="arc-file-card" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
+    return `<div class="arc-file-card" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
   }
   const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
   return `<div class="arc-item-preview">${preview}</div>`;
@@ -3543,19 +3543,19 @@ function renderArcGrid(filter='') {
         ${item.summary ? `<div class="arc-summary">${escHtml(item.summary)}</div>` : ''}
         ${arcRenderBody(item)}
         <div class="arc-pill-row">
-          ${item.project ? `<button class="arc-pill project" onclick="event.stopPropagation(); haptic.light(); openArcDashboard('${escHtml(item.project).replace(/'/g,"\\'")}')">${escHtml(item.project)}</button>` : ''}
+          ${item.project ? `<button class="arc-pill project" onclick="event.stopPropagation(); try{(window.haptic||haptic).light()}catch(_){}; openArcDashboard('${escHtml(item.project).replace(/'/g,"\\'")}')">${escHtml(item.project)}</button>` : ''}
           ${(item.mentions||[]).slice(0,3).map(v=>`<span class="arc-pill">@${escHtml(v)}</span>`).join('')}
           ${(item.tags||[]).slice(0,3).map(v=>`<span class="arc-pill">#${escHtml(v)}</span>`).join('')}
           ${item.collection ? `<span class="arc-pill">${escHtml(item.collection)}</span>` : ''}
           ${(item.wikiLinks||[]).slice(0,2).map(v=>`<span class="arc-pill project">[[${escHtml(v)}]]</span>`).join('')}
         </div>
-        ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
-        ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
+        ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
+        ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="try{(window.haptic||haptic).medium()}catch(_){}; switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
-          <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
-          ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
-          <button class="arc-action-btn ghost" onclick="haptic.light(); (function(btn,id){const r=btn.getBoundingClientRect();arcShowCtx({clientX:r.left,clientY:r.bottom},id);})(this,'${item.id}')">⋯</button>
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${item.id}')">열기</button>`}
+          <button class="arc-action-btn" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcToToday('${item.id}')">Today</button>
+          ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="try{(window.haptic||haptic).medium()}catch(_){}; event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="try{(window.haptic||haptic).medium()}catch(_){}; event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
+          <button class="arc-action-btn ghost" onclick="try{(window.haptic||haptic).light()}catch(_){}; (function(btn,id){const r=btn.getBoundingClientRect();arcShowCtx({clientX:r.left,clientY:r.bottom},id);})(this,'${item.id}')">⋯</button>
         </div>
       </div>`;
   }).join('');
@@ -4134,15 +4134,15 @@ function openArcDashboard(project) {
     </div>
 
     <div class="arc-dash-action-row">
-      <button class="arc-dash-action-btn primary" onclick="haptic.medium(); closeArcDashboard(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; renderArcGrid(arcSearch.value)">
+      <button class="arc-dash-action-btn primary" onclick="try{(window.haptic||haptic).medium()}catch(_){}; closeArcDashboard(); currentArcProjectFilter='${escHtml(project).replace(/'/g,"\\'")}'; renderArcGrid(arcSearch.value)">
         <div class="dab-icon">🔍</div>
         <div>전체 보기</div>
       </button>
-      ${meetings.length ? `<button class="arc-dash-action-btn secondary" onclick="haptic.medium(); openArcDashboard('${escHtml(project).replace(/'/g,"\\'")}'); arcDashScrollTo('sec-meetings')">
+      ${meetings.length ? `<button class="arc-dash-action-btn secondary" onclick="try{(window.haptic||haptic).medium()}catch(_){}; openArcDashboard('${escHtml(project).replace(/'/g,"\\'")}'); arcDashScrollTo('sec-meetings')">
         <div class="dab-icon">📋</div>
         <div>회의 ${meetings.length}개</div>
       </button>` : ''}
-      <button class="arc-dash-action-btn secondary" onclick="haptic.light(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+      <button class="arc-dash-action-btn secondary" onclick="try{(window.haptic||haptic).light()}catch(_){}; closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml(project).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
         <div class="dab-icon">🧠</div>
         <div>BrainDump</div>
       </button>
@@ -4154,13 +4154,13 @@ function openArcDashboard(project) {
         📋 회의 <span style="font-size:11px;color:var(--text3);font-weight:600">${meetings.length}개</span>
       </div>
       ${meetings.slice(0,4).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">📋</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}${v.summary?' · '+escHtml(v.summary.slice(0,40)):''}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openMeetingSummary('${v.id}')">요약</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); try{(window.haptic||haptic).medium()}catch(_){}; openMeetingSummary('${v.id}')">요약</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4168,13 +4168,13 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">📄 자료 <span style="font-size:11px;color:var(--text3);font-weight:600">${materials.length}개</span></div>
       ${materials.slice(0,4).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">${typeIcons[v.type]||'📄'}</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">변환</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); try{(window.haptic||haptic).medium()}catch(_){}; openQuickConvert('${v.id}')">변환</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4182,13 +4182,13 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">💡 아이디어 <span style="font-size:11px;color:var(--text3);font-weight:600">${ideas.length}개</span></div>
       ${ideas.slice(0,3).map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.light(); arcEdit('${v.id}')">
+        <div class="arc-dash-doc-row" onclick="try{(window.haptic||haptic).light()}catch(_){}; arcEdit('${v.id}')">
           <div class="arc-dash-doc-icon">💡</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml(v.title)}</div>
             <div class="arc-dash-doc-meta">${arcFormatDate(v)}</div>
           </div>
-          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); haptic.medium(); openQuickConvert('${v.id}')">할 일화</button>
+          <button class="arc-dash-doc-btn" onclick="event.stopPropagation(); try{(window.haptic||haptic).medium()}catch(_){}; openQuickConvert('${v.id}')">할 일화</button>
         </div>`).join('')}
     </div>` : ''}
 
@@ -4219,7 +4219,7 @@ function openArcDashboard(project) {
     <div class="arc-dash-sec">
       <div class="arc-dash-sec-title">🧠 연결된 BrainDump</div>
       ${dumpMatches.map(v=>`
-        <div class="arc-dash-doc-row" onclick="haptic.medium(); closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
+        <div class="arc-dash-doc-row" onclick="try{(window.haptic||haptic).medium()}catch(_){}; closeArcDashboard(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value)">
           <div class="arc-dash-doc-icon">🧠</div>
           <div class="arc-dash-doc-body">
             <div class="arc-dash-doc-title">${escHtml((v.text||'').slice(0,36))}</div>
