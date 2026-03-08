@@ -2,16 +2,17 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (v22 fix)
+// SW 캐시 강제 무효화 (pwa-v12 fix)
+const CURRENT_CACHE = 'pwa-v12';
 (async () => {
   try {
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => !k.includes('pwa-v11'));
+    // 현재 버전이 아닌 구버전 캐시만 삭제 (무한 루프 방지)
+    const oldKeys = keys.filter(k => k.startsWith('pwa-') && k !== CURRENT_CACHE);
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r => r.unregister()));
-      location.reload(true);
+      // SW 재등록은 하지 않음 - sw.js의 activate 이벤트가 처리함
+      // location.reload() 제거 - 무한 루프 원인
     }
   } catch(e) {}
 })();
