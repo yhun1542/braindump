@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v15';
+const CURRENT_CACHE = 'pwa-v16';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -3338,8 +3338,8 @@ function arcRenderLinkPreview(item){
 function arcRenderBody(item){
   if(item.type==='url') return arcRenderLinkPreview(item);
   if(item.type==='image' && item.url) {
-    const imgData = JSON.stringify({id:item.id,url:item.url,title:item.title,type:'image'});
-    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewer(${escHtml(imgData).replace(/'/g,'&#39;')})" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="haptic.medium(); arcOpenFileViewer(${escHtml(imgData).replace(/'/g,'&#39;')})">🔍 크게 보기</button></div>`;
+    const safeId = escHtml(item.id||'');
+    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="haptic.medium(); arcOpenFileViewerById('${safeId}')">🔍 크게 보기</button></div>`;
   }
   if(item.url && (item.type==='file' || item.type==='video' || arcIsPdf(item))) {
     const ft = arcGetFileType(item);
@@ -5149,6 +5149,12 @@ function arcFileIconClass(item) {
 }
 
 // 파일 뷰어 열기
+window.arcOpenFileViewerById = function(id) {
+  const item = arcItems.find(i => i.id === id);
+  if (!item) { arcShowToast('아이템을 찾을 수 없습니다'); return; }
+  arcOpenFileViewer({id: item.id, url: item.url, title: item.title, type: item.type});
+};
+
 window.arcOpenFileViewer = async function(item) {
   if (!item) return;
   const url = item.url || item.content || '';
