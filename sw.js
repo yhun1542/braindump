@@ -12,7 +12,7 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v19';
+const CACHE_VERSION = 'pwa-v20';
 const SHELL_ASSETS = [
   '/',
   '/index.html',

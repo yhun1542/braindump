@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v13 fix)
+// SW 캐시 강제 무효화 (pwa-v14 fix)
 const CURRENT_CACHE = 'pwa-v19';
 (async () => {
   try {
@@ -4735,6 +4735,8 @@ try {
 } catch(e) {}
 
 loadGIS();
+// module 스크립트 내 함수들을 일반 스크립트에서 접근 가능하도록 노출
+window.escHtml = escHtml;
 </script>
 
 <!-- ═══ PWA: 업데이트 토스트 ═══ -->
@@ -5138,6 +5140,8 @@ window.arcOpenFileViewerById = function(id) {
 window.arcOpenFileViewer = async function(item) {
   if (!item) return;
   const url = item.url || item.content || '';
+  // escHtml이 module 스크립트에 있어서 window를 통해 접근
+  const _esc = window.escHtml || (s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'));
   if (!url) { arcShowToast('파일 URL이 없습니다'); return; }
   
   const sheet = document.getElementById('arcFvSheet');
@@ -5158,7 +5162,7 @@ window.arcOpenFileViewer = async function(item) {
       // 현재 파일 URL 저장 (다운로드용)
       window._arcFvCurrentItem = item;
       body.innerHTML = `<div style="background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center">
-        <img class="arc-fv-img" src="${escHtml(url)}" alt="${escHtml(item.title||'')}" loading="lazy" style="max-height:75dvh;width:100%;object-fit:contain">
+        <img class="arc-fv-img" src="${_esc(url)}" alt="${_esc(item.title||'')}" loading="lazy" style="max-height:75dvh;width:100%;object-fit:contain">
       </div>`;
     } else if (ft === 'pdf') {
       body.innerHTML = `<iframe class="arc-fv-iframe" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}" allowfullscreen></iframe>`;
@@ -5172,10 +5176,10 @@ window.arcOpenFileViewer = async function(item) {
           const result = await mammoth.convertToHtml({ arrayBuffer: ab });
           body.innerHTML = `<div class="arc-fv-doc-body">${result.value}</div>`;
         } else {
-          body.innerHTML = `<div class="arc-fv-error">mammoth.js 로드 실패. <a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+          body.innerHTML = `<div class="arc-fv-error">mammoth.js 로드 실패. <a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
         }
       } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">Word 문서를 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+        body.innerHTML = `<div class="arc-fv-error">Word 문서를 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
       }
     } else if (ft === 'xls') {
       // SheetJS로 Excel/CSV 표 렌더링
@@ -5189,36 +5193,36 @@ window.arcOpenFileViewer = async function(item) {
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
           let html = '<div class="arc-fv-table-wrap"><table class="arc-fv-table">';
           data.slice(0, 200).forEach((row, ri) => {
-            html += ri === 0 ? '<tr>' + (row||[]).map(c=>`<th>${escHtml(String(c??''))}</th>`).join('') + '</tr>'
-                             : '<tr>' + (row||[]).map(c=>`<td>${escHtml(String(c??''))}</td>`).join('') + '</tr>';
+            html += ri === 0 ? '<tr>' + (row||[]).map(c=>`<th>${_esc(String(c??''))}</th>`).join('') + '</tr>'
+                             : '<tr>' + (row||[]).map(c=>`<td>${_esc(String(c??''))}</td>`).join('') + '</tr>';
           });
           html += '</table></div>';
           body.innerHTML = html;
         } else {
-          body.innerHTML = `<div class="arc-fv-error">SheetJS 로드 실패. <a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+          body.innerHTML = `<div class="arc-fv-error">SheetJS 로드 실패. <a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
         }
       } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">스프레드시트를 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+        body.innerHTML = `<div class="arc-fv-error">스프레드시트를 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
       }
     } else if (ft === 'txt') {
       try {
         const resp = await fetch(url);
         const text = await resp.text();
-        body.innerHTML = `<div class="arc-fv-txt">${escHtml(text.slice(0, 50000))}</div>`;
+        body.innerHTML = `<div class="arc-fv-txt">${_esc(text.slice(0, 50000))}</div>`;
       } catch(e) {
-        body.innerHTML = `<div class="arc-fv-error">텍스트 파일을 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+        body.innerHTML = `<div class="arc-fv-error">텍스트 파일을 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
       }
     } else if (ft === 'ppt') {
       // PPT는 Google Docs Viewer로 렌더링
       body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
     } else if (ft === 'video') {
-      body.innerHTML = `<video class="arc-fv-img" src="${escHtml(url)}" controls autoplay style="max-height:70dvh;width:100%;background:#000"></video>`;
+      body.innerHTML = `<video class="arc-fv-img" src="${_esc(url)}" controls autoplay style="max-height:70dvh;width:100%;background:#000"></video>`;
     } else {
       // 기타 파일: Google Docs Viewer 시도
       body.innerHTML = `<iframe class="arc-fv-iframe" src="https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true" allowfullscreen></iframe>`;
     }
   } catch(e) {
-    body.innerHTML = `<div class="arc-fv-error">파일을 불러올 수 없습니다.<br><a href="${escHtml(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
+    body.innerHTML = `<div class="arc-fv-error">파일을 불러올 수 없습니다.<br><a href="${_esc(url)}" target="_blank" style="color:#4f8ef7">파일 직접 열기</a></div>`;
   }
 };
 
