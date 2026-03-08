@@ -2499,7 +2499,7 @@ const arcSearch     = document.getElementById('arcSearch');
 const aiItems       = document.getElementById('aiReminderItems');
 
 /* ── Login ── */
-loginBtn.addEventListener('click', async () => { haptic.medium();
+loginBtn.addEventListener('click', async () => { window.haptic?.medium();
   const email = loginEmail.value.trim();
   const pw    = loginPw.value;
   loginError.classList.add('hidden');
@@ -2721,7 +2721,7 @@ function renderTodayCards() {
       cb.addEventListener('change', () => toggleTask(card.id, cb.dataset.tid, cb.checked));
     });
     // Edit card header
-    div.querySelector('.card-hdr-edit').addEventListener('click', () => { haptic.light();
+    div.querySelector('.card-hdr-edit').addEventListener('click', () => { window.haptic?.light();
       editingCardId = card.id;
       openTaskSheet(null, card.id);
     });
@@ -2817,12 +2817,12 @@ function openTaskSheet(taskId, cardId) {
   document.getElementById('taskOverlay').classList.remove('hidden');
   setTimeout(()=>document.getElementById('taskEditText').focus(), 100);
 }
-document.getElementById('taskCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('taskOverlay').classList.add('hidden'); });
-document.getElementById('taskDel').addEventListener('click', async()=>{ haptic.error();
+document.getElementById('taskCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('taskOverlay').classList.add('hidden'); });
+document.getElementById('taskDel').addEventListener('click', async()=>{ window.haptic?.error();
   if(editingTaskId && editingCardId) await deleteTask(editingCardId, editingTaskId);
   document.getElementById('taskOverlay').classList.add('hidden');
 });
-document.getElementById('taskSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('taskSave').addEventListener('click', async()=>{ window.haptic?.success();
   const text = document.getElementById('taskEditText').value.trim();
   if(!text) return;
   await saveTask(editingCardId, editingTaskId, text, document.getElementById('taskEditPri').value);
@@ -2842,12 +2842,12 @@ function attachSwipe(row) {
       row.querySelector('.task-swipe-actions')?.classList.remove('open');
     }
   }, {passive:true});
-  row.addEventListener('touchend', ()=>{ if(swiping) haptic.longpress(); swiping=false; });
-  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{ haptic.medium();
+  row.addEventListener('touchend', ()=>{ if(swiping) window.haptic?.longpress(); swiping=false; });
+  row.querySelector('.swipe-edit-btn')?.addEventListener('click', ()=>{ window.haptic?.medium();
     openTaskSheet(row.dataset.tid, row.dataset.cid);
     row.querySelector('.task-swipe-actions')?.classList.remove('open');
   });
-  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{ haptic.error();
+  row.querySelector('.swipe-del-btn')?.addEventListener('click', ()=>{ window.haptic?.error();
     deleteTask(row.dataset.cid, row.dataset.tid);
   });
 }
@@ -2894,7 +2894,7 @@ function renderCalendar() {
         ${allEvs.length>maxShow?`<div class="cal-more">+${allEvs.length-maxShow}개</div>`:''}
       </div>`;
     if(!cell.other) {
-      d.addEventListener('click', e => { haptic.light();
+      d.addEventListener('click', e => { window.haptic?.light();
         if(e.target.classList.contains('cal-event-tag')) {
           openEventEdit(e.target.dataset.eid);
         } else {
@@ -2906,16 +2906,16 @@ function renderCalendar() {
   });
 }
 
-document.getElementById('calPrev').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('calPrev').addEventListener('click', ()=>{ window.haptic?.light();
   calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar();
 });
-document.getElementById('calNext').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('calNext').addEventListener('click', ()=>{ window.haptic?.light();
   calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar();
 });
-document.getElementById('calFab').addEventListener('click', ()=>{ haptic.medium();
+document.getElementById('calFab').addEventListener('click', ()=>{ window.haptic?.medium();
   openEventSheet(null, dateStr(new Date()));
 });
-calMonthTitle.addEventListener('click', ()=>{ haptic.light();
+calMonthTitle.addEventListener('click', ()=>{ window.haptic?.light();
   calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCalendar();
 });
 
@@ -2951,18 +2951,18 @@ function openEventSheet(eventId, defaultDate) {
 window.openEventEdit = (id) => openEventSheet(id, null);
 
 document.querySelectorAll('.color-dot').forEach(dot=>{
-  dot.addEventListener('click', ()=>{ haptic.light();
+  dot.addEventListener('click', ()=>{ window.haptic?.light();
     selectedColorIdx = parseInt(dot.dataset.ci);
     document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('selected', d===dot));
   });
 });
-document.getElementById('eventCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('eventOverlay').classList.add('hidden'); });
-document.getElementById('eventDel').addEventListener('click', async()=>{ haptic.error();
+document.getElementById('eventCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('eventOverlay').classList.add('hidden'); });
+document.getElementById('eventDel').addEventListener('click', async()=>{ window.haptic?.error();
   if(editingEventId) await deleteDoc(eventPath(editingEventId));
   document.getElementById('eventOverlay').classList.add('hidden');
   showSaved();
 });
-document.getElementById('eventSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('eventSave').addEventListener('click', async()=>{ window.haptic?.success();
   const title = document.getElementById('eventTitle').value.trim();
   if(!title) return;
 
@@ -2992,7 +2992,7 @@ bdTextarea.addEventListener('input', ()=>{
   bdTextarea.style.height = 'auto';
   bdTextarea.style.height = bdTextarea.scrollHeight + 'px';
 });
-document.getElementById('bdAddBtn').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('bdAddBtn').addEventListener('click', async()=>{ window.haptic?.success();
   const text = bdTextarea.value.trim();
   if(!text) return;
   await addDoc(bdCol(), { text, createdAt: serverTimestamp() });
@@ -3024,9 +3024,9 @@ function renderBdList(filter='') {
         </div>
       </div>`;
   }).join('');
-  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'today'); }));
-  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>{ haptic.medium(); openMoveSheet(btn.dataset.bid,'schedule'); }));
-  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{ haptic.error();
+  bdList.querySelectorAll('.bd-to-today').forEach(btn=>btn.addEventListener('click',()=>{ window.haptic?.medium(); openMoveSheet(btn.dataset.bid,'today'); }));
+  bdList.querySelectorAll('.bd-to-sched').forEach(btn=>btn.addEventListener('click',()=>{ window.haptic?.medium(); openMoveSheet(btn.dataset.bid,'schedule'); }));
+  bdList.querySelectorAll('.bd-del-btn').forEach(btn=>btn.addEventListener('click',async()=>{ window.haptic?.error();
     await deleteDoc(bdPath(btn.dataset.bid)); showSaved();
   }));
 }
@@ -3054,8 +3054,8 @@ function updateMoveFields(dest) {
   }
 }
 document.getElementById('moveDest').addEventListener('change', e=>updateMoveFields(e.target.value));
-document.getElementById('moveCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('moveOverlay').classList.add('hidden'); });
-document.getElementById('moveConfirm').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('moveCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('moveOverlay').classList.add('hidden'); });
+document.getElementById('moveConfirm').addEventListener('click', async()=>{ window.haptic?.success();
   const item = bdItems.find(i=>i.id===movingBdId);
   if(!item) return;
   const dest = document.getElementById('moveDest').value;
@@ -3428,16 +3428,16 @@ function renderArcHub(allItems){
     </div>
   `;
   const launch = document.getElementById('arcGraphLaunch');
-  if(launch) launch.onclick = ()=>{ haptic.medium(); openArcGraph(); };
+  if(launch) launch.onclick = ()=>{ window.haptic?.medium(); openArcGraph(); };
   const openBtn = document.getElementById('arcProjectOpen');
-  if(openBtn) openBtn.onclick = ()=>{ haptic.medium(); openArcProjectSheet(activeProject || topProjects[0]?.name || ''); };
+  if(openBtn) openBtn.onclick = ()=>{ window.haptic?.medium(); openArcProjectSheet(activeProject || topProjects[0]?.name || ''); };
   hub.querySelectorAll('.arc-project-chip').forEach(btn=>btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcProjectFilter = btn.dataset.project || '';
     renderArcGrid(arcSearch.value);
   }));
   hub.querySelectorAll('.arc-kind-chip').forEach(btn=>btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcKindFilter = btn.dataset.kind || '';
     renderArcGrid(arcSearch.value);
   }));
@@ -3681,10 +3681,10 @@ function renderArcGrid(filter='') {
 }
 window.arcItemDblClick = (event, id, type, url) => {
   if (type === 'url' && url) {
-    haptic.medium();
+    window.haptic?.medium();
     arcOpenUrl(url);
   } else if ((type === 'file' || type === 'video' || type === 'image') && url) {
-    haptic.medium();
+    window.haptic?.medium();
     const item = arcItems.find(i=>i.id===id);
     if(item) arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type});
   } else {
@@ -3697,7 +3697,7 @@ window.arcOpenUrl = (url) => {
   const u = String(url).trim();
   if(arcIsUrl(u)) window.open(u, '_blank');
 };
-window.arcTogglePin = async(id) => { haptic.medium();
+window.arcTogglePin = async(id) => { window.haptic?.medium();
   const item = arcItems.find(i=>i.id===id);
   if(!item) return;
   await updateDoc(arcPath(id), { pinned: !item.pinned, updatedAt: serverTimestamp() });
@@ -3736,7 +3736,7 @@ window.arcEditItem = window.arcEdit;
 let arcLongPressTimer = null;
 window.arcTouchStart = (e, id) => {
   arcLongPressTimer = setTimeout(()=>{
-    haptic.longpress();
+    window.haptic?.longpress();
     const t = e.touches?.[0];
     arcShowCtx({clientX:t?.clientX || window.innerWidth/2, clientY:t?.clientY || window.innerHeight/2}, id);
   }, 550);
@@ -3768,7 +3768,7 @@ function closeArcCtx() {
 }
 document.getElementById('arcCtxOverlay')?.addEventListener('click', closeArcCtx);
 document.getElementById('arcCtxOpen')?.addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   const item = arcItems.map(arcEnrichItem).find(i=>i.id===arcCtxTargetId);
   if(item) {
     if(item.type==='url') { arcOpenUrl(item.content); }
@@ -3778,27 +3778,27 @@ document.getElementById('arcCtxOpen')?.addEventListener('click', ()=>{
   closeArcCtx();
 });
 document.getElementById('arcCtxPin')?.addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   if(arcCtxTargetId) arcTogglePin(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxEdit')?.addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   if(arcCtxTargetId) arcEdit(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxToday')?.addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   if(arcCtxTargetId) arcToToday(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcCtxDel')?.addEventListener('click', ()=>{
-  haptic.error();
+  window.haptic?.error();
   if(arcCtxTargetId) arcDel(arcCtxTargetId);
   closeArcCtx();
 });
 document.getElementById('arcSortBtn')?.addEventListener('click', (e)=>{
-  haptic.light();
+  window.haptic?.light();
   e.stopPropagation();
   // 기존 메뉴 있으면 닫기
   const existingMenu = document.getElementById('arcSortMenu');
@@ -3817,7 +3817,7 @@ document.getElementById('arcSortBtn')?.addEventListener('click', (e)=>{
     el.textContent = o.label;
     el.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      haptic.light();
+      window.haptic?.light();
       arcSortMode = o.key;
       menu.remove();
       renderArcGrid(arcSearch.value);
@@ -3847,7 +3847,7 @@ arcSearch.addEventListener('input', () => {
 });
 document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     document.querySelectorAll('.arc-cat-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentArcCat = btn.dataset.cat;
@@ -3856,7 +3856,7 @@ document.querySelectorAll('.arc-cat-btn').forEach(btn=>{
 });
 document.querySelectorAll('.arc-smart-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    haptic.light();
+    window.haptic?.light();
     currentArcSmartFilter = btn.dataset.smart || 'all';
     renderArcGrid(arcSearch.value);
   });
@@ -3890,7 +3890,7 @@ window.arcToToday = (id)=>{
   if(item) openMoveSheet(item.id, 'today');
 };
 document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
-  haptic.medium();
+  window.haptic?.medium();
   document.getElementById('arcOverlayTitle').textContent = '아카이브에 추가';
   document.getElementById('arcEditId').value = '';
   document.getElementById('arcType').value = 'note';
@@ -3933,15 +3933,15 @@ document.getElementById('arcContent').addEventListener('input', ()=>{
 });
 // arcType은 hidden input - 직접 변경 이벤트 없음
 // 파일 선택 시 arcFile change 이벤트에서 자동 처리됨
-document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
+document.getElementById('arcCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
 // 파일 첨부 버튼 클릭 → 파일 선택창 열기
 document.getElementById('arcAttachBtn')?.addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   document.getElementById('arcFile').click();
 });
 // 파일 제거 버튼
 document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
-  haptic.light();
+  window.haptic?.light();
   const arcFileEl = document.getElementById('arcFile');
   if(arcFileEl) arcFileEl.value = '';
   document.getElementById('arcFilePreview').innerHTML = '';
@@ -4013,7 +4013,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   }
 
   // 파일 제거 버튼
-  if(qPrevRm) qPrevRm.addEventListener('click', ()=>{ haptic.light(); clearFilePreview(); if(qSave) qSave.classList.remove('visible'); if(qTypePill) qTypePill.classList.remove('visible'); });
+  if(qPrevRm) qPrevRm.addEventListener('click', ()=>{ window.haptic?.light(); clearFilePreview(); if(qSave) qSave.classList.remove('visible'); if(qTypePill) qTypePill.classList.remove('visible'); });
 
   // 입력 변화 감지
   qInput.addEventListener('input', () => {
@@ -4050,13 +4050,13 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   });
 
   // 📎 파일 버튼
-  qFile.addEventListener('click', () => { haptic.light(); qFileIn.click(); });
+  qFile.addEventListener('click', () => { window.haptic?.light(); qFileIn.click(); });
   qFileIn.addEventListener('change', function() {
     if (this.files[0]) showFilePreview(this.files[0]);
   });
 
   // 📷 사진 버튼
-  qPhoto.addEventListener('click', () => { haptic.light(); qPhotoIn.click(); });
+  qPhoto.addEventListener('click', () => { window.haptic?.light(); qPhotoIn.click(); });
   qPhotoIn.addEventListener('change', function() {
     if (this.files[0]) showFilePreview(this.files[0]);
   });
@@ -4067,7 +4067,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
     const val = qInput.value.trim();
     if (!val || _qSaving) return;
     _qSaving = true;
-    haptic.medium();
+    window.haptic?.medium();
     qInput.value = '';
     qSave.classList.remove('visible');
     qHint.classList.remove('visible');
@@ -4094,7 +4094,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
       const docRef = await addDoc(arcCol(), payload);
       _qSaving = false;  // 저장 완료 즉시 잠금 해제
       arcShowToast('✅ 저장됨');
-      haptic.success?.() || haptic.medium();
+      window.haptic?.success?.() || window.haptic?.medium();
 
       // AI 분류 (백그라운드 updateDoc — 새 문서 생성 안 함)
       arcEnrichWithAI({ title, content, type }).then(ai => {
@@ -4117,7 +4117,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
   // 파일 빠른 저장
   async function arcQuickSaveFile(file) {
-    haptic.medium();
+    window.haptic?.medium();
     const name = file.name.toLowerCase();
     const ext  = name.split('.').pop();
     const typeMap = {
@@ -4150,7 +4150,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
         updatedAt: serverTimestamp()
       });
       arcShowToast('✅ 파일 저장됨');
-      haptic.success?.() || haptic.medium();
+      window.haptic?.success?.() || window.haptic?.medium();
       // input 초기화
       qFileIn.value = '';
       qPhotoIn.value = '';
@@ -4211,7 +4211,7 @@ async function arcEnrichWithAI({title, content, type}) {
 document.getElementById('arcSave').addEventListener('click', async()=>{
   const btn = document.getElementById('arcSave');
   if(btn.disabled) return;
-  haptic.success();
+  window.haptic?.success();
   let type = document.getElementById('arcType').value;
   // file-* 타입을 file로 정규화 (저장 시)
   const fileSubtype = type.startsWith('file-') ? type : null;
@@ -4599,7 +4599,7 @@ window.toggleMeetAction = (idx) => {
   else { _meetChecked.add(idx); row.classList.add('done'); chk.textContent='✓'; }
 };
 
-window.sendMeetActionsToToday = async(actions) => { haptic.medium();
+window.sendMeetActionsToToday = async(actions) => { window.haptic?.medium();
   const items = Array.isArray(actions)?actions:[];
   const selected = items.filter((_,i)=>_meetChecked.has(i));
   const toSend = selected.length ? selected : items.slice(0,3);
@@ -4745,7 +4745,7 @@ document.getElementById('arcConvSheet')?.addEventListener('click', e=>{ if(e.tar
 /* ── Hook "프로젝트 보기" to open Dashboard instead of old project sheet ── */
 document.addEventListener('click', e=>{
   const btn = e.target.closest('[data-arc-proj]');
-  if(btn) { haptic.light(); openArcDashboard(btn.dataset.arcProj); }
+  if(btn) { window.haptic?.light(); openArcDashboard(btn.dataset.arcProj); }
 });
 
 /* ── AI REMINDER ── */
@@ -4812,7 +4812,7 @@ document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder
 
 /* ── SETTING ── */
 const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', ()=>{ haptic.medium();
+themeToggle.addEventListener('click', ()=>{ window.haptic?.medium();
   const isDark = document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme', isDark?'':'dark');
   themeToggle.classList.toggle('on', !isDark);
@@ -4835,18 +4835,18 @@ function updateLogoTheme() {
 }
 updateLogoTheme();
 themeToggle.addEventListener('change', ()=>{ setTimeout(updateLogoTheme, 50); });
-document.getElementById('logoutBtn').addEventListener('click', async()=>{ haptic.heavy();
+document.getElementById('logoutBtn').addEventListener('click', async()=>{ window.haptic?.heavy();
   await signOut(auth);
 });
-document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{ haptic.heavy();
+document.getElementById('hdrLogoutBtn').addEventListener('click', async()=>{ window.haptic?.heavy();
   await signOut(auth);
 });
-document.getElementById('openAiKeyItem').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('openAiKeyItem').addEventListener('click', ()=>{ window.haptic?.light();
   document.getElementById('openAiKeyInput').value = openAiKey||'';
   document.getElementById('openAiOverlay').classList.remove('hidden');
 });
-document.getElementById('openAiCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('openAiOverlay').classList.add('hidden'); });
-document.getElementById('openAiSave').addEventListener('click', async()=>{ haptic.success();
+document.getElementById('openAiCancel').addEventListener('click', ()=>{ window.haptic?.light(); document.getElementById('openAiOverlay').classList.add('hidden'); });
+document.getElementById('openAiSave').addEventListener('click', async()=>{ window.haptic?.success();
   const key = document.getElementById('openAiKeyInput').value.trim();
   openAiKey = key;
   await setDoc(doc(db,`users/${uid()}/config`,'openai'), { key }, {merge:true});
@@ -4872,18 +4872,18 @@ function switchTab(tabName) {
   }
 }
 document.querySelectorAll('.tab-item').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ haptic.light(); switchTab(btn.dataset.tab); });
+  btn.addEventListener('click', ()=>{ window.haptic?.light(); switchTab(btn.dataset.tab); });
 });
 window.switchTab = switchTab;
 
 /* ── DATE NAV ── */
-document.getElementById('btnPrev').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('btnPrev').addEventListener('click', ()=>{ window.haptic?.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()-1);
     updateHeader(); resubscribeToday();
   }
 });
-document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light();
+document.getElementById('btnNext').addEventListener('click', ()=>{ window.haptic?.light();
   if(activeTab==='today') {
     currentDate.setDate(currentDate.getDate()+1);
     updateHeader(); resubscribeToday();
@@ -4991,16 +4991,16 @@ document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light(
     document.getElementById('calYearView').style.display='';
     renderYearGrid();
   });
-  document.getElementById('calYearPrev').addEventListener('click', ()=>{ haptic.light(); calYearPageStart-=12; renderYearGrid(); });
-  document.getElementById('calYearNext').addEventListener('click', ()=>{ haptic.light(); calYearPageStart+=12; renderYearGrid(); });
-  document.getElementById('calPrevMonth').addEventListener('click', ()=>{ haptic.light();
+  document.getElementById('calYearPrev').addEventListener('click', ()=>{ window.haptic?.light(); calYearPageStart-=12; renderYearGrid(); });
+  document.getElementById('calYearNext').addEventListener('click', ()=>{ window.haptic?.light(); calYearPageStart+=12; renderYearGrid(); });
+  document.getElementById('calPrevMonth').addEventListener('click', ()=>{ window.haptic?.light();
     calPickMonth--; if(calPickMonth<0){calPickMonth=11;calPickYear--;} renderCalMonth();
   });
-  document.getElementById('calNextMonth').addEventListener('click', ()=>{ haptic.light();
+  document.getElementById('calNextMonth').addEventListener('click', ()=>{ window.haptic?.light();
     calPickMonth++; if(calPickMonth>11){calPickMonth=0;calPickYear++;} renderCalMonth();
   });
-  document.getElementById('calCancel').addEventListener('click', ()=>{ haptic.light(); closeCal(); });
-  document.getElementById('calGotoToday').addEventListener('click', ()=>{ haptic.medium();
+  document.getElementById('calCancel').addEventListener('click', ()=>{ window.haptic?.light(); closeCal(); });
+  document.getElementById('calGotoToday').addEventListener('click', ()=>{ window.haptic?.medium();
     const t = new Date();
     calPickYear=t.getFullYear(); calPickMonth=t.getMonth();
     calPickSelected=t; renderCalMonth();
@@ -5011,7 +5011,7 @@ document.getElementById('btnNext').addEventListener('click', ()=>{ haptic.light(
   });
 
   // 날짜 클릭 시 커스텀 달력 열기
-  hdrDateBig.addEventListener('click', ()=>{ haptic.light(); openCal(currentDate); });
+  hdrDateBig.addEventListener('click', ()=>{ window.haptic?.light(); openCal(currentDate); });
   if(document.getElementById('hdrDateSub'))
     document.getElementById('hdrDateSub').addEventListener('click', ()=>{ openCal(currentDate); });
 
@@ -5067,7 +5067,7 @@ function initGIS() {
     setTimeout(() => syncFromGCal(), 1500);
   }
 }
-document.getElementById('gcalConnectItem').addEventListener('click', () => { haptic.medium();
+document.getElementById('gcalConnectItem').addEventListener('click', () => { window.haptic?.medium();
   if (!GCAL_CLIENT_ID) { showToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
   if (gcalAccessToken) {
     if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
@@ -5087,7 +5087,7 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => { hap
   }
 });
 
-document.getElementById('gcalSyncItem').addEventListener('click', () => { haptic.medium();
+document.getElementById('gcalSyncItem').addEventListener('click', () => { window.haptic?.medium();
   if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
   syncFromGCal();
 });
