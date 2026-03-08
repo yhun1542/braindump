@@ -640,6 +640,49 @@ body {
   padding: 1px 5px; font-size: 10px; font-weight: 700;
 }
 .arc-cat-btn.active .arc-cat-count { background: rgba(255,255,255,0.25); }
+
+/* ════ 빠른 입력 바 (Quick Input Bar) ════ */
+.arc-quick-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px 4px;
+}
+.arc-quick-input {
+  flex: 1; padding: 11px 14px;
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  border-radius: 14px; font-size: 14px; color: var(--text);
+  font-family: var(--font); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.arc-quick-input:focus {
+  border-color: var(--accent, #6C63FF);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
+}
+.arc-quick-input::placeholder { color: var(--text3); }
+.arc-quick-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: none;
+  font-size: 18px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.12s, opacity 0.12s;
+}
+.arc-quick-btn:active { transform: scale(0.92); opacity: 0.8; }
+.arc-quick-save {
+  background: var(--hdr-bg); color: var(--hdr-text);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.arc-quick-save.visible { opacity: 1; pointer-events: auto; }
+.arc-quick-file-btn {
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  color: var(--text2);
+}
+.arc-quick-photo-btn {
+  background: var(--surface); border: 1.5px solid var(--border-mid);
+  color: var(--text2);
+}
+.arc-quick-type-hint {
+  font-size: 11px; color: var(--text3); padding: 0 16px 4px;
+  display: none; align-items: center; gap: 4px;
+}
+.arc-quick-type-hint.visible { display: flex; }
 .arc-grid { padding: 0 16px 80px; }
 
 /* ── 아카이브 카드 ── */
@@ -1596,6 +1639,19 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 
     <!-- ── ARCHIVE TAB ── -->
     <div class="tab-pane" id="pane-archive">
+      <!-- ── 빠른 입력 바 ── -->
+      <div class="arc-quick-bar">
+        <input class="arc-quick-input" id="arcQuickInput" placeholder="✏️ 메모, URL, 아이디어를 바로 입력하세요..." autocomplete="off">
+        <button class="arc-quick-btn arc-quick-save" id="arcQuickSave" title="저장 (Enter)">✓</button>
+        <button class="arc-quick-btn arc-quick-photo-btn" id="arcQuickPhoto" title="사진 첨부">📷</button>
+        <button class="arc-quick-btn arc-quick-file-btn" id="arcQuickFile" title="파일 첨부">📎</button>
+        <input type="file" id="arcQuickFileInput" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.hwp,.hwpx,.zip,.rar" style="display:none">
+        <input type="file" id="arcQuickPhotoInput" accept="image/*" capture="environment" style="display:none">
+      </div>
+      <div class="arc-quick-type-hint" id="arcQuickTypeHint">
+        <span id="arcQuickTypeIcon">📝</span>
+        <span id="arcQuickTypeText">노트로 저장됩니다</span>
+      </div>
       <div class="arc-header">
         <input class="arc-search" id="arcSearch" placeholder="🔍 제목, 태그, @멘션, [[위키링크]] 검색...">
         <div class="arc-header-actions">
@@ -3564,6 +3620,151 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   const badge = document.getElementById('arcTypeBadge');
   if(badge) badge.style.display = 'none';
 });
+
+// ════ 빠른 입력 바 로직 ════
+(function() {
+  const qInput  = document.getElementById('arcQuickInput');
+  const qSave   = document.getElementById('arcQuickSave');
+  const qHint   = document.getElementById('arcQuickTypeHint');
+  const qIcon   = document.getElementById('arcQuickTypeIcon');
+  const qText   = document.getElementById('arcQuickTypeText');
+  const qFile   = document.getElementById('arcQuickFile');
+  const qPhoto  = document.getElementById('arcQuickPhoto');
+  const qFileIn = document.getElementById('arcQuickFileInput');
+  const qPhotoIn= document.getElementById('arcQuickPhotoInput');
+  if (!qInput) return;
+
+  // 입력 변화 감지 → 타입 힌트 + 저장 버튼 표시
+  qInput.addEventListener('input', () => {
+    const val = qInput.value.trim();
+    if (!val) {
+      qSave.classList.remove('visible');
+      qHint.classList.remove('visible');
+      return;
+    }
+    qSave.classList.add('visible');
+    qHint.classList.add('visible');
+    if (arcIsUrl(val)) {
+      qIcon.textContent = '🔗'; qText.textContent = 'URL 링크로 저장됩니다';
+    } else {
+      qIcon.textContent = '📝'; qText.textContent = '노트로 저장됩니다';
+    }
+  });
+
+  // Enter 키 → 저장
+  qInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      arcQuickSaveText();
+    }
+  });
+
+  // ✓ 버튼 클릭
+  qSave.addEventListener('click', () => arcQuickSaveText());
+
+  // 📎 파일 버튼
+  qFile.addEventListener('click', () => { haptic.light(); qFileIn.click(); });
+  qFileIn.addEventListener('change', function() {
+    if (this.files[0]) arcQuickSaveFile(this.files[0]);
+  });
+
+  // 📷 사진 버튼
+  qPhoto.addEventListener('click', () => { haptic.light(); qPhotoIn.click(); });
+  qPhotoIn.addEventListener('change', function() {
+    if (this.files[0]) arcQuickSaveFile(this.files[0]);
+  });
+
+  // 텍스트/URL 빠른 저장
+  async function arcQuickSaveText() {
+    const val = qInput.value.trim();
+    if (!val) return;
+    haptic.medium();
+    qInput.value = '';
+    qSave.classList.remove('visible');
+    qHint.classList.remove('visible');
+
+    const isUrl = arcIsUrl(val);
+    const type  = isUrl ? 'url' : 'note';
+    const title = isUrl ? arcGetDomain(val) : (val.length > 40 ? val.slice(0, 40) + '…' : val);
+    const content = val;
+
+    arcShowToast('저장 중...');
+    try {
+      const db = firebase.firestore();
+      const uid = firebase.auth().currentUser?.uid;
+      if (!uid) { arcShowToast('로그인 필요'); return; }
+
+      const payload = {
+        type, title, content,
+        tags: [], project: '', pinned: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      // AI 분류 (백그라운드)
+      arcEnrichWithAI({ title, content, type }).then(ai => {
+        if (ai) {
+          db.collection('users').doc(uid).collection('archive').add({
+            ...payload,
+            summary: ai.summary || '',
+            tags: ai.tags || [],
+            project: ai.project || '',
+            kind: ai.kind || '',
+            aiTag: ai.aiTag || '',
+            aiDone: true
+          });
+        }
+      }).catch(() => {});
+
+      await db.collection('users').doc(uid).collection('archive').add(payload);
+      arcShowToast('✅ 저장됨');
+      haptic.success?.() || haptic.medium();
+    } catch(e) {
+      arcShowToast('저장 실패: ' + e.message);
+    }
+  }
+
+  // 파일 빠른 저장
+  async function arcQuickSaveFile(file) {
+    haptic.medium();
+    const name = file.name.toLowerCase();
+    const ext  = name.split('.').pop();
+    const typeMap = {
+      jpg:'image', jpeg:'image', png:'image', gif:'image', webp:'image', heic:'image',
+      mp4:'video', mov:'video', avi:'video', mkv:'video', webm:'video',
+    };
+    const type  = typeMap[ext] || 'file';
+    const title = file.name.replace(/\.[^.]+$/, '');
+
+    arcShowToast('업로드 중...');
+    try {
+      const uid = firebase.auth().currentUser?.uid;
+      if (!uid) { arcShowToast('로그인 필요'); return; }
+
+      // Firebase Storage 업로드
+      const storageRef = firebase.storage().ref();
+      const fileRef = storageRef.child(`users/${uid}/archive/${Date.now()}_${file.name}`);
+      const snap = await fileRef.put(file);
+      const url  = await snap.ref.getDownloadURL();
+
+      const db = firebase.firestore();
+      await db.collection('users').doc(uid).collection('archive').add({
+        type, title, content: '', url,
+        tags: [], project: '', pinned: false,
+        fileSize: file.size,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      arcShowToast('✅ 파일 저장됨');
+      haptic.success?.() || haptic.medium();
+      // input 초기화
+      qFileIn.value = '';
+      qPhotoIn.value = '';
+    } catch(e) {
+      arcShowToast('업로드 실패: ' + e.message);
+    }
+  }
+})();
 async function arcEnrichWithAI({title, content, type}) {
   if(!openAiKey) return null;
   try {
