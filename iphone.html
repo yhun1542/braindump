@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v13';
+const CURRENT_CACHE = 'pwa-v14';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -3671,21 +3671,21 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
     arcShowToast('저장 중...');
     try {
-      const db = firebase.firestore();
-      const uid = firebase.auth().currentUser?.uid;
-      if (!uid) { arcShowToast('로그인 필요'); return; }
+      // modular SDK 사용
+      if (!currentUser) { arcShowToast('로그인 필요'); return; }
+
 
       const payload = {
         type, title, content,
         tags: [], project: '', pinned: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       };
 
       // AI 분류 (백그라운드)
       arcEnrichWithAI({ title, content, type }).then(ai => {
         if (ai) {
-          db.collection('users').doc(uid).collection('archive').add({
+          addDoc(arcCol(), {
             ...payload,
             summary: ai.summary || '',
             tags: ai.tags || [],
@@ -3697,7 +3697,7 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
         }
       }).catch(() => {});
 
-      await db.collection('users').doc(uid).collection('archive').add(payload);
+      await addDoc(arcCol(), payload);
       arcShowToast('✅ 저장됨');
       haptic.success?.() || haptic.medium();
     } catch(e) {
@@ -3719,22 +3719,22 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
     arcShowToast('업로드 중...');
     try {
-      const uid = firebase.auth().currentUser?.uid;
-      if (!uid) { arcShowToast('로그인 필요'); return; }
+      if (!currentUser) { arcShowToast('로그인 필요'); return; }
 
-      // Firebase Storage 업로드
-      const storageRef = firebase.storage().ref();
-      const fileRef = storageRef.child(`users/${uid}/archive/${Date.now()}_${file.name}`);
-      const snap = await fileRef.put(file);
-      const url  = await snap.ref.getDownloadURL();
 
-      const db = firebase.firestore();
-      await db.collection('users').doc(uid).collection('archive').add({
-        type, title, content: '', url,
+
+      // Firebase Storage 업로드 (modular SDK)
+      const sRef = storageRef(storage, `users/${uid()}/archive/${Date.now()}_${file.name}`);
+      await uploadBytes(sRef, file);
+      const url = await getDownloadURL(sRef);
+
+      // modular SDK 사용
+      await addDoc(arcCol(), {
+        type, title, content: file.name, url,
         tags: [], project: '', pinned: false,
         fileSize: file.size,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       });
       arcShowToast('✅ 파일 저장됨');
       haptic.success?.() || haptic.medium();
