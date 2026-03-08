@@ -2233,19 +2233,33 @@ function arcShowToast(msg, duration=2200) {
 }
 // ── 파일 뷰어 (module 스코프에서 직접 사용) ──
 function arcOpenFileViewerById(id) {
-  // arcItems는 같은 module 스코프에 있으므로 직접 참조 (window._arcItems 동기화 타이밍 문제 방지)
-  const allItems = arcItems && arcItems.length ? arcItems : (window._arcItems || []);
-  const item = allItems.find(i => i.id === id);
-  if (!item) { arcShowToast('항목을 찾을 수 없습니다'); return; }
-  arcOpenFileViewer(item);
+  try {
+    // 안전한 arcItems 접근 (typeof 체크)
+    const safeArcItems = (typeof arcItems !== 'undefined' && Array.isArray(arcItems) && arcItems.length > 0)
+      ? arcItems
+      : (Array.isArray(window._arcItems) ? window._arcItems : []);
+    // id 타입 혼합 방어 (string/number 모두 처리)
+    const item = safeArcItems.find(i => String(i.id) === String(id));
+    if (!item) {
+      // 디버그: 항목 못 찾을 때 상세 정보 표시
+      const msg = '항목을 찾을 수 없습니다 (id:' + id + ', items:' + safeArcItems.length + ')';
+      if (window.arcShowToast) window.arcShowToast(msg);
+      else alert(msg);
+      return;
+    }
+    arcOpenFileViewer(item);
+  } catch(e) {
+    alert('arcOpenFileViewerById 오류: ' + e.message + '\nid=' + id);
+  }
 }
 async function arcOpenFileViewer(item) {
+  try {
   const _esc = window.escHtml || (s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'));
   const sheet = document.getElementById('arcFvSheet');
   const body  = document.getElementById('arcFvBody');
   const title = document.getElementById('arcFvTitle');
   const dlBtn = document.getElementById('arcFvDownload');
-  if (!sheet || !body) return;
+  if (!sheet || !body) { alert('arcFvSheet/arcFvBody DOM 없음'); return; }
   const url = item?.url || item?.content || '';
   const ft  = arcGetFileType(item);
   if (title) title.textContent = item?.title || '파일';
@@ -2290,6 +2304,7 @@ async function arcOpenFileViewer(item) {
   } else {
     body.innerHTML = '<div style="padding:32px;text-align:center;color:#888">미리보기를 지원하지 않는 파일 형식입니다.</div>';
   }
+  } catch(e) { alert('arcOpenFileViewer 오류: ' + e.message); }
 }
 window.arcOpenFileViewer = arcOpenFileViewer;
 window.arcOpenFileViewerById = arcOpenFileViewerById;
