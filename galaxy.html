@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v12 fix)
-const CURRENT_CACHE = 'pwa-v12';
+// SW 캐시 강제 무효화 (pwa-v13 fix)
+const CURRENT_CACHE = 'pwa-v13';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -1469,7 +1469,7 @@ body {
 /* ── v22 card action enhancement ── */
 .arc-action-btn.convert{color:#7c3aed}
 .arc-action-btn.meeting{color:#f59e0b}
-/* ── 파일 뷰어 시트 (pwa-v12) ── */
+/* ── 파일 뷰어 시트 (pwa-v13) ── */
 .arc-fv-sheet{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end}
 .arc-fv-sheet.hidden{display:none}
 .arc-fv-panel{background:var(--card);border-radius:28px 28px 0 0;max-height:92dvh;display:flex;flex-direction:column;overflow:hidden}
@@ -1480,6 +1480,10 @@ body {
 .arc-fv-iframe{width:100%;height:70dvh;border:none;background:#fff}
 .arc-fv-txt{padding:16px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:70dvh;overflow:auto}
 .arc-fv-img{width:100%;max-height:70dvh;object-fit:contain;display:block;background:#000}
+.arc-img-thumb{width:100%;max-height:260px;object-fit:cover;border-radius:12px;display:block;cursor:pointer;transition:opacity .15s}
+.arc-img-thumb:active{opacity:.8}
+.arc-img-thumb-wrap{position:relative;overflow:hidden;border-radius:12px;margin-bottom:4px}
+.arc-img-thumb-overlay{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;backdrop-filter:blur(4px)}
 .arc-fv-table-wrap{overflow:auto;max-height:70dvh;padding:8px}
 .arc-fv-table{border-collapse:collapse;font-size:12px;width:100%}
 .arc-fv-table th,.arc-fv-table td{border:1px solid var(--border-mid);padding:6px 10px;color:var(--text);text-align:left}
@@ -2038,13 +2042,16 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 </div>
 
 
-<!-- ═══ pwa-v12: 파일 뷰어 시트 ═══ -->
+<!-- ═══ pwa-v13: 파일 뷰어 시트 ═══ -->
 <div class="arc-fv-sheet hidden" id="arcFvSheet">
   <div class="arc-fv-panel">
     <div class="arc-dash-handle" style="margin:12px auto 0"></div>
     <div class="arc-fv-head">
       <div class="arc-fv-title" id="arcFvTitle">파일 보기</div>
-      <button class="arc-fv-close" id="arcFvClose">✕</button>
+      <div style="display:flex;gap:8px;align-items:center;flex:0 0 auto">
+        <button class="arc-fv-close" id="arcFvDownload" onclick="arcDownloadFile()" title="다운로드" style="font-size:18px;background:var(--surface)">⬇️</button>
+        <button class="arc-fv-close" id="arcFvClose">✕</button>
+      </div>
     </div>
     <div class="arc-fv-body" id="arcFvBody">
       <div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>
@@ -3330,7 +3337,10 @@ function arcRenderLinkPreview(item){
 }
 function arcRenderBody(item){
   if(item.type==='url') return arcRenderLinkPreview(item);
-  if(item.type==='image' && item.url) return `<div class="arc-item-preview"><img src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewer(${JSON.stringify({id:item.id,url:item.url,title:item.title,type:'image'})})" style="cursor:pointer"></div>`;
+  if(item.type==='image' && item.url) {
+    const imgData = JSON.stringify({id:item.id,url:item.url,title:item.title,type:'image'});
+    return `<div class="arc-img-thumb-wrap"><img class="arc-img-thumb" src="${item.url}" alt="${escHtml(item.title)}" loading="lazy" onclick="haptic.medium(); arcOpenFileViewer(${escHtml(imgData).replace(/'/g,'&#39;')})" onerror="this.parentElement.innerHTML='<div style=\'padding:16px;color:var(--text3);font-size:13px;text-align:center\'>🖼 이미지를 불러올 수 없습니다</div>'"><button class="arc-img-thumb-overlay" onclick="haptic.medium(); arcOpenFileViewer(${escHtml(imgData).replace(/'/g,'&#39;')})">🔍 크게 보기</button></div>`;
+  }
   if(item.url && (item.type==='file' || item.type==='video' || arcIsPdf(item))) {
     const ft = arcGetFileType(item);
     const icon = arcFileIcon(item);
@@ -3402,7 +3412,7 @@ function renderArcGrid(filter='') {
         ${relatedDocs.length ? `<div class="arc-doclinks"><div class="arc-section-title">자동 링크</div><div class="arc-doclinks-list">${relatedDocs.map(v=>`<button class="arc-doclink-btn" onclick="haptic.light(); arcEdit('${v.id}')">[[${escHtml(v.title)}]]</button>`).join('')}</div></div>` : ''}
         ${relatedBD.length ? `<div class="arc-bdlinks"><div class="arc-section-title">연결된 BrainDump</div><div class="arc-bdlinks-list">${relatedBD.map(v=>`<button class="arc-bdlink-btn" onclick="haptic.medium(); switchTab('braindump'); document.getElementById('bdSearch').value='${escHtml((v.text||'').slice(0,20)).replace(/'/g,"\\'")}'; renderBdList(document.getElementById('bdSearch').value);">${escHtml((v.text||'').slice(0,22))}</button>`).join('')}</div></div>` : ''}
         <div class="arc-item-actions">
-          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',title:'${escHtml(item.title).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',type:'${item.type}'})">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
+          ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewer({id:'${item.id}',url:'${escHtml(item.url).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',title:'${escHtml(item.title).replace(/'/g,"\\'").replace(/"/g,'&quot;')}',type:'${item.type}'})">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
           <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
           ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
           <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:event?.clientY||220},'${item.id}')">⋯</button>
@@ -3414,7 +3424,7 @@ window.arcItemDblClick = (event, id, type, url) => {
   if (type === 'url' && url) {
     haptic.medium();
     arcOpenUrl(url);
-  } else if ((type === 'file' || type === 'video') && url) {
+  } else if ((type === 'file' || type === 'video' || type === 'image') && url) {
     haptic.medium();
     const item = arcItems.find(i=>i.id===id);
     if(item) arcOpenFileViewer({id:item.id,url:item.url,title:item.title,type:item.type});
@@ -5189,12 +5199,12 @@ function scheduleNotification(title, eventDate, alarm) {
 }
 
 </script>
-  <!-- pwa-v12: 파일 형식 라이브러리 -->
+  <!-- pwa-v13: 파일 형식 라이브러리 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 
-// ═══ pwa-v12: 파일 형식 감지 & 뷰어 ═══
+// ═══ pwa-v13: 파일 형식 감지 & 뷰어 ═══
 
 // 파일 형식 감지 함수
 function arcGetFileType(item) {
@@ -5245,6 +5255,7 @@ window.arcOpenFileViewer = async function(item) {
   
   title.textContent = item.title || '파일 보기';
   body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>파일 로딩 중...</div></div>';
+  window._arcFvCurrentItem = item;
   sheet.classList.remove('hidden');
   haptic.medium();
   
@@ -5252,7 +5263,11 @@ window.arcOpenFileViewer = async function(item) {
   
   try {
     if (ft === 'img') {
-      body.innerHTML = `<img class="arc-fv-img" src="${escHtml(url)}" alt="${escHtml(item.title||'')}" loading="lazy">`;
+      // 현재 파일 URL 저장 (다운로드용)
+      window._arcFvCurrentItem = item;
+      body.innerHTML = `<div style="background:#000;display:flex;flex-direction:column;align-items:center;min-height:60dvh;justify-content:center">
+        <img class="arc-fv-img" src="${escHtml(url)}" alt="${escHtml(item.title||'')}" loading="lazy" style="max-height:75dvh;width:100%;object-fit:contain">
+      </div>`;
     } else if (ft === 'pdf') {
       body.innerHTML = `<iframe class="arc-fv-iframe" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}" allowfullscreen></iframe>`;
     } else if (ft === 'doc') {
@@ -5315,11 +5330,52 @@ window.arcOpenFileViewer = async function(item) {
   }
 };
 
+// 파일 다운로드
+function arcDownloadFile() {
+  const item = window._arcFvCurrentItem;
+  if (!item) { arcShowToast('다운로드할 파일이 없습니다'); return; }
+  const url = item.url || item.content || '';
+  if (!url) { arcShowToast('파일 URL이 없습니다'); return; }
+  // 파일명 추출
+  let filename = item.title || '파일';
+  // URL에서 확장자 추출 시도
+  try {
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split('/');
+    const lastPart = decodeURIComponent(pathParts[pathParts.length - 1]);
+    if (lastPart && lastPart.includes('.')) filename = lastPart.split('?')[0];
+  } catch(e) {}
+  // fetch로 다운로드
+  arcShowToast('다운로드 중...');
+  fetch(url)
+    .then(r => r.blob())
+    .then(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      arcShowToast('다운로드 완료!');
+    })
+    .catch(() => {
+      // fetch 실패 시 직접 링크로 열기
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+}
 // 파일 뷰어 닫기
 function closeArcFv() {
   document.getElementById('arcFvSheet')?.classList.add('hidden');
   const body = document.getElementById('arcFvBody');
   if (body) body.innerHTML = '';
+  window._arcFvCurrentItem = null;
 }
 
 // 토스트 알림
