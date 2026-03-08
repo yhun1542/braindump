@@ -3,12 +3,12 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v22 fix)
-const CURRENT_CACHE = 'pwa-v23';
+const CURRENT_CACHE = 'pwa-v24';
 (async () => {
   try {
     const keys = await caches.keys();
     // 현재 버전이 아닌 구버전 캐시만 삭제 (무한 루프 방지)
-    const oldKeys = keys.filter(k => k.startsWith('pwa-') && k !== CURRENT_CACHE);
+    const oldKeys = keys.filter(k => k !== CURRENT_CACHE);
     if (oldKeys.length > 0) {
       await Promise.all(oldKeys.map(k => caches.delete(k)));
       // SW 재등록은 하지 않음 - sw.js의 activate 이벤트가 처리함
