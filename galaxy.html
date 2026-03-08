@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v22 fix)
-const CURRENT_CACHE = 'pwa-v22';
+const CURRENT_CACHE = 'pwa-v23';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -83,6 +83,7 @@ const haptic = (() => {
     longpress: () => canVibrate() && navigator.vibrate(40),
   };
 })();
+window.haptic = haptic; // module 스크립트에서 접근 가능하도록 노출
 
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -2224,7 +2225,9 @@ function arcShowToast(msg, duration=2200) {
 }
 // ── 파일 뷰어 (module 스코프에서 직접 사용) ──
 function arcOpenFileViewerById(id) {
-  const item = (window._arcItems || []).find(i => i.id === id);
+  // arcItems는 같은 module 스코프에 있으므로 직접 참조 (window._arcItems 동기화 타이밍 문제 방지)
+  const allItems = arcItems && arcItems.length ? arcItems : (window._arcItems || []);
+  const item = allItems.find(i => i.id === id);
   if (!item) { arcShowToast('항목을 찾을 수 없습니다'); return; }
   arcOpenFileViewer(item);
 }
@@ -2244,7 +2247,7 @@ async function arcOpenFileViewer(item) {
     dlBtn.onclick = () => { if(window.arcDownloadFile) { window.arcDownloadFile(); } else { const a=document.createElement('a'); a.href=url; a.download=item?.title||'file'; a.target='_blank'; a.click(); } };
   }
   sheet.classList.remove('hidden');
-  haptic.medium();
+  (window.haptic || haptic)?.medium?.();
   if (ft === 'img') {
     body.innerHTML = '<div class="arc-fv-loading"><div class="spin">⏳</div><div>이미지 로딩 중...</div></div>';
     const img = new Image();
