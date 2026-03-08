@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v13 fix)
-const CURRENT_CACHE = 'pwa-v17';
+const CURRENT_CACHE = 'pwa-v18';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -2417,6 +2417,7 @@ function subscribeAll() {
   // Archive
   const arcUnsub = onSnapshot(query(arcCol(), orderBy('createdAt','desc')), snap => {
     arcItems = snap.docs.map(d=>({id:d.id,...d.data()}));
+    window._arcItems = arcItems;
     renderArcGrid();
   });
   unsubListeners.push(arcUnsub);
@@ -3407,7 +3408,7 @@ function renderArcGrid(filter='') {
     const relatedDocs = arcFindRelatedDocs(item);
     const relatedBD = arcFindRelatedBrainDumps(item);
     return `
-      <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="arcItemDblClick(event,'${item.id}',item.type,item.content||item.url||'')" ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
+      <div class="arc-item" data-id="${item.id}" oncontextmenu="arcShowCtx(event,'${item.id}'); return false;" ondblclick="arcItemDblClick(event,'${item.id}','${item.type}','${escHtml((item.content||item.url||'').substring(0,200)).replace(/'/g,"\\'")}')"  ontouchstart="arcTouchStart(event,'${item.id}')" ontouchend="arcTouchEnd(event)">
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${getItemIcon(item)}</div>
           <div class="arc-item-info">
@@ -3435,7 +3436,7 @@ function renderArcGrid(filter='') {
           ${item.type==='url' ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenUrl('${escHtml(item.content).replace(/'/g,"\\'")}')">열기</button>` : (item.type==='file'||item.type==='video'||item.type==='image'||arcIsPdf(item)) && item.url ? `<button class="arc-action-btn primary" onclick="haptic.medium(); arcOpenFileViewerById('${item.id}')">파일 보기</button>` : `<button class="arc-action-btn primary" onclick="haptic.light(); arcEdit('${item.id}')">열기</button>`}
           <button class="arc-action-btn" onclick="haptic.medium(); arcToToday('${item.id}')">Today</button>
           ${item.kind==='meeting' ? `<button class="arc-action-btn meeting" onclick="haptic.medium(); event.stopPropagation(); openMeetingSummary('${item.id}')">📋요약</button>` : `<button class="arc-action-btn convert" onclick="haptic.medium(); event.stopPropagation(); openQuickConvert('${item.id}')">⚡변환</button>`}
-          <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:event?.clientY||220},'${item.id}')">⋯</button>
+          <button class="arc-action-btn ghost" onclick="haptic.light(); arcShowCtx({clientX:window.innerWidth-48,clientY:220},'${item.id}')">⋯</button>
         </div>
       </div>`;
   }).join('');
@@ -5188,7 +5189,7 @@ function arcFileIconClass(item) {
 
 // 파일 뷰어 열기
 window.arcOpenFileViewerById = function(id) {
-  const item = arcItems.find(i => i.id === id);
+  const item = (window._arcItems||[]).find(i => i.id === id);
   if (!item) { arcShowToast('아이템을 찾을 수 없습니다'); return; }
   arcOpenFileViewer({id: item.id, url: item.url, title: item.title, type: item.type});
 };
