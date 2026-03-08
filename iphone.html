@@ -1189,6 +1189,11 @@ body {
 
 /* ===== Archive v20 Second Brain ===== */
 .arc-smartbar{display:flex;gap:8px;overflow:auto;padding:4px 16px 2px;-ms-overflow-style:none;scrollbar-width:none}
+/* 자동 감지 타입 배지 */
+/* 파일 첨부 버튼 hover */
+#arcAttachBtn:hover { background:var(--bg3,var(--bg)); border-color:var(--accent,#6C63FF); color:var(--accent,#6C63FF); }
+#arcTypeBadge { display:none; margin-bottom:10px; padding:7px 12px; background:var(--bg2); border:1.5px solid var(--border-mid); border-radius:10px; font-size:12px; color:var(--text2); align-items:center; gap:6px; }
+#arcTypeBadge span:first-child { font-size:16px; }
 .arc-smartbar::-webkit-scrollbar{display:none}
 .arc-smart-btn{flex:0 0 auto;border:none;border-radius:999px;padding:9px 12px;background:var(--card);color:var(--text2);font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .arc-smart-btn.active{background:var(--accent);color:#fff}
@@ -1973,22 +1978,11 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title" id="arcOverlayTitle">아카이브에 추가</div>
-    <div class="sheet-field">
-      <div class="sheet-label">유형</div>
-      <select class="sheet-select" id="arcType">
-        <option value="note">📝 노트</option>
-        <option value="url">🔗 URL 링크</option>
-        <option value="image">🖼 사진</option>
-        <option value="video">🎬 동영상</option>
-        <option value="file">📄 파일</option>
-        <option value="file-pdf">📕 PDF 문서</option>
-        <option value="file-doc">📘 Word 문서</option>
-        <option value="file-ppt">📙 PowerPoint</option>
-        <option value="file-xls">📗 Excel/CSV</option>
-        <option value="file-txt">📄 텍스트</option>
-        <option value="file-hwp">📃 한글 문서</option>
-        <option value="file-zip">🗜 압축 파일</option>
-      </select>
+    <!-- 유형은 시스템 자동 감지 - hidden input으로 처리 -->
+    <input type="hidden" id="arcType" value="note">
+    <div id="arcTypeBadge" style="display:none; margin-bottom:10px; padding:6px 12px; background:var(--bg); border:1.5px solid var(--border-mid); border-radius:10px; font-size:13px; color:var(--text2); display:flex; align-items:center; gap:6px;">
+      <span id="arcTypeBadgeIcon">📝</span>
+      <span id="arcTypeBadgeLabel">자동 감지됨</span>
     </div>
     <div class="sheet-field">
       <div class="sheet-label">제목</div>
@@ -1997,16 +1991,22 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
     <div class="sheet-field" id="arcContentField">
       <div class="sheet-label">내용 / URL</div>
       <textarea class="sheet-textarea" id="arcContent" rows="3" placeholder="내용이나 URL을 입력하세요...&#10;URL을 붙여넣으면 자동으로 링크로 저장됩니다"></textarea>
+      <button type="button" id="arcAttachBtn" style="margin-top:8px;width:100%;padding:10px;background:var(--bg2);border:1.5px dashed var(--border-mid);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span>📎</span><span>파일 첨부 (사진·문서·동영상 등)</span>
+      </button>
     </div>
     <div class="sheet-field" id="arcFileField" style="display:none">
-      <div class="sheet-label">파일 선택</div>
-      <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.hwp,.hwpx,.zip,.rar" style="width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border-mid);border-radius:10px;color:var(--text);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div class="sheet-label" style="margin:0">첨부 파일</div>
+        <button type="button" id="arcFileRemoveBtn" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:2px 6px;">✕ 제거</button>
+      </div>
+      <input type="file" id="arcFile" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.hwp,.hwpx,.zip,.rar" style="display:none">
       <div id="arcFilePreview"></div>
     </div>
     <input type="hidden" id="arcEditId" value="">
     <div class="sheet-btns">
       <button class="sheet-cancel" id="arcCancel">취소</button>
-      <button class="sheet-save" id="arcSave">저장 + AI 분류</button>
+      <button class="sheet-save" id="arcSave">저장</button>
     </div>
   </div>
 </div>
@@ -3357,9 +3357,23 @@ window.arcEdit = (id) => {
   document.getElementById('arcType').value = item.type;
   document.getElementById('arcTitle').value = item.title;
   document.getElementById('arcContent').value = item.content || '';
-  const isFile = ['image','video','file'].includes(item.type);
+  const isFile = ['image','video','file'].includes(item.type) || (item.type||'').startsWith('file-');
   document.getElementById('arcContentField').style.display = isFile ? 'none' : '';
   document.getElementById('arcFileField').style.display = isFile ? '' : 'none';
+  // 편집 시 타입 배지 표시
+  const badge = document.getElementById('arcTypeBadge');
+  const badgeIcon = document.getElementById('arcTypeBadgeIcon');
+  const badgeLabel = document.getElementById('arcTypeBadgeLabel');
+  if(badge && badgeIcon && badgeLabel) {
+    const typeLabels = { note:'📝 노트', url:'🔗 URL 링크', image:'🖼 이미지', video:'🎬 동영상', file:'📄 파일',
+      'file-pdf':'📕 PDF 문서', 'file-doc':'📘 Word 문서', 'file-ppt':'📙 PowerPoint',
+      'file-xls':'📗 Excel/CSV', 'file-txt':'📄 텍스트', 'file-hwp':'📃 한글 문서', 'file-zip':'🗜 압축 파일' };
+    const lbl = typeLabels[item.type] || ('📄 ' + item.type);
+    const parts = lbl.split(' ');
+    badgeIcon.textContent = parts[0];
+    badgeLabel.textContent = parts.slice(1).join(' ') + ' — 현재 유형';
+    badge.style.display = 'flex';
+  }
   document.getElementById('arcOverlay').classList.remove('hidden');
 };
 // arcEditItem: arcEdit 함수의 별칭 (하위 호환성)
@@ -3468,26 +3482,59 @@ document.getElementById('arcUploadBtn').addEventListener('click', ()=>{
   document.getElementById('arcContent').value = '';
   document.getElementById('arcContentField').style.display = '';
   document.getElementById('arcFileField').style.display = 'none';
+  // 타입 배지 초기화
+  const badge = document.getElementById('arcTypeBadge');
+  if(badge) badge.style.display = 'none';
+  // 파일 미리보기 초기화
+  const prev = document.getElementById('arcFilePreview');
+  if(prev) prev.innerHTML = '';
+  // arcFile 초기화
+  const arcFileEl = document.getElementById('arcFile');
+  if(arcFileEl) arcFileEl.value = '';
   document.getElementById('arcOverlay').classList.remove('hidden');
+  // 파일 제거 후 내용 필드 다시 표시
+  document.getElementById('arcContentField').style.display = '';
+  document.getElementById('arcFileField').style.display = 'none';
 });
 document.getElementById('arcContent').addEventListener('input', ()=>{
   const val = document.getElementById('arcContent').value.trim();
+  const badge = document.getElementById('arcTypeBadge');
+  const badgeIcon = document.getElementById('arcTypeBadgeIcon');
+  const badgeLabel = document.getElementById('arcTypeBadgeLabel');
   if(arcIsUrl(val)) {
     document.getElementById('arcType').value = 'url';
     if(!document.getElementById('arcTitle').value.trim()) {
       document.getElementById('arcTitle').value = arcGetDomain(val);
     }
+    if(badge) { badgeIcon.textContent='🔗'; badgeLabel.textContent='URL 링크 — 자동 감지됨'; badge.style.display='flex'; }
+  } else if(val.length > 0) {
+    document.getElementById('arcType').value = 'note';
+    if(badge) { badgeIcon.textContent='📝'; badgeLabel.textContent='노트 — 자동 감지됨'; badge.style.display='flex'; }
+  } else {
+    if(badge) badge.style.display = 'none';
+    document.getElementById('arcType').value = 'note';
   }
 });
-document.getElementById('arcType').addEventListener('change', e=>{
-  const t = e.target.value;
-  const isFile = ['image','video','file','file-pdf','file-doc','file-ppt','file-xls','file-txt','file-hwp','file-zip'].includes(t);
-  document.getElementById('arcContentField').style.display = isFile ? 'none' : '';
-  document.getElementById('arcFileField').style.display    = isFile ? '' : 'none';
-  const previewEl = document.getElementById('arcFilePreview');
-  if(previewEl) previewEl.innerHTML = '';
-});
+// arcType은 hidden input - 직접 변경 이벤트 없음
+// 파일 선택 시 arcFile change 이벤트에서 자동 처리됨
 document.getElementById('arcCancel').addEventListener('click', ()=>{ haptic.light(); document.getElementById('arcOverlay').classList.add('hidden'); });
+// 파일 첨부 버튼 클릭 → 파일 선택창 열기
+document.getElementById('arcAttachBtn')?.addEventListener('click', ()=>{
+  haptic.light();
+  document.getElementById('arcFile').click();
+});
+// 파일 제거 버튼
+document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
+  haptic.light();
+  const arcFileEl = document.getElementById('arcFile');
+  if(arcFileEl) arcFileEl.value = '';
+  document.getElementById('arcFilePreview').innerHTML = '';
+  document.getElementById('arcFileField').style.display = 'none';
+  document.getElementById('arcContentField').style.display = '';
+  document.getElementById('arcType').value = 'note';
+  const badge = document.getElementById('arcTypeBadge');
+  if(badge) badge.style.display = 'none';
+});
 async function arcEnrichWithAI({title, content, type}) {
   if(!openAiKey) return null;
   try {
@@ -4933,23 +4980,48 @@ document.getElementById('arcFile')?.addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
   const name = file.name.toLowerCase();
+  const ext = name.split('.').pop();
   const typeEl = document.getElementById('arcType');
   const titleEl = document.getElementById('arcTitle');
   
-  // 자동 타입 설정
-  if (/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/.test(name)) {
-    typeEl.value = 'image';
-  } else if (/\.(mp4|mov|avi|mkv|webm)$/.test(name)) {
-    typeEl.value = 'video';
-  } else {
-    typeEl.value = 'file';
+  // 확장자 기반 자동 타입 결정
+  const typeMap = {
+    jpg:'image', jpeg:'image', png:'image', gif:'image', webp:'image', bmp:'image', svg:'image', heic:'image', heif:'image',
+    mp4:'video', mov:'video', avi:'video', mkv:'video', webm:'video', m4v:'video',
+    pdf:'file', doc:'file', docx:'file', ppt:'file', pptx:'file',
+    xls:'file', xlsx:'file', csv:'file', txt:'file', md:'file',
+    hwp:'file', hwpx:'file', zip:'file', rar:'file', '7z':'file', tar:'file', gz:'file'
+  };
+  const detectedType = typeMap[ext] || 'file';
+  typeEl.value = detectedType;
+  
+  // 타입 배지 업데이트
+  const badgeIconMap = {
+    image:'🖼', video:'🎬',
+    pdf:'📕', doc:'📘', docx:'📘', ppt:'📙', pptx:'📙',
+    xls:'📗', xlsx:'📗', csv:'📗', txt:'📄', md:'📄',
+    hwp:'📃', hwpx:'📃', zip:'🗜', rar:'🗜', '7z':'🗜'
+  };
+  const badgeLabelMap = {
+    image:'이미지 파일', video:'동영상 파일',
+    pdf:'PDF 문서', doc:'Word 문서', docx:'Word 문서', ppt:'PowerPoint', pptx:'PowerPoint',
+    xls:'Excel/CSV', xlsx:'Excel/CSV', csv:'Excel/CSV', txt:'텍스트 파일', md:'마크다운',
+    hwp:'한글 문서', hwpx:'한글 문서', zip:'압축 파일', rar:'압축 파일', '7z':'압축 파일'
+  };
+  const badge = document.getElementById('arcTypeBadge');
+  const badgeIcon = document.getElementById('arcTypeBadgeIcon');
+  const badgeLabel = document.getElementById('arcTypeBadgeLabel');
+  if(badge && badgeIcon && badgeLabel) {
+    badgeIcon.textContent = badgeIconMap[ext] || '📄';
+    badgeLabel.textContent = (badgeLabelMap[ext] || ext.toUpperCase() + ' 파일') + ' — 자동 감지됨';
+    badge.style.display = 'flex';
   }
   
-  // 파일 필드 표시
+  // 파일 필드 표시, 내용 필드 숨김 (첨부 버튼은 내용 필드 안에 있으므로 같이 숨겨짐)
   document.getElementById('arcContentField').style.display = 'none';
   document.getElementById('arcFileField').style.display = '';
   
-  // 제목 자동 설정
+  // 제목 자동 설정 (확장자 제거)
   if (!titleEl.value.trim()) {
     titleEl.value = file.name.replace(/\.[^.]+$/, '');
   }
