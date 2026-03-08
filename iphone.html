@@ -3057,6 +3057,8 @@ function arcComputeCollection(item){
   if(item.kind==='idea') return '아이디어';
   if(item.type==='url') return '읽을거리';
   if(arcIsPdf(item)) return '문서함';
+  if(item.type === 'image') return '이미지';
+  if(item.type === 'video') return '영상';
   if(item.type === 'file') {
     const ft = arcGetFileType(item);
     if(ft === 'doc' || ft === 'ppt' || ft === 'xls' || ft === 'txt' || ft === 'hwp') return '문서함';
@@ -3891,9 +3893,11 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
       const url = await getDownloadURL(sRef);
 
       // modular SDK 사용
+      const collection = arcComputeCollection({type, kind: '', title, content: file.name, project: ''});
       await addDoc(arcCol(), {
         type, title, content: file.name, url,
         tags: [], project: '', pinned: false,
+        collection,
         fileSize: file.size,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
