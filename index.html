@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v33)
-const CURRENT_CACHE = 'pwa-v35';
+const CURRENT_CACHE = 'pwa-v36';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -3502,7 +3502,7 @@ function renderArcGrid(filter='') {
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${getItemIcon(item)}</div>
           <div class="arc-item-info">
-            <div class="arc-item-title">${escHtml(item.title)}</div>
+            <div class="arc-item-title">${(()=>{const t=item.title||'';const isUUID=/^[0-9a-f]{8}[-_][0-9a-f]{4}/i.test(t)||/^[A-Za-z0-9_]{32,}$/.test(t);const tl={image:'이미지',video:'동영상',file:'파일',note:'노트',url:'링크'};return isUUID?(tl[item.type]||escHtml(t)):escHtml(t);})()}</div>
             <div class="arc-item-meta">
               <span>${arcFormatDate(item)}</span>
               <span>·</span>

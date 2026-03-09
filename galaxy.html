@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v34)
-const CURRENT_CACHE = 'pwa-v35';
+const CURRENT_CACHE = 'pwa-v36';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -3645,8 +3645,9 @@ function arcRenderBody(item){
     const icon = arcFileIcon(item);
     const label = arcFileLabel(item);
     const cls = arcFileIconClass(item);
-    const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content ? escHtml(item.content.slice(0,120)) : '');
-    return `<div class="arc-file-card" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${escHtml(item.title)}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
+    const excerpt = item.fileText ? escHtml(item.fileText.slice(0,120)) + (item.fileText.length>120?'…':'') : (item.content && !/^[0-9a-f]{20,}/i.test(item.content) && !/^[A-Za-z0-9_-]{30,}$/.test(item.content) ? escHtml(item.content.slice(0,120)) : '');
+    const displayTitle = (/^[0-9a-f]{8}[-_][0-9a-f]{4}/i.test(item.title) || /^[A-Za-z0-9_-]{30,}$/.test(item.title)) ? label : escHtml(item.title);
+    return `<div class="arc-file-card" onclick="try{(window.haptic||haptic).medium()}catch(_){}; arcOpenFileViewerById('${item.id}')"><div class="arc-file-icon ${cls}">${icon}</div><div class="arc-file-meta"><div class="arc-file-type-label">${label}</div><div class="arc-file-name">${displayTitle}</div>${excerpt?`<div class="arc-file-excerpt">${excerpt}</div>`:''}</div></div>`;
   }
   const preview = item.content ? escHtml(item.content.slice(0,180)) + (item.content.length>180?'…':'') : '내용이 없습니다.';
   return `<div class="arc-item-preview">${preview}</div>`;
@@ -3690,7 +3691,7 @@ function renderArcGrid(filter='') {
         <div class="arc-item-header">
           <div class="arc-type-icon ${typeClass[item.type]||'arc-type-note'}">${getItemIcon(item)}</div>
           <div class="arc-item-info">
-            <div class="arc-item-title">${escHtml(item.title)}</div>
+            <div class="arc-item-title">${(()=>{const t=item.title||'';const isUUID=/^[0-9a-f]{8}[-_][0-9a-f]{4}/i.test(t)||/^[A-Za-z0-9_]{32,}$/.test(t);const tl={image:'이미지',video:'동영상',file:'파일',note:'노트',url:'링크'};return isUUID?(tl[item.type]||escHtml(t)):escHtml(t);})()}</div>
             <div class="arc-item-meta">
               <span>${arcFormatDate(item)}</span>
               <span>·</span>
@@ -4094,13 +4095,20 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
   // 📎 파일 버튼
   qFile.addEventListener('click', () => { window.haptic?.light(); qFileIn.click(); });
   qFileIn.addEventListener('change', function() {
-    if (this.files[0]) showFilePreview(this.files[0]);
+    if (this.files[0]) {
+      showFilePreview(this.files[0]);
+      // 파일 선택 후 입력창에 포커스 → 엔터로 바로 업로드 가능
+      setTimeout(() => qInput.focus(), 100);
+    }
   });
 
   // 📷 사진 버튼
   qPhoto.addEventListener('click', () => { window.haptic?.light(); qPhotoIn.click(); });
   qPhotoIn.addEventListener('change', function() {
-    if (this.files[0]) showFilePreview(this.files[0]);
+    if (this.files[0]) {
+      showFilePreview(this.files[0]);
+      setTimeout(() => qInput.focus(), 100);
+    }
   });
 
   // 텍스트/URL 빠른 저장
@@ -4167,7 +4175,13 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
       mp4:'video', mov:'video', avi:'video', mkv:'video', webm:'video', m4v:'video',
     };
     const type  = typeMap[ext] || 'file';
-    const title = file.name.replace(/\.[^.]+$/, '');
+    // UUID 패턴 파일명이면 타입 기반 기본 제목 사용
+    const rawName = file.name.replace(/\.[^.]+$/, '');
+    const isUUID = /^[0-9a-f]{8}[-_][0-9a-f]{4}[-_][0-9a-f]{4}[-_][0-9a-f]{4}[-_][0-9a-f]{12}/i.test(rawName)
+                || /^[0-9a-f]{20,}/i.test(rawName)
+                || /^[A-Za-z0-9_-]{30,}$/.test(rawName);
+    const typeLabel = { image:'이미지', video:'동영상', file:'파일' };
+    const title = isUUID ? (typeLabel[type] || '파일') : (rawName || typeLabel[type] || '파일');
 
     if (!currentUser) { arcShowToast('로그인 필요'); return; }
     arcShowToast('⬆️ 업로드 중...');
@@ -4177,9 +4191,10 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
       await uploadBytes(sRef, file);
       const url = await getDownloadURL(sRef);
 
-      const collection = arcComputeCollection({type, kind: '', title, content: file.name, project: ''});
+      const fileContent = isUUID ? (typeLabel[type] || '파일') : file.name;
+      const collection = arcComputeCollection({type, kind: '', title, content: fileContent, project: ''});
       const docRef = await addDoc(arcCol(), {
-        type, title, content: file.name, url,
+        type, title, content: fileContent, url,
         fileName: file.name,
         fileSize: file.size,
         tags: [], project: '', pinned: false,
