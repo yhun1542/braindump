@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v39)
-const CURRENT_CACHE = 'pwa-v40';
+const CURRENT_CACHE = 'pwa-v41';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -1592,6 +1592,1100 @@ body {
 .arc-meet-loading .spin{display:inline-block;animation:spin 1s linear infinite;font-size:24px;margin-bottom:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+
+
+/* ════════════════════════════════════════
+   FAMILY TAB — pwa-v41
+   ════════════════════════════════════════ */
+
+/* ── Family 탭 공통 ── */
+#pane-family {
+  padding: 0;
+  background: var(--bg);
+  min-height: calc(100vh - var(--tab-h) - var(--safe-bot) - 56px);
+}
+
+/* ── Family 서브탭 바 ── */
+.fam-subtab-bar {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 56px;
+  z-index: 100;
+  gap: 0;
+}
+.fam-subtab-bar::-webkit-scrollbar { display: none; }
+.fam-subtab-btn {
+  flex: 1;
+  min-width: 60px;
+  padding: 10px 4px 8px;
+  border: none;
+  background: none;
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.fam-subtab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.fam-subtab-icon { font-size: 18px; line-height: 1; }
+
+/* ── Family 서브패널 ── */
+.fam-pane { display: none; padding: 16px; }
+.fam-pane.active { display: block; }
+
+/* ══════════════════════════
+   HOME 대시보드
+   ══════════════════════════ */
+.fam-home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.fam-home-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+.fam-home-date {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+/* 아이 프로필 선택 */
+.fam-child-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.fam-child-selector::-webkit-scrollbar { display: none; }
+.fam-child-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.fam-child-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  border: 3px solid transparent;
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+.fam-child-chip.active .fam-child-avatar {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent)33;
+}
+.fam-child-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+}
+.fam-child-chip.active .fam-child-name { color: var(--accent); }
+
+/* 코인 카드 */
+.fam-coin-card {
+  background: linear-gradient(135deg, #6c63ff 0%, #a78bfa 100%);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.fam-coin-card::before {
+  content: '⭐';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: 0.15;
+}
+.fam-coin-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-bottom: 4px;
+}
+.fam-coin-amount {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.fam-coin-sub {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+.fam-coin-progress {
+  margin-top: 10px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 100px;
+  height: 6px;
+  overflow: hidden;
+}
+.fam-coin-progress-bar {
+  height: 100%;
+  background: #fff;
+  border-radius: 100px;
+  transition: width 0.5s ease;
+}
+.fam-coin-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.fam-coin-stat {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* 섹션 헤더 */
+.fam-section-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+.fam-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fam-section-more {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font);
+}
+
+/* 오늘 미션 카드 */
+.fam-mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.fam-mission-item {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: opacity 0.3s;
+}
+.fam-mission-item.done {
+  opacity: 0.55;
+}
+.fam-mission-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 14px;
+  background: var(--bg);
+}
+.fam-mission-item.done .fam-mission-check {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+.fam-mission-info { flex: 1; min-width: 0; }
+.fam-mission-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fam-mission-item.done .fam-mission-name {
+  text-decoration: line-through;
+  color: var(--text3);
+}
+.fam-mission-meta {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.fam-mission-coin {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f59e0b;
+  white-space: nowrap;
+}
+
+/* 티키 AI 코치 카드 */
+.fam-tiki-card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(108,99,255,0.12);
+  border: 1px solid rgba(108,99,255,0.15);
+}
+.fam-tiki-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.fam-tiki-content { flex: 1; }
+.fam-tiki-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.fam-tiki-msg {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.fam-tiki-chat-btn {
+  margin-top: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* ══════════════════════════
+   시간표 (SCHEDULE)
+   ══════════════════════════ */
+.fam-schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.fam-week-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fam-week-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fam-week-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 120px;
+  text-align: center;
+}
+
+/* 주간 시간표 그리드 */
+.fam-timetable {
+  background: var(--surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+}
+.fam-tt-head {
+  display: grid;
+  grid-template-columns: 40px repeat(7, 1fr);
+  background: var(--accent);
+  color: #fff;
+}
+.fam-tt-head-cell {
+  padding: 8px 2px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+.fam-tt-head-cell.today-col {
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+}
+.fam-tt-body {
+  overflow-y: auto;
+  max-height: 420px;
+}
+.fam-tt-row {
+  display: grid;
+  grid-template-columns: 40px repeat(7, 1fr);
+  border-bottom: 1px solid var(--line);
+  min-height: 48px;
+}
+.fam-tt-row:last-child { border-bottom: none; }
+.fam-tt-time {
+  padding: 4px 4px;
+  font-size: 10px;
+  color: var(--text3);
+  text-align: center;
+  border-right: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fam-tt-cell {
+  border-right: 1px solid var(--line);
+  padding: 2px;
+  position: relative;
+}
+.fam-tt-cell:last-child { border-right: none; }
+.fam-tt-event {
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 스케줄 추가 버튼 */
+.fam-add-btn {
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--line);
+  border-radius: 14px;
+  background: none;
+  color: var(--text3);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.fam-add-btn:active {
+  background: var(--bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ══════════════════════════
+   미션 & 보상
+   ══════════════════════════ */
+.fam-mission-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fam-mission-tabs::-webkit-scrollbar { display: none; }
+.fam-mtab-btn {
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.fam-mtab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* 레벨 배지 */
+.fam-level-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.fam-level-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.fam-level-num {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+.fam-level-text {
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.fam-level-info { flex: 1; }
+.fam-level-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fam-level-xp {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.fam-level-bar {
+  margin-top: 8px;
+  background: var(--bg);
+  border-radius: 100px;
+  height: 6px;
+  overflow: hidden;
+}
+.fam-level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  border-radius: 100px;
+  transition: width 0.5s ease;
+}
+
+/* 미션 추가 폼 */
+.fam-mission-form {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.fam-form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.fam-form-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+}
+.fam-form-input:focus { border-color: var(--accent); }
+.fam-form-select {
+  padding: 10px 8px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+}
+.fam-form-btn {
+  padding: 10px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* 코인 상점 */
+.fam-shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.fam-shop-item {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.fam-shop-item:active { transform: scale(0.97); }
+.fam-shop-emoji { font-size: 32px; margin-bottom: 6px; }
+.fam-shop-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.fam-shop-price {
+  font-size: 12px;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+/* ══════════════════════════
+   AI 코치 티키
+   ══════════════════════════ */
+.fam-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--tab-h) - var(--safe-bot) - 56px - 44px - 32px);
+  min-height: 400px;
+}
+.fam-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fam-chat-bubble {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.fam-chat-bubble.user {
+  flex-direction: row-reverse;
+}
+.fam-chat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.fam-chat-bubble.user .fam-chat-avatar {
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+}
+.fam-chat-text {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.fam-chat-bubble.user .fam-chat-text {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.fam-chat-bubble:not(.user) .fam-chat-text {
+  border-bottom-left-radius: 4px;
+}
+.fam-chat-time {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+  text-align: right;
+}
+.fam-chat-bubble.user .fam-chat-time { text-align: left; }
+
+/* 빠른 답변 버튼 */
+.fam-quick-replies {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 8px 0;
+}
+.fam-quick-replies::-webkit-scrollbar { display: none; }
+.fam-quick-btn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--accent);
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 채팅 입력창 */
+.fam-chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.fam-chat-input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  resize: none;
+  max-height: 100px;
+}
+.fam-chat-input:focus { border-color: var(--accent); }
+.fam-chat-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 타이핑 인디케이터 */
+.fam-typing {
+  display: flex;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.fam-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text3);
+  animation: famTyping 1.2s infinite;
+}
+.fam-typing span:nth-child(2) { animation-delay: 0.2s; }
+.fam-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes famTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ══════════════════════════
+   게시판
+   ══════════════════════════ */
+.fam-board-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.fam-board-tab-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.fam-board-tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* 게시글 카드 */
+.fam-post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.fam-post-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.fam-post-card:active { transform: scale(0.99); }
+.fam-post-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.fam-post-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.fam-post-meta { flex: 1; }
+.fam-post-author {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fam-post-time {
+  font-size: 11px;
+  color: var(--text3);
+}
+.fam-post-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.fam-post-badge.notice {
+  background: #fee2e2;
+  color: #ef4444;
+}
+.fam-post-badge.free {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+.fam-post-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.fam-post-preview {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.fam-post-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.fam-post-reaction {
+  font-size: 12px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.fam-post-reaction.liked { color: #ef4444; }
+
+/* 게시글 작성 버튼 */
+.fam-write-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+/* ══════════════════════════
+   시트 (Sheet) 공통
+   ══════════════════════════ */
+.fam-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 500;
+  display: none;
+  align-items: flex-end;
+}
+.fam-sheet-overlay.open { display: flex; }
+.fam-sheet {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px calc(20px + var(--safe-bot));
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: famSlideUp 0.3s ease;
+}
+@keyframes famSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.fam-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.fam-sheet-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.fam-sheet-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 6px;
+  margin-top: 12px;
+}
+.fam-sheet-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  box-sizing: border-box;
+}
+.fam-sheet-input:focus { border-color: var(--accent); }
+.fam-sheet-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+}
+.fam-sheet-textarea:focus { border-color: var(--accent); }
+.fam-sheet-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  margin-top: 16px;
+}
+.fam-sheet-row {
+  display: flex;
+  gap: 8px;
+}
+.fam-sheet-row .fam-sheet-input { flex: 1; }
+
+/* 색상 선택 */
+.fam-color-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fam-color-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border-color 0.2s;
+}
+.fam-color-dot.selected {
+  border-color: var(--text);
+}
+
+/* 빈 상태 */
+.fam-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+}
+.fam-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.fam-empty-text { font-size: 14px; font-weight: 600; }
+.fam-empty-sub { font-size: 12px; margin-top: 4px; }
+
+/* 출석 체크 배너 */
+.fam-attendance-banner {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  cursor: pointer;
+}
+.fam-attendance-icon { font-size: 28px; }
+.fam-attendance-text { flex: 1; }
+.fam-attendance-title { font-size: 14px; font-weight: 700; }
+.fam-attendance-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.fam-attendance-btn {
+  background: rgba(255,255,255,0.25);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+}
+.fam-attendance-banner.done {
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+  cursor: default;
+}
+
+/* 스트릭 표시 */
+.fam-streak-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.fam-streak-day {
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  border: 1.5px solid var(--line);
+}
+.fam-streak-day.done {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+.fam-streak-day.today {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* 토스트 알림 */
+.fam-toast {
+  position: fixed;
+  bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.fam-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 </style>
 </head>
 <body>
@@ -1853,6 +2947,437 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
       </div>
     </div>
 
+
+    <!-- ══════════════════════════════════════════
+         FAMILY TAB PANE
+         ══════════════════════════════════════════ -->
+    <div class="tab-pane" id="pane-family">
+
+      <!-- 서브탭 바 -->
+      <div class="fam-subtab-bar">
+        <button class="fam-subtab-btn active" data-famtab="home">
+          <span class="fam-subtab-icon">🏠</span>
+          <span>홈</span>
+        </button>
+        <button class="fam-subtab-btn" data-famtab="timetable">
+          <span class="fam-subtab-icon">📅</span>
+          <span>시간표</span>
+        </button>
+        <button class="fam-subtab-btn" data-famtab="mission">
+          <span class="fam-subtab-icon">⭐</span>
+          <span>미션</span>
+        </button>
+        <button class="fam-subtab-btn" data-famtab="coach">
+          <span class="fam-subtab-icon">🤖</span>
+          <span>티키</span>
+        </button>
+        <button class="fam-subtab-btn" data-famtab="board">
+          <span class="fam-subtab-icon">📢</span>
+          <span>게시판</span>
+        </button>
+      </div>
+
+      <!-- ── HOME 대시보드 ── -->
+      <div class="fam-pane active" id="fam-pane-home">
+
+        <!-- 출석 체크 배너 -->
+        <div class="fam-attendance-banner" id="famAttendBanner" onclick="famCheckAttendance()">
+          <div class="fam-attendance-icon">🎯</div>
+          <div class="fam-attendance-text">
+            <div class="fam-attendance-title">오늘 출석 체크!</div>
+            <div class="fam-attendance-sub">매일 출석하면 코인을 받아요</div>
+          </div>
+          <button class="fam-attendance-btn">+3 ⭐</button>
+        </div>
+
+        <!-- 아이 선택 -->
+        <div class="fam-child-selector" id="famChildSelector">
+          <!-- JS로 렌더링 -->
+        </div>
+
+        <!-- 코인 카드 -->
+        <div class="fam-coin-card">
+          <div class="fam-coin-label">⭐ 내 코인</div>
+          <div class="fam-coin-amount" id="famCoinAmount">0</div>
+          <div class="fam-coin-sub" id="famCoinSub">다음 레벨까지 <span id="famCoinToNext">50</span>코인</div>
+          <div class="fam-coin-progress">
+            <div class="fam-coin-progress-bar" id="famCoinBar" style="width:0%"></div>
+          </div>
+          <div class="fam-coin-row">
+            <span class="fam-coin-stat">오늘 획득: <strong id="famTodayCoins">0</strong>⭐</span>
+            <span class="fam-coin-stat">≈ <strong id="famCoinWon">0</strong>원</span>
+          </div>
+        </div>
+
+        <!-- 7일 스트릭 -->
+        <div class="fam-streak-row" id="famStreakRow">
+          <!-- JS로 렌더링 -->
+        </div>
+
+        <!-- 티키 AI 코치 메시지 -->
+        <div class="fam-tiki-card">
+          <div class="fam-tiki-avatar">🦊</div>
+          <div class="fam-tiki-content">
+            <div class="fam-tiki-name">AI 코치 티키</div>
+            <div class="fam-tiki-msg" id="famTikiHomeMsg">안녕! 오늘도 화이팅! 🎉</div>
+            <button class="fam-tiki-chat-btn" onclick="famSwitchSubTab('coach')">티키와 대화하기 →</button>
+          </div>
+        </div>
+
+        <!-- 오늘 미션 -->
+        <div class="fam-section-hdr">
+          <div class="fam-section-title">📋 오늘 미션</div>
+          <button class="fam-section-more" onclick="famSwitchSubTab('mission')">전체보기</button>
+        </div>
+        <div class="fam-mission-list" id="famHomeMissionList">
+          <div class="fam-empty">
+            <div class="fam-empty-icon">✅</div>
+            <div class="fam-empty-text">오늘 미션이 없어요</div>
+            <div class="fam-empty-sub">미션 탭에서 추가해보세요!</div>
+          </div>
+        </div>
+
+        <!-- 오늘 시간표 -->
+        <div class="fam-section-hdr">
+          <div class="fam-section-title">🗓️ 오늘 일정</div>
+          <button class="fam-section-more" onclick="famSwitchSubTab('timetable')">전체보기</button>
+        </div>
+        <div id="famHomeTodaySchedule" style="margin-bottom:16px;">
+          <div class="fam-empty">
+            <div class="fam-empty-icon">📅</div>
+            <div class="fam-empty-text">오늘 일정이 없어요</div>
+          </div>
+        </div>
+
+      </div><!-- /fam-pane-home -->
+
+      <!-- ── 시간표 ── -->
+      <div class="fam-pane" id="fam-pane-timetable">
+
+        <div class="fam-schedule-header">
+          <div class="fam-week-nav">
+            <button class="fam-week-btn" onclick="famWeekNav(-1)">‹</button>
+            <div class="fam-week-label" id="famWeekLabel">이번 주</div>
+            <button class="fam-week-btn" onclick="famWeekNav(1)">›</button>
+          </div>
+          <button class="fam-week-btn" onclick="famWeekNav(0)" style="font-size:11px;width:auto;padding:0 10px;border-radius:20px;">오늘</button>
+        </div>
+
+        <!-- 아이 필터 -->
+        <div class="fam-child-selector" id="famTTChildSelector" style="margin-bottom:12px;">
+          <!-- JS로 렌더링 -->
+        </div>
+
+        <!-- 주간 시간표 -->
+        <div class="fam-timetable" id="famTimetable">
+          <div class="fam-tt-head" id="famTTHead">
+            <!-- JS로 렌더링 -->
+          </div>
+          <div class="fam-tt-body" id="famTTBody">
+            <!-- JS로 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 일정 추가 버튼 -->
+        <button class="fam-add-btn" onclick="famOpenScheduleSheet()">
+          <span>+</span> 일정 추가
+        </button>
+
+        <!-- 이번 주 일정 목록 -->
+        <div class="fam-section-hdr">
+          <div class="fam-section-title">📋 이번 주 일정</div>
+        </div>
+        <div class="fam-mission-list" id="famWeekScheduleList">
+          <!-- JS로 렌더링 -->
+        </div>
+
+      </div><!-- /fam-pane-timetable -->
+
+      <!-- ── 미션 & 보상 ── -->
+      <div class="fam-pane" id="fam-pane-mission">
+
+        <!-- 레벨 카드 -->
+        <div class="fam-level-card" id="famLevelCard">
+          <div class="fam-level-badge">
+            <div class="fam-level-num" id="famLevelNum">1</div>
+            <div class="fam-level-text">LV</div>
+          </div>
+          <div class="fam-level-info">
+            <div class="fam-level-name" id="famLevelName">🌱 새싹 탐험가</div>
+            <div class="fam-level-xp" id="famLevelXP">0 / 50 코인</div>
+            <div class="fam-level-bar">
+              <div class="fam-level-bar-fill" id="famLevelBarFill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 미션 탭 -->
+        <div class="fam-mission-tabs">
+          <button class="fam-mtab-btn active" data-mtab="hw" onclick="famSwitchMissionTab('hw')">📚 숙제</button>
+          <button class="fam-mtab-btn" data-mtab="habit" onclick="famSwitchMissionTab('habit')">🔄 습관</button>
+          <button class="fam-mtab-btn" data-mtab="special" onclick="famSwitchMissionTab('special')">⚡ 특별</button>
+          <button class="fam-mtab-btn" data-mtab="shop" onclick="famSwitchMissionTab('shop')">🛒 상점</button>
+        </div>
+
+        <!-- 숙제 미션 -->
+        <div id="fam-mtab-hw">
+          <div class="fam-mission-form">
+            <div class="fam-form-row">
+              <input class="fam-form-input" id="famHwInput" placeholder="숙제 내용 입력..." />
+              <select class="fam-form-select" id="famHwSubject">
+                <option value="국어">국어</option>
+                <option value="수학">수학</option>
+                <option value="영어">영어</option>
+                <option value="과학">과학</option>
+                <option value="사회">사회</option>
+                <option value="기타">기타</option>
+              </select>
+            </div>
+            <div class="fam-form-row">
+              <input class="fam-form-input" id="famHwDue" type="date" />
+              <button class="fam-form-btn" onclick="famAddHw()">추가</button>
+            </div>
+          </div>
+          <div class="fam-mission-list" id="famHwList">
+            <div class="fam-empty">
+              <div class="fam-empty-icon">📚</div>
+              <div class="fam-empty-text">숙제가 없어요!</div>
+              <div class="fam-empty-sub">위에서 숙제를 추가해보세요</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 습관 미션 -->
+        <div id="fam-mtab-habit" style="display:none;">
+          <div class="fam-mission-form">
+            <div class="fam-form-row">
+              <input class="fam-form-input" id="famHabitInput" placeholder="매일 할 습관 입력... (예: 책 30분 읽기)" />
+              <select class="fam-form-select" id="famHabitCoin">
+                <option value="3">3⭐</option>
+                <option value="5" selected>5⭐</option>
+                <option value="7">7⭐</option>
+                <option value="10">10⭐</option>
+              </select>
+            </div>
+            <div class="fam-form-row">
+              <button class="fam-form-btn" style="width:100%;" onclick="famAddHabit()">+ 습관 추가</button>
+            </div>
+          </div>
+          <div class="fam-mission-list" id="famHabitList">
+            <div class="fam-empty">
+              <div class="fam-empty-icon">🔄</div>
+              <div class="fam-empty-text">습관이 없어요!</div>
+              <div class="fam-empty-sub">매일 반복할 좋은 습관을 만들어봐요</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 특별 미션 -->
+        <div id="fam-mtab-special" style="display:none;">
+          <div class="fam-mission-list" id="famSpecialList">
+            <div class="fam-empty">
+              <div class="fam-empty-icon">⚡</div>
+              <div class="fam-empty-text">특별 미션이 없어요!</div>
+              <div class="fam-empty-sub">부모님이 특별 미션을 만들어줄 거예요</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 코인 상점 -->
+        <div id="fam-mtab-shop" style="display:none;">
+          <div class="fam-coin-card" style="margin-bottom:14px;">
+            <div class="fam-coin-label">⭐ 보유 코인</div>
+            <div class="fam-coin-amount" id="famShopCoinAmount">0</div>
+            <div class="fam-coin-sub">100 코인 = 1,000원 용돈</div>
+          </div>
+          <div class="fam-section-hdr">
+            <div class="fam-section-title">🛒 코인 상점</div>
+          </div>
+          <div class="fam-shop-grid">
+            <div class="fam-shop-item" onclick="famBuyItem('allowance_1000', 100, '용돈 1,000원')">
+              <div class="fam-shop-emoji">💰</div>
+              <div class="fam-shop-name">용돈 1,000원</div>
+              <div class="fam-shop-price">100 ⭐</div>
+            </div>
+            <div class="fam-shop-item" onclick="famBuyItem('allowance_5000', 500, '용돈 5,000원')">
+              <div class="fam-shop-emoji">💵</div>
+              <div class="fam-shop-name">용돈 5,000원</div>
+              <div class="fam-shop-price">500 ⭐</div>
+            </div>
+            <div class="fam-shop-item" onclick="famBuyItem('game_30min', 50, '게임 30분')">
+              <div class="fam-shop-emoji">🎮</div>
+              <div class="fam-shop-name">게임 30분</div>
+              <div class="fam-shop-price">50 ⭐</div>
+            </div>
+            <div class="fam-shop-item" onclick="famBuyItem('snack', 30, '간식 쿠폰')">
+              <div class="fam-shop-emoji">🍪</div>
+              <div class="fam-shop-name">간식 쿠폰</div>
+              <div class="fam-shop-price">30 ⭐</div>
+            </div>
+            <div class="fam-shop-item" onclick="famBuyItem('movie', 80, '영화 보기')">
+              <div class="fam-shop-emoji">🎬</div>
+              <div class="fam-shop-name">영화 보기</div>
+              <div class="fam-shop-price">80 ⭐</div>
+            </div>
+            <div class="fam-shop-item" onclick="famBuyItem('late_night', 60, '늦게 자기')">
+              <div class="fam-shop-emoji">🌙</div>
+              <div class="fam-shop-name">늦게 자기</div>
+              <div class="fam-shop-price">60 ⭐</div>
+            </div>
+          </div>
+          <div class="fam-section-hdr">
+            <div class="fam-section-title">📜 구매 내역</div>
+          </div>
+          <div id="famPurchaseHistory">
+            <div class="fam-empty">
+              <div class="fam-empty-icon">🛒</div>
+              <div class="fam-empty-text">구매 내역이 없어요</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /fam-pane-mission -->
+
+      <!-- ── AI 코치 티키 ── -->
+      <div class="fam-pane" id="fam-pane-coach">
+        <div class="fam-chat-container">
+
+          <!-- 채팅 메시지 영역 -->
+          <div class="fam-chat-messages" id="famChatMessages">
+            <!-- JS로 렌더링 -->
+          </div>
+
+          <!-- 빠른 답변 -->
+          <div class="fam-quick-replies" id="famQuickReplies">
+            <button class="fam-quick-btn" onclick="famSendQuick('오늘 미션 알려줘')">📋 오늘 미션</button>
+            <button class="fam-quick-btn" onclick="famSendQuick('칭찬해줘')">🌟 칭찬해줘</button>
+            <button class="fam-quick-btn" onclick="famSendQuick('시간 관리 도와줘')">⏰ 시간 관리</button>
+            <button class="fam-quick-btn" onclick="famSendQuick('숙제 하기 싫어')">😩 숙제 싫어</button>
+            <button class="fam-quick-btn" onclick="famSendQuick('오늘 코인 얼마야?')">⭐ 내 코인</button>
+          </div>
+
+          <!-- 입력창 -->
+          <div class="fam-chat-input-row">
+            <textarea class="fam-chat-input" id="famChatInput" placeholder="티키에게 말해봐요..." rows="1"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();famSendChat();}"></textarea>
+            <button class="fam-chat-send-btn" onclick="famSendChat()">➤</button>
+          </div>
+
+        </div>
+      </div><!-- /fam-pane-coach -->
+
+      <!-- ── 게시판 ── -->
+      <div class="fam-pane" id="fam-pane-board">
+
+        <!-- 게시판 탭 -->
+        <div class="fam-board-tabs">
+          <button class="fam-board-tab-btn active" data-btab="notice" onclick="famSwitchBoardTab('notice')">📢 공지게시판</button>
+          <button class="fam-board-tab-btn" data-btab="free" onclick="famSwitchBoardTab('free')">💬 자유게시판</button>
+        </div>
+
+        <!-- 글쓰기 버튼 -->
+        <button class="fam-write-btn" onclick="famOpenPostSheet()">
+          ✏️ 글쓰기
+        </button>
+
+        <!-- 게시글 목록 -->
+        <div class="fam-post-list" id="famPostList">
+          <div class="fam-empty">
+            <div class="fam-empty-icon">📢</div>
+            <div class="fam-empty-text">게시글이 없어요</div>
+            <div class="fam-empty-sub">첫 번째 글을 작성해보세요!</div>
+          </div>
+        </div>
+
+      </div><!-- /fam-pane-board -->
+
+    </div><!-- /pane-family -->
+
+    <!-- ══ FAMILY SHEETS ══ -->
+
+    <!-- 일정 추가 시트 -->
+    <div class="fam-sheet-overlay" id="famScheduleSheet" onclick="if(event.target===this)famCloseScheduleSheet()">
+      <div class="fam-sheet">
+        <div class="fam-sheet-handle"></div>
+        <div class="fam-sheet-title">📅 일정 추가</div>
+        <div class="fam-sheet-label">제목</div>
+        <input class="fam-sheet-input" id="famSchTitle" placeholder="예: 수학 학원" />
+        <div class="fam-sheet-label">아이 선택</div>
+        <select class="fam-sheet-input" id="famSchChild">
+          <!-- JS로 렌더링 -->
+        </select>
+        <div class="fam-sheet-label">종류</div>
+        <select class="fam-sheet-input" id="famSchType">
+          <option value="school">🏫 학교</option>
+          <option value="academy">📚 학원</option>
+          <option value="tutor">👨‍🏫 과외</option>
+          <option value="activity">⚽ 활동</option>
+          <option value="family">👨‍👩‍👧 가족</option>
+          <option value="etc">📌 기타</option>
+        </select>
+        <div class="fam-sheet-row">
+          <div style="flex:1;">
+            <div class="fam-sheet-label">시작 시간</div>
+            <input class="fam-sheet-input" id="famSchStart" type="time" value="09:00" />
+          </div>
+          <div style="flex:1;">
+            <div class="fam-sheet-label">종료 시간</div>
+            <input class="fam-sheet-input" id="famSchEnd" type="time" value="10:00" />
+          </div>
+        </div>
+        <div class="fam-sheet-label">요일 (반복)</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="0" class="fam-sch-day"> 일</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="1" class="fam-sch-day" checked> 월</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="2" class="fam-sch-day" checked> 화</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="3" class="fam-sch-day" checked> 수</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="4" class="fam-sch-day" checked> 목</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="5" class="fam-sch-day" checked> 금</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" value="6" class="fam-sch-day"> 토</label>
+        </div>
+        <div class="fam-sheet-label">색상</div>
+        <div class="fam-color-picker" id="famSchColorPicker">
+          <div class="fam-color-dot selected" data-color="#6c63ff" style="background:#6c63ff;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#ef4444" style="background:#ef4444;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#f59e0b" style="background:#f59e0b;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#22c55e" style="background:#22c55e;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#3b82f6" style="background:#3b82f6;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#ec4899" style="background:#ec4899;" onclick="famSelectColor(this)"></div>
+          <div class="fam-color-dot" data-color="#14b8a6" style="background:#14b8a6;" onclick="famSelectColor(this)"></div>
+        </div>
+        <button class="fam-sheet-submit" onclick="famSaveSchedule()">저장</button>
+      </div>
+    </div>
+
+    <!-- 게시글 작성 시트 -->
+    <div class="fam-sheet-overlay" id="famPostSheet" onclick="if(event.target===this)famClosePostSheet()">
+      <div class="fam-sheet">
+        <div class="fam-sheet-handle"></div>
+        <div class="fam-sheet-title" id="famPostSheetTitle">✏️ 글쓰기</div>
+        <div class="fam-sheet-label">게시판</div>
+        <select class="fam-sheet-input" id="famPostType">
+          <option value="notice">📢 공지게시판</option>
+          <option value="free">💬 자유게시판</option>
+        </select>
+        <div class="fam-sheet-label">제목</div>
+        <input class="fam-sheet-input" id="famPostTitle" placeholder="제목을 입력하세요" />
+        <div class="fam-sheet-label">내용</div>
+        <textarea class="fam-sheet-textarea" id="famPostContent" placeholder="내용을 입력하세요..."></textarea>
+        <button class="fam-sheet-submit" onclick="famSavePost()">게시하기</button>
+      </div>
+    </div>
+
+    <!-- 게시글 상세 시트 -->
+    <div class="fam-sheet-overlay" id="famPostDetailSheet" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="fam-sheet" style="max-height:85vh;">
+        <div class="fam-sheet-handle"></div>
+        <div id="famPostDetailContent"></div>
+      </div>
+    </div>
+
+    <!-- 토스트 -->
+    <div class="fam-toast" id="famToast"></div>
+
   </div><!-- /tab-content -->
 
   <!-- BOTTOM TAB BAR -->
@@ -1872,6 +3397,10 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
     <button class="tab-item" data-tab="archive">
       <span class="tab-icon"><img src="/icons/new-folder-dynamic-premium.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
       <span class="tab-label">Archive</span>
+    </button>
+    <button class="tab-item" data-tab="family">
+      <span class="tab-icon"><img src="/icons/family-photo.png" style="width:28px;height:28px;object-fit:contain;border-radius:50%;" alt=""></span>
+      <span class="tab-label">Family</span>
     </button>
     <button class="tab-item" data-tab="setting">
       <span class="tab-icon"><img src="/icons/setting-dynamic-premium.png" style="width:28px;height:28px;object-fit:contain;" alt=""></span>
@@ -5873,6 +7402,1049 @@ document.getElementById('arcFile')?.addEventListener('change', function() {
     }
   }
 });
+
+
+
+/* ════════════════════════════════════════
+   FAMILY TAB JS — pwa-v41
+   ════════════════════════════════════════ */
+
+// ── 상수 ──
+const FAM_LEVELS = [
+  { level:1, name:'🌱 새싹 탐험가', min:0,   max:50  },
+  { level:2, name:'🌿 성장하는 용사', min:50,  max:120 },
+  { level:3, name:'⚡ 번개 학생',    min:120, max:220 },
+  { level:4, name:'🔥 불꽃 챔피언',  min:220, max:350 },
+  { level:5, name:'🌟 별빛 영웅',    min:350, max:520 },
+  { level:6, name:'💎 다이아 마스터', min:520, max:730 },
+  { level:7, name:'👑 전설의 왕',    min:730, max:1000 },
+  { level:8, name:'🚀 우주 탐험가',  min:1000, max:9999 },
+];
+
+const FAM_SCHEDULE_COLORS = {
+  school:   '#3b82f6',
+  academy:  '#ef4444',
+  tutor:    '#f59e0b',
+  activity: '#22c55e',
+  family:   '#ec4899',
+  etc:      '#6c63ff',
+};
+
+const FAM_SCHEDULE_LABELS = {
+  school:   '🏫 학교',
+  academy:  '📚 학원',
+  tutor:    '👨‍🏫 과외',
+  activity: '⚽ 활동',
+  family:   '👨‍👩‍👧 가족',
+  etc:      '📌 기타',
+};
+
+const FAM_HW_COINS = { 국어:8, 수학:10, 영어:10, 과학:8, 사회:7, 기타:5 };
+
+// ── 상태 ──
+let famActiveSubTab = 'home';
+let famActiveMissionTab = 'hw';
+let famActiveBoardTab = 'notice';
+let famSelectedChild = null;
+let famChildren = [];
+let famWeekOffset = 0;
+let famSchedules = [];
+let famHwItems = [];
+let famHabitItems = [];
+let famSpecialItems = [];
+let famPosts = [];
+let famChatHistory = [];
+let famSelectedColor = '#6c63ff';
+let famCoinData = { total:0, todayEarned:0, streak:0, lastAttend:'' };
+let famTTChildFilter = 'all';
+let famUnsubscribers = [];
+
+// ── Firestore 컬렉션 참조 ──
+const famCol = (sub) => collection(db, `users/${uid()}/family/${sub}/items`);
+const famDocRef = (sub, id) => doc(db, `users/${uid()}/family/${sub}/items/${id}`);
+const famCoinRef = () => doc(db, `users/${uid()}/family/coin/data/main`);
+const famChildrenRef = () => collection(db, `users/${uid()}/family/children/list`);
+const famScheduleRef = () => collection(db, `users/${uid()}/family/schedules/items`);
+const famPostRef = () => collection(db, `users/${uid()}/family/board/posts`);
+const famChatRef = () => collection(db, `users/${uid()}/family/chat/messages`);
+
+// ── 초기화 ──
+async function famInit() {
+  if (!uid()) return;
+  famLoadCoin();
+  famLoadChildren();
+  famLoadSchedules();
+  famLoadHw();
+  famLoadHabits();
+  famLoadSpecial();
+  famLoadPosts();
+  famInitChat();
+  famRenderStreak();
+  famSetTikiMessage();
+}
+
+// ── 서브탭 전환 ──
+function famSwitchSubTab(tab) {
+  famActiveSubTab = tab;
+  document.querySelectorAll('.fam-subtab-btn').forEach(b => b.classList.toggle('active', b.dataset.famtab === tab));
+  document.querySelectorAll('.fam-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`fam-pane-${tab}`)?.classList.add('active');
+  window.haptic?.light();
+  if (tab === 'timetable') famRenderTimetable();
+  if (tab === 'mission') famRenderMissionTab();
+  if (tab === 'board') famRenderPosts();
+  if (tab === 'coach') famScrollChatToBottom();
+  if (tab === 'home') famRenderHome();
+}
+document.querySelectorAll('.fam-subtab-btn').forEach(btn => {
+  btn.addEventListener('click', () => famSwitchSubTab(btn.dataset.famtab));
+});
+window.famSwitchSubTab = famSwitchSubTab;
+
+// ── 코인 로드 ──
+async function famLoadCoin() {
+  try {
+    const snap = await getDoc(famCoinRef());
+    if (snap.exists()) {
+      famCoinData = { ...famCoinData, ...snap.data() };
+    }
+    famRenderCoin();
+  } catch(e) { console.log('famLoadCoin', e); }
+}
+
+async function famAddCoins(amount, reason) {
+  famCoinData.total = (famCoinData.total || 0) + amount;
+  famCoinData.todayEarned = (famCoinData.todayEarned || 0) + amount;
+  await setDoc(famCoinRef(), famCoinData, { merge: true });
+  famRenderCoin();
+  famShowToast(`+${amount}⭐ 코인 획득! (${reason})`);
+}
+
+function famRenderCoin() {
+  const total = famCoinData.total || 0;
+  document.getElementById('famCoinAmount').textContent = total;
+  document.getElementById('famShopCoinAmount').textContent = total;
+  document.getElementById('famTodayCoins').textContent = famCoinData.todayEarned || 0;
+  document.getElementById('famCoinWon').textContent = ((total / 100) * 1000).toLocaleString();
+
+  // 레벨 계산
+  const lv = FAM_LEVELS.find(l => total >= l.min && total < l.max) || FAM_LEVELS[FAM_LEVELS.length-1];
+  const next = FAM_LEVELS.find(l => l.level === lv.level + 1);
+  const progress = next ? Math.round(((total - lv.min) / (lv.max - lv.min)) * 100) : 100;
+
+  document.getElementById('famCoinBar').style.width = progress + '%';
+  document.getElementById('famCoinToNext').textContent = next ? (next.min - total) : 0;
+  document.getElementById('famLevelNum').textContent = lv.level;
+  document.getElementById('famLevelName').textContent = lv.name;
+  document.getElementById('famLevelXP').textContent = `${total} / ${lv.max} 코인`;
+  document.getElementById('famLevelBarFill').style.width = progress + '%';
+}
+
+// ── 출석 체크 ──
+async function famCheckAttendance() {
+  const today = new Date().toISOString().slice(0,10);
+  if (famCoinData.lastAttend === today) return;
+  famCoinData.lastAttend = today;
+  famCoinData.streak = (famCoinData.streak || 0) + 1;
+  const bonus = famCoinData.streak >= 7 ? 10 : 3;
+  await famAddCoins(bonus, '출석 체크');
+  await setDoc(famCoinRef(), famCoinData, { merge: true });
+  const banner = document.getElementById('famAttendBanner');
+  banner.classList.add('done');
+  banner.querySelector('.fam-attendance-title').textContent = '오늘 출석 완료! ✅';
+  banner.querySelector('.fam-attendance-sub').textContent = `${famCoinData.streak}일 연속 출석 중!`;
+  famRenderStreak();
+}
+window.famCheckAttendance = famCheckAttendance;
+
+// ── 스트릭 렌더링 ──
+function famRenderStreak() {
+  const days = ['일','월','화','수','목','금','토'];
+  const today = new Date();
+  const streak = famCoinData.streak || 0;
+  let html = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const isToday = i === 0;
+    const isDone = i < streak || (i === 0 && famCoinData.lastAttend === today.toISOString().slice(0,10));
+    html += `<div class="fam-streak-day ${isDone?'done':''} ${isToday?'today':''}">${days[d.getDay()]}</div>`;
+  }
+  document.getElementById('famStreakRow').innerHTML = html;
+}
+
+// ── 아이 프로필 ──
+async function famLoadChildren() {
+  try {
+    const snap = await getDocs(famChildrenRef());
+    famChildren = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (famChildren.length === 0) {
+      // 기본 아이 프로필 생성
+      famChildren = [
+        { id: 'child1', name: '첫째', emoji: '👦', color: '#6c63ff' },
+        { id: 'child2', name: '둘째', emoji: '👧', color: '#ec4899' },
+      ];
+    }
+    if (!famSelectedChild) famSelectedChild = famChildren[0]?.id;
+    famRenderChildSelectors();
+  } catch(e) { console.log('famLoadChildren', e); }
+}
+
+function famRenderChildSelectors() {
+  const allChip = `<div class="fam-child-chip ${famTTChildFilter==='all'?'active':''}" onclick="famSelectTTChild('all')">
+    <div class="fam-child-avatar" style="background:linear-gradient(135deg,#6c63ff,#a78bfa);">👨‍👩‍👧</div>
+    <div class="fam-child-name">전체</div>
+  </div>`;
+
+  const chips = famChildren.map(c => `
+    <div class="fam-child-chip ${famSelectedChild===c.id?'active':''}" onclick="famSelectChild('${c.id}')">
+      <div class="fam-child-avatar" style="background:${c.color||'#6c63ff'};">${c.emoji||c.name[0]}</div>
+      <div class="fam-child-name">${c.name}</div>
+    </div>
+  `).join('');
+
+  const ttChips = allChip + famChildren.map(c => `
+    <div class="fam-child-chip ${famTTChildFilter===c.id?'active':''}" onclick="famSelectTTChild('${c.id}')">
+      <div class="fam-child-avatar" style="background:${c.color||'#6c63ff'};">${c.emoji||c.name[0]}</div>
+      <div class="fam-child-name">${c.name}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('famChildSelector').innerHTML = chips;
+  document.getElementById('famTTChildSelector').innerHTML = ttChips;
+
+  // 일정 추가 시트 아이 선택
+  const sel = document.getElementById('famSchChild');
+  if (sel) {
+    sel.innerHTML = famChildren.map(c => `<option value="${c.id}">${c.emoji||''} ${c.name}</option>`).join('');
+  }
+}
+
+function famSelectChild(id) {
+  famSelectedChild = id;
+  famRenderChildSelectors();
+  famRenderHome();
+  window.haptic?.light();
+}
+window.famSelectChild = famSelectChild;
+
+function famSelectTTChild(id) {
+  famTTChildFilter = id;
+  famRenderChildSelectors();
+  famRenderTimetable();
+  window.haptic?.light();
+}
+window.famSelectTTChild = famSelectTTChild;
+
+// ── 홈 렌더링 ──
+function famRenderHome() {
+  famRenderCoin();
+  famRenderStreak();
+  famRenderHomeMissions();
+  famRenderHomeTodaySchedule();
+  famSetTikiMessage();
+
+  // 출석 배너
+  const today = new Date().toISOString().slice(0,10);
+  const banner = document.getElementById('famAttendBanner');
+  if (famCoinData.lastAttend === today) {
+    banner.classList.add('done');
+    banner.querySelector('.fam-attendance-title').textContent = '오늘 출석 완료! ✅';
+    banner.querySelector('.fam-attendance-sub').textContent = `${famCoinData.streak}일 연속 출석 중!`;
+  }
+}
+
+function famRenderHomeMissions() {
+  const today = new Date().toISOString().slice(0,10);
+  const todayItems = [
+    ...famHwItems.filter(h => !h.done && (h.due >= today || !h.due)),
+    ...famHabitItems.filter(h => {
+      const todayDone = h.doneDates && h.doneDates.includes(today);
+      return !todayDone;
+    }),
+  ].slice(0, 5);
+
+  const el = document.getElementById('famHomeMissionList');
+  if (!todayItems.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">🎉</div><div class="fam-empty-text">오늘 미션 완료!</div><div class="fam-empty-sub">대단해요! 모든 미션을 끝냈어요</div></div>`;
+    return;
+  }
+  el.innerHTML = todayItems.map(item => famMissionItemHTML(item, true)).join('');
+}
+
+function famRenderHomeTodaySchedule() {
+  const today = new Date();
+  const todayDay = today.getDay();
+  const todaySchedules = famSchedules.filter(s => s.days && s.days.includes(todayDay));
+  todaySchedules.sort((a,b) => a.startTime.localeCompare(b.startTime));
+
+  const el = document.getElementById('famHomeTodaySchedule');
+  if (!todaySchedules.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">📅</div><div class="fam-empty-text">오늘 일정이 없어요</div></div>`;
+    return;
+  }
+  el.innerHTML = todaySchedules.map(s => {
+    const child = famChildren.find(c => c.id === s.childId);
+    return `<div class="fam-mission-item" style="border-left:3px solid ${s.color||'#6c63ff'};">
+      <div style="font-size:20px;">${FAM_SCHEDULE_LABELS[s.type]?.split(' ')[0]||'📌'}</div>
+      <div class="fam-mission-info">
+        <div class="fam-mission-name">${escHtml(s.title)}</div>
+        <div class="fam-mission-meta">${s.startTime}~${s.endTime} · ${child?.name||'전체'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 티키 메시지 ──
+function famSetTikiMessage() {
+  const hour = new Date().getHours();
+  const total = famCoinData.total || 0;
+  const todayDone = famHwItems.filter(h => h.done).length;
+  const msgs = [];
+
+  if (hour < 9) msgs.push('좋은 아침이에요! 오늘도 멋진 하루 시작해봐요! ☀️');
+  else if (hour < 12) msgs.push(`오전이에요! 집중력이 최고인 시간이에요. 숙제부터 해볼까요? 📚`);
+  else if (hour < 14) msgs.push('점심 먹었나요? 잠깐 쉬고 오후 미션 도전해봐요! 💪');
+  else if (hour < 18) msgs.push('오후예요! 학원 다녀왔나요? 숙제 먼저 하면 코인이 쌓여요! ⭐');
+  else if (hour < 21) msgs.push('저녁이에요! 오늘 미션 확인해봐요. 잘 하고 있어요! 🌙');
+  else msgs.push('이제 잘 시간이에요! 내일도 화이팅! 😴');
+
+  if (total >= 100) msgs.push(`와! 코인이 ${total}개나 됐어요! 상점에서 용돈으로 바꿔봐요! 💰`);
+  if (todayDone > 0) msgs.push(`오늘 숙제 ${todayDone}개 완료! 정말 대단해요! 🎉`);
+
+  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  const el = document.getElementById('famTikiHomeMsg');
+  if (el) el.textContent = msg;
+}
+
+// ── 시간표 ──
+async function famLoadSchedules() {
+  try {
+    const snap = await getDocs(famScheduleRef());
+    famSchedules = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (famActiveSubTab === 'timetable') famRenderTimetable();
+    famRenderHomeTodaySchedule();
+  } catch(e) { console.log('famLoadSchedules', e); }
+}
+
+function famWeekNav(dir) {
+  if (dir === 0) famWeekOffset = 0;
+  else famWeekOffset += dir;
+  famRenderTimetable();
+  window.haptic?.light();
+}
+window.famWeekNav = famWeekNav;
+
+function famGetWeekDates() {
+  const today = new Date();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - today.getDay() + 1 + famWeekOffset * 7);
+  return Array.from({length:7}, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
+
+function famRenderTimetable() {
+  const weekDays = famGetWeekDates();
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const dayNames = ['월','화','수','목','금','토','일'];
+
+  // 헤더
+  const headEl = document.getElementById('famTTHead');
+  headEl.innerHTML = `<div class="fam-tt-head-cell" style="background:rgba(255,255,255,0.1);">시간</div>` +
+    weekDays.map((d, i) => {
+      const isToday = d.toISOString().slice(0,10) === todayStr;
+      return `<div class="fam-tt-head-cell ${isToday?'today-col':''}">${dayNames[i]}<br><span style="font-size:9px;opacity:0.8;">${d.getMonth()+1}/${d.getDate()}</span></div>`;
+    }).join('');
+
+  // 주간 레이블
+  const startDate = weekDays[0];
+  const endDate = weekDays[6];
+  document.getElementById('famWeekLabel').textContent =
+    `${startDate.getMonth()+1}/${startDate.getDate()} ~ ${endDate.getMonth()+1}/${endDate.getDate()}`;
+
+  // 시간 슬롯 (7시~22시)
+  const hours = Array.from({length:16}, (_, i) => i + 7);
+  const bodyEl = document.getElementById('famTTBody');
+
+  // 필터링된 스케줄
+  const filtered = famTTChildFilter === 'all' ? famSchedules : famSchedules.filter(s => s.childId === famTTChildFilter);
+
+  bodyEl.innerHTML = hours.map(h => {
+    const cells = weekDays.map((d, dayIdx) => {
+      const dayOfWeek = (dayIdx + 1) % 7; // 월=1, ..., 일=0
+      const events = filtered.filter(s => {
+        if (!s.days || !s.days.includes(dayOfWeek)) return false;
+        const startH = parseInt(s.startTime?.split(':')[0] || 0);
+        return startH === h;
+      });
+      return `<div class="fam-tt-cell">
+        ${events.map(e => `<div class="fam-tt-event" style="background:${e.color||'#6c63ff'};" onclick="famDeleteSchedule('${e.id}')">${escHtml(e.title)}<br><span style="opacity:0.8;font-size:9px;">${e.startTime}~${e.endTime}</span></div>`).join('')}
+      </div>`;
+    }).join('');
+    return `<div class="fam-tt-row">
+      <div class="fam-tt-time">${h}시</div>
+      ${cells}
+    </div>`;
+  }).join('');
+
+  // 이번 주 일정 목록
+  famRenderWeekScheduleList(weekDays);
+}
+
+function famRenderWeekScheduleList(weekDays) {
+  const el = document.getElementById('famWeekScheduleList');
+  if (!famSchedules.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">📅</div><div class="fam-empty-text">등록된 일정이 없어요</div></div>`;
+    return;
+  }
+  const dayNames = ['일','월','화','수','목','금','토'];
+  el.innerHTML = famSchedules.map(s => {
+    const child = famChildren.find(c => c.id === s.childId);
+    const daysStr = (s.days||[]).map(d => dayNames[d]).join(',');
+    return `<div class="fam-mission-item" style="border-left:3px solid ${s.color||'#6c63ff'};">
+      <div style="font-size:20px;">${FAM_SCHEDULE_LABELS[s.type]?.split(' ')[0]||'📌'}</div>
+      <div class="fam-mission-info">
+        <div class="fam-mission-name">${escHtml(s.title)}</div>
+        <div class="fam-mission-meta">${daysStr} ${s.startTime}~${s.endTime} · ${child?.name||'전체'}</div>
+      </div>
+      <button onclick="famDeleteSchedule('${s.id}')" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;">×</button>
+    </div>`;
+  }).join('');
+}
+
+function famOpenScheduleSheet() {
+  document.getElementById('famScheduleSheet').classList.add('open');
+  window.haptic?.medium();
+}
+window.famOpenScheduleSheet = famOpenScheduleSheet;
+
+function famCloseScheduleSheet() {
+  document.getElementById('famScheduleSheet').classList.remove('open');
+}
+window.famCloseScheduleSheet = famCloseScheduleSheet;
+
+function famSelectColor(el) {
+  document.querySelectorAll('.fam-color-dot').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  famSelectedColor = el.dataset.color;
+}
+window.famSelectColor = famSelectColor;
+
+async function famSaveSchedule() {
+  const title = document.getElementById('famSchTitle').value.trim();
+  if (!title) { famShowToast('제목을 입력해주세요'); return; }
+  const days = [...document.querySelectorAll('.fam-sch-day:checked')].map(c => parseInt(c.value));
+  if (!days.length) { famShowToast('요일을 선택해주세요'); return; }
+
+  const newSch = {
+    title,
+    childId: document.getElementById('famSchChild').value,
+    type: document.getElementById('famSchType').value,
+    startTime: document.getElementById('famSchStart').value,
+    endTime: document.getElementById('famSchEnd').value,
+    days,
+    color: famSelectedColor,
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    const ref = await addDoc(famScheduleRef(), newSch);
+    famSchedules.push({ id: ref.id, ...newSch });
+    famCloseScheduleSheet();
+    famRenderTimetable();
+    famRenderHomeTodaySchedule();
+    famShowToast('일정이 추가됐어요! 📅');
+    window.haptic?.medium();
+    // 폼 초기화
+    document.getElementById('famSchTitle').value = '';
+  } catch(e) { famShowToast('저장 실패: ' + e.message); }
+}
+window.famSaveSchedule = famSaveSchedule;
+
+async function famDeleteSchedule(id) {
+  if (!confirm('이 일정을 삭제할까요?')) return;
+  try {
+    await deleteDoc(doc(db, `users/${uid()}/family/schedules/items/${id}`));
+    famSchedules = famSchedules.filter(s => s.id !== id);
+    famRenderTimetable();
+    famRenderHomeTodaySchedule();
+    famShowToast('일정을 삭제했어요');
+  } catch(e) { famShowToast('삭제 실패'); }
+}
+window.famDeleteSchedule = famDeleteSchedule;
+
+// ── 숙제 ──
+async function famLoadHw() {
+  try {
+    const snap = await getDocs(famCol('hw'));
+    famHwItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    famRenderHwList();
+    famRenderHomeMissions();
+  } catch(e) { console.log('famLoadHw', e); }
+}
+
+function famRenderHwList() {
+  const el = document.getElementById('famHwList');
+  if (!famHwItems.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">📚</div><div class="fam-empty-text">숙제가 없어요!</div><div class="fam-empty-sub">위에서 숙제를 추가해보세요</div></div>`;
+    return;
+  }
+  const sorted = [...famHwItems].sort((a,b) => (a.done?1:0) - (b.done?1:0));
+  el.innerHTML = sorted.map(item => famMissionItemHTML(item, false, 'hw')).join('');
+}
+
+async function famAddHw() {
+  const text = document.getElementById('famHwInput').value.trim();
+  if (!text) { famShowToast('숙제 내용을 입력해주세요'); return; }
+  const subject = document.getElementById('famHwSubject').value;
+  const due = document.getElementById('famHwDue').value;
+  const coins = FAM_HW_COINS[subject] || 5;
+
+  const item = {
+    text, subject, due, coins,
+    done: false,
+    type: 'hw',
+    createdAt: new Date().toISOString(),
+  };
+  try {
+    const ref = await addDoc(famCol('hw'), item);
+    famHwItems.push({ id: ref.id, ...item });
+    document.getElementById('famHwInput').value = '';
+    famRenderHwList();
+    famRenderHomeMissions();
+    famShowToast(`숙제 추가! 완료하면 ${coins}⭐ 획득!`);
+    window.haptic?.medium();
+  } catch(e) { famShowToast('저장 실패'); }
+}
+window.famAddHw = famAddHw;
+
+// ── 습관 ──
+async function famLoadHabits() {
+  try {
+    const snap = await getDocs(famCol('habit'));
+    famHabitItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    famRenderHabitList();
+    famRenderHomeMissions();
+  } catch(e) { console.log('famLoadHabits', e); }
+}
+
+function famRenderHabitList() {
+  const el = document.getElementById('famHabitList');
+  if (!famHabitItems.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">🔄</div><div class="fam-empty-text">습관이 없어요!</div><div class="fam-empty-sub">매일 반복할 좋은 습관을 만들어봐요</div></div>`;
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  el.innerHTML = famHabitItems.map(item => {
+    const doneDates = item.doneDates || [];
+    const doneToday = doneDates.includes(today);
+    const streak = famCalcHabitStreak(doneDates);
+    return `<div class="fam-mission-item ${doneToday?'done':''}">
+      <div class="fam-mission-check" onclick="famToggleHabit('${item.id}')">${doneToday?'✓':''}</div>
+      <div class="fam-mission-info">
+        <div class="fam-mission-name">${escHtml(item.text)}</div>
+        <div class="fam-mission-meta">🔥 ${streak}일 연속 · 매일 +${item.coins||5}⭐</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="fam-mission-coin">${item.coins||5}⭐</div>
+        <button onclick="famDeleteHabit('${item.id}')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function famCalcHabitStreak(doneDates) {
+  if (!doneDates || !doneDates.length) return 0;
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    if (doneDates.includes(d.toISOString().slice(0,10))) streak++;
+    else break;
+  }
+  return streak;
+}
+
+async function famAddHabit() {
+  const text = document.getElementById('famHabitInput').value.trim();
+  if (!text) { famShowToast('습관 내용을 입력해주세요'); return; }
+  const coins = parseInt(document.getElementById('famHabitCoin').value);
+  const item = { text, coins, doneDates: [], type: 'habit', createdAt: new Date().toISOString() };
+  try {
+    const ref = await addDoc(famCol('habit'), item);
+    famHabitItems.push({ id: ref.id, ...item });
+    document.getElementById('famHabitInput').value = '';
+    famRenderHabitList();
+    famRenderHomeMissions();
+    famShowToast(`습관 추가! 매일 완료하면 ${coins}⭐!`);
+    window.haptic?.medium();
+  } catch(e) { famShowToast('저장 실패'); }
+}
+window.famAddHabit = famAddHabit;
+
+async function famToggleHabit(id) {
+  const today = new Date().toISOString().slice(0,10);
+  const item = famHabitItems.find(h => h.id === id);
+  if (!item) return;
+  const doneDates = item.doneDates || [];
+  const doneToday = doneDates.includes(today);
+
+  if (doneToday) {
+    item.doneDates = doneDates.filter(d => d !== today);
+    famCoinData.total = Math.max(0, (famCoinData.total||0) - (item.coins||5));
+    famCoinData.todayEarned = Math.max(0, (famCoinData.todayEarned||0) - (item.coins||5));
+    await setDoc(famCoinRef(), famCoinData, { merge: true });
+  } else {
+    item.doneDates = [...doneDates, today];
+    const streak = famCalcHabitStreak(item.doneDates);
+    const bonus = streak > 0 && streak % 7 === 0 ? 10 : 0;
+    await famAddCoins((item.coins||5) + bonus, `습관: ${item.text}${bonus?` (+${bonus} 연속보너스!)`:''}`);
+    if (bonus) famShowToast(`🎉 7일 연속 달성! +${bonus} 보너스 코인!`);
+  }
+
+  await updateDoc(famDocRef('habit', id), { doneDates: item.doneDates });
+  famRenderHabitList();
+  famRenderHomeMissions();
+  famRenderCoin();
+  window.haptic?.medium();
+}
+window.famToggleHabit = famToggleHabit;
+
+async function famDeleteHabit(id) {
+  if (!confirm('이 습관을 삭제할까요?')) return;
+  await deleteDoc(famDocRef('habit', id));
+  famHabitItems = famHabitItems.filter(h => h.id !== id);
+  famRenderHabitList();
+  famRenderHomeMissions();
+}
+window.famDeleteHabit = famDeleteHabit;
+
+// ── 특별 미션 ──
+async function famLoadSpecial() {
+  try {
+    const snap = await getDocs(famCol('special'));
+    famSpecialItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    famRenderSpecialList();
+  } catch(e) {}
+}
+
+function famRenderSpecialList() {
+  const el = document.getElementById('famSpecialList');
+  if (!famSpecialItems.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">⚡</div><div class="fam-empty-text">특별 미션이 없어요!</div><div class="fam-empty-sub">부모님이 특별 미션을 만들어줄 거예요</div></div>`;
+    return;
+  }
+  el.innerHTML = famSpecialItems.map(item => famMissionItemHTML(item, false, 'special')).join('');
+}
+
+// ── 미션 아이템 HTML ──
+function famMissionItemHTML(item, compact = false, type = '') {
+  const isDone = item.done || false;
+  const typeIcon = item.type === 'hw' ? '📚' : item.type === 'habit' ? '🔄' : '⚡';
+  return `<div class="fam-mission-item ${isDone?'done':''}" id="fam-item-${item.id}">
+    <div class="fam-mission-check" onclick="famToggleMission('${item.id}','${item.type||type}')">${isDone?'✓':''}</div>
+    <div class="fam-mission-info">
+      <div class="fam-mission-name">${typeIcon} ${escHtml(item.text)}</div>
+      <div class="fam-mission-meta">${item.subject||''} ${item.due?`· 마감: ${item.due}`:''}</div>
+    </div>
+    <div class="fam-mission-coin">${item.coins||5}⭐</div>
+  </div>`;
+}
+
+async function famToggleMission(id, type) {
+  let arr, renderFn;
+  if (type === 'hw') { arr = famHwItems; renderFn = famRenderHwList; }
+  else if (type === 'special') { arr = famSpecialItems; renderFn = famRenderSpecialList; }
+  else return;
+
+  const item = arr.find(h => h.id === id);
+  if (!item) return;
+  item.done = !item.done;
+
+  try {
+    await updateDoc(famDocRef(type, id), { done: item.done });
+    if (item.done) {
+      await famAddCoins(item.coins||5, item.text);
+      window.haptic?.medium();
+    } else {
+      famCoinData.total = Math.max(0, (famCoinData.total||0) - (item.coins||5));
+      await setDoc(famCoinRef(), famCoinData, { merge: true });
+      famRenderCoin();
+    }
+    renderFn();
+    famRenderHomeMissions();
+  } catch(e) { famShowToast('저장 실패'); }
+}
+window.famToggleMission = famToggleMission;
+
+// ── 미션 탭 전환 ──
+function famSwitchMissionTab(tab) {
+  famActiveMissionTab = tab;
+  document.querySelectorAll('.fam-mtab-btn').forEach(b => b.classList.toggle('active', b.dataset.mtab === tab));
+  ['hw','habit','special','shop'].forEach(t => {
+    const el = document.getElementById(`fam-mtab-${t}`);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  window.haptic?.light();
+}
+window.famSwitchMissionTab = famSwitchMissionTab;
+
+function famRenderMissionTab() {
+  famRenderHwList();
+  famRenderHabitList();
+  famRenderSpecialList();
+  famRenderCoin();
+  famRenderPurchaseHistory();
+}
+
+// ── 코인 상점 ──
+async function famBuyItem(itemId, cost, name) {
+  const total = famCoinData.total || 0;
+  if (total < cost) {
+    famShowToast(`코인이 부족해요! (필요: ${cost}⭐, 보유: ${total}⭐)`);
+    return;
+  }
+  if (!confirm(`"${name}"을(를) ${cost}⭐로 구매할까요?`)) return;
+
+  famCoinData.total = total - cost;
+  const purchase = {
+    itemId, name, cost,
+    purchasedAt: new Date().toISOString(),
+    status: 'pending',
+  };
+  try {
+    await addDoc(collection(db, `users/${uid()}/family/purchases/items`), purchase);
+    await setDoc(famCoinRef(), famCoinData, { merge: true });
+    famRenderCoin();
+    famRenderPurchaseHistory();
+    famShowToast(`🎉 "${name}" 구매 완료! 부모님 확인을 기다려요`);
+    window.haptic?.medium();
+  } catch(e) { famShowToast('구매 실패'); }
+}
+window.famBuyItem = famBuyItem;
+
+async function famRenderPurchaseHistory() {
+  const el = document.getElementById('famPurchaseHistory');
+  try {
+    const snap = await getDocs(collection(db, `users/${uid()}/family/purchases/items`));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.purchasedAt.localeCompare(a.purchasedAt));
+    if (!items.length) {
+      el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">🛒</div><div class="fam-empty-text">구매 내역이 없어요</div></div>`;
+      return;
+    }
+    el.innerHTML = items.slice(0,10).map(item => `
+      <div class="fam-mission-item">
+        <div style="font-size:20px;">🛒</div>
+        <div class="fam-mission-info">
+          <div class="fam-mission-name">${escHtml(item.name)}</div>
+          <div class="fam-mission-meta">${item.purchasedAt.slice(0,10)} · ${item.status==='pending'?'⏳ 확인 대기':'✅ 완료'}</div>
+        </div>
+        <div class="fam-mission-coin">-${item.cost}⭐</div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+// ── AI 코치 티키 ──
+function famInitChat() {
+  const msgs = document.getElementById('famChatMessages');
+  if (famChatHistory.length === 0) {
+    const greeting = `안녕! 나는 AI 코치 티키야! 🦊\n\n나는 너의 공부, 숙제, 시간 관리를 도와주는 친구야.\n\n오늘 미션을 확인하거나, 공부 방법을 물어보거나, 그냥 이야기하고 싶을 때도 언제든지 말을 걸어줘! 😊`;
+    famChatHistory.push({ role: 'assistant', content: greeting, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) });
+  }
+  famRenderChat();
+}
+
+function famRenderChat() {
+  const el = document.getElementById('famChatMessages');
+  el.innerHTML = famChatHistory.map(msg => `
+    <div class="fam-chat-bubble ${msg.role==='user'?'user':''}">
+      <div class="fam-chat-avatar">${msg.role==='user'?'👤':'🦊'}</div>
+      <div>
+        <div class="fam-chat-text">${escHtml(msg.content).replace(/\n/g,'<br>')}</div>
+        <div class="fam-chat-time">${msg.time||''}</div>
+      </div>
+    </div>
+  `).join('');
+  famScrollChatToBottom();
+}
+
+function famScrollChatToBottom() {
+  const el = document.getElementById('famChatMessages');
+  if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 100);
+}
+
+async function famSendChat() {
+  const input = document.getElementById('famChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  famSendMessage(text);
+}
+window.famSendChat = famSendChat;
+
+function famSendQuick(text) {
+  famSendMessage(text);
+}
+window.famSendQuick = famSendQuick;
+
+async function famSendMessage(text) {
+  const time = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+  famChatHistory.push({ role: 'user', content: text, time });
+  famRenderChat();
+  window.haptic?.light();
+
+  // 타이핑 인디케이터
+  const typingId = 'fam-typing-' + Date.now();
+  const el = document.getElementById('famChatMessages');
+  el.insertAdjacentHTML('beforeend', `
+    <div class="fam-chat-bubble" id="${typingId}">
+      <div class="fam-chat-avatar">🦊</div>
+      <div class="fam-typing"><span></span><span></span><span></span></div>
+    </div>
+  `);
+  famScrollChatToBottom();
+
+  try {
+    // 컨텍스트 구성
+    const today = new Date().toISOString().slice(0,10);
+    const pendingHw = famHwItems.filter(h => !h.done);
+    const todayHabits = famHabitItems.filter(h => !(h.doneDates||[]).includes(today));
+    const coins = famCoinData.total || 0;
+    const streak = famCoinData.streak || 0;
+
+    const systemPrompt = `너는 초등학생을 위한 친근하고 귀여운 AI 코치 "티키"야. 🦊
+항상 반말로 친근하게 대화하고, 이모지를 적절히 사용해.
+아이의 이름을 모르면 "친구"라고 불러.
+현재 상황:
+- 보유 코인: ${coins}⭐ (100코인=1000원 용돈)
+- 연속 출석: ${streak}일
+- 미완료 숙제: ${pendingHw.map(h=>h.text).join(', ') || '없음'}
+- 오늘 미완료 습관: ${todayHabits.map(h=>h.text).join(', ') || '없음'}
+응답은 2-4문장으로 짧고 명확하게. 칭찬을 아끼지 말고, 구체적인 조언을 줘.`;
+
+    const apiKey = openAiKey || '';
+    if (!apiKey) {
+      // API 키 없으면 로컬 응답
+      const localReply = famLocalTikiReply(text, { pendingHw, todayHabits, coins, streak });
+      document.getElementById(typingId)?.remove();
+      famChatHistory.push({ role: 'assistant', content: localReply, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) });
+      famRenderChat();
+      return;
+    }
+
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...famChatHistory.slice(-10).map(m => ({ role: m.role, content: m.content })),
+        ],
+        max_tokens: 300,
+        temperature: 0.8,
+      }),
+    });
+
+    document.getElementById(typingId)?.remove();
+    if (resp.ok) {
+      const data = await resp.json();
+      const reply = data.choices?.[0]?.message?.content || '미안, 잠깐 문제가 생겼어. 다시 말해줘!';
+      famChatHistory.push({ role: 'assistant', content: reply, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) });
+    } else {
+      const localReply = famLocalTikiReply(text, { pendingHw, todayHabits, coins, streak });
+      famChatHistory.push({ role: 'assistant', content: localReply, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) });
+    }
+    famRenderChat();
+  } catch(e) {
+    document.getElementById(typingId)?.remove();
+    const localReply = famLocalTikiReply(text, {});
+    famChatHistory.push({ role: 'assistant', content: localReply, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) });
+    famRenderChat();
+  }
+}
+
+function famLocalTikiReply(text, ctx) {
+  const t = text.toLowerCase();
+  const { pendingHw = [], todayHabits = [], coins = 0, streak = 0 } = ctx;
+
+  if (t.includes('미션') || t.includes('숙제')) {
+    if (pendingHw.length) return `지금 해야 할 숙제가 ${pendingHw.length}개 있어! 📚\n"${pendingHw[0].text}"부터 시작해볼까? 완료하면 ${pendingHw[0].coins||5}⭐ 코인을 받을 수 있어! 💪`;
+    return `오늘 숙제를 다 했어? 대단한걸! 🎉 미션 탭에서 새 숙제를 추가해봐!`;
+  }
+  if (t.includes('코인') || t.includes('용돈')) {
+    return `지금 코인이 ${coins}⭐ 있어! 💰\n100코인이 모이면 1,000원 용돈으로 바꿀 수 있어. ${100-coins>0?`앞으로 ${100-coins}코인만 더 모으면 돼!`:'이미 충분해! 상점에서 교환해봐!'}`;
+  }
+  if (t.includes('칭찬') || t.includes('잘했')) {
+    const praises = ['정말 대단해! 🌟 열심히 하는 모습이 너무 멋져!', '최고야! 👑 이렇게 열심히 하다니 진짜 대견해!', '훌륭해! 🎉 계속 이렇게 하면 분명히 잘 될 거야!'];
+    return praises[Math.floor(Math.random() * praises.length)];
+  }
+  if (t.includes('시간') || t.includes('관리')) {
+    return `시간 관리 잘 하고 싶구나! ⏰\n공부 25분 → 쉬기 5분을 반복하는 "뽀모도로" 방법을 써봐. 집중이 훨씬 잘 돼! 미션 탭에서 습관으로 등록해봐!`;
+  }
+  if (t.includes('싫어') || t.includes('하기 싫')) {
+    return `그럴 수 있어, 다 이해해! 😊\n딱 5분만 해보자! 5분 후에도 하기 싫으면 잠깐 쉬어도 돼. 근데 보통 5분 시작하면 계속 하게 되더라고! 💪`;
+  }
+  if (t.includes('안녕') || t.includes('hi') || t.includes('hello')) {
+    return `안녕! 반가워! 🦊✨\n오늘도 열심히 해보자! 미션 완료하면 코인이 쌓이고, 코인으로 용돈을 받을 수 있어!`;
+  }
+  return `좋은 질문이야! 🤔\n지금 미션 탭에서 오늘 할 일을 확인해봐. 하나씩 완료할 때마다 코인이 쌓여서 용돈으로 바꿀 수 있어! 화이팅! 💪`;
+}
+
+// ── 게시판 ──
+async function famLoadPosts() {
+  try {
+    const snap = await getDocs(famPostRef());
+    famPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    famPosts.sort((a,b) => b.createdAt.localeCompare(a.createdAt));
+    famRenderPosts();
+  } catch(e) { console.log('famLoadPosts', e); }
+}
+
+function famSwitchBoardTab(tab) {
+  famActiveBoardTab = tab;
+  document.querySelectorAll('.fam-board-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.btab === tab));
+  famRenderPosts();
+  window.haptic?.light();
+}
+window.famSwitchBoardTab = famSwitchBoardTab;
+
+function famRenderPosts() {
+  const el = document.getElementById('famPostList');
+  const filtered = famPosts.filter(p => p.boardType === famActiveBoardTab);
+  if (!filtered.length) {
+    el.innerHTML = `<div class="fam-empty"><div class="fam-empty-icon">${famActiveBoardTab==='notice'?'📢':'💬'}</div><div class="fam-empty-text">게시글이 없어요</div><div class="fam-empty-sub">첫 번째 글을 작성해보세요!</div></div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(post => {
+    const initials = (post.authorName||'?')[0].toUpperCase();
+    return `<div class="fam-post-card" onclick="famOpenPostDetail('${post.id}')">
+      <div class="fam-post-header">
+        <div class="fam-post-avatar">${initials}</div>
+        <div class="fam-post-meta">
+          <div class="fam-post-author">${escHtml(post.authorName||'익명')}</div>
+          <div class="fam-post-time">${post.createdAt?.slice(0,10)||''}</div>
+        </div>
+        <div class="fam-post-badge ${post.boardType}">${post.boardType==='notice'?'📢 공지':'💬 자유'}</div>
+      </div>
+      <div class="fam-post-title">${escHtml(post.title||'')}</div>
+      <div class="fam-post-preview">${escHtml(post.content||'')}</div>
+      <div class="fam-post-footer">
+        <div class="fam-post-reaction ${(post.likes||[]).includes(uid())?'liked':''}" onclick="event.stopPropagation();famToggleLike('${post.id}')">
+          ❤️ ${(post.likes||[]).length}
+        </div>
+        <div class="fam-post-reaction">💬 ${(post.comments||[]).length}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function famOpenPostDetail(id) {
+  const post = famPosts.find(p => p.id === id);
+  if (!post) return;
+  const sheet = document.getElementById('famPostDetailSheet');
+  const content = document.getElementById('famPostDetailContent');
+  content.innerHTML = `
+    <div class="fam-sheet-title">${escHtml(post.title||'')}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <div class="fam-post-avatar" style="width:28px;height:28px;font-size:12px;">${(post.authorName||'?')[0]}</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);">${escHtml(post.authorName||'익명')}</div>
+        <div style="font-size:11px;color:var(--text3);">${post.createdAt?.slice(0,16)||''}</div>
+      </div>
+    </div>
+    <div style="font-size:15px;line-height:1.7;color:var(--text);margin-bottom:20px;white-space:pre-wrap;">${escHtml(post.content||'')}</div>
+    <div style="display:flex;gap:12px;padding-top:12px;border-top:1px solid var(--line);">
+      <div class="fam-post-reaction ${(post.likes||[]).includes(uid())?'liked':''}" onclick="famToggleLike('${post.id}');this.closest('.fam-sheet-overlay').classList.remove('open');">
+        ❤️ ${(post.likes||[]).length} 좋아요
+      </div>
+    </div>
+  `;
+  sheet.classList.add('open');
+  window.haptic?.light();
+}
+window.famOpenPostDetail = famOpenPostDetail;
+
+async function famToggleLike(id) {
+  const post = famPosts.find(p => p.id === id);
+  if (!post) return;
+  const likes = post.likes || [];
+  const myUid = uid();
+  if (likes.includes(myUid)) {
+    post.likes = likes.filter(u => u !== myUid);
+  } else {
+    post.likes = [...likes, myUid];
+  }
+  try {
+    await updateDoc(doc(db, `users/${uid()}/family/board/posts/${id}`), { likes: post.likes });
+    famRenderPosts();
+  } catch(e) {}
+}
+window.famToggleLike = famToggleLike;
+
+function famOpenPostSheet() {
+  document.getElementById('famPostSheet').classList.add('open');
+  document.getElementById('famPostType').value = famActiveBoardTab;
+  window.haptic?.medium();
+}
+window.famOpenPostSheet = famOpenPostSheet;
+
+function famClosePostSheet() {
+  document.getElementById('famPostSheet').classList.remove('open');
+}
+window.famClosePostSheet = famClosePostSheet;
+
+async function famSavePost() {
+  const title = document.getElementById('famPostTitle').value.trim();
+  const content = document.getElementById('famPostContent').value.trim();
+  if (!title) { famShowToast('제목을 입력해주세요'); return; }
+  if (!content) { famShowToast('내용을 입력해주세요'); return; }
+
+  const post = {
+    title, content,
+    boardType: document.getElementById('famPostType').value,
+    authorName: currentUser?.displayName || currentUser?.email?.split('@')[0] || '나',
+    authorUid: uid(),
+    likes: [],
+    comments: [],
+    createdAt: new Date().toISOString(),
+  };
+  try {
+    const ref = await addDoc(famPostRef(), post);
+    famPosts.unshift({ id: ref.id, ...post });
+    famClosePostSheet();
+    famRenderPosts();
+    document.getElementById('famPostTitle').value = '';
+    document.getElementById('famPostContent').value = '';
+    famShowToast('게시글이 등록됐어요! 📢');
+    window.haptic?.medium();
+  } catch(e) { famShowToast('저장 실패: ' + e.message); }
+}
+window.famSavePost = famSavePost;
+
+// ── 토스트 ──
+function famShowToast(msg) {
+  const toast = document.getElementById('famToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+window.famShowToast = famShowToast;
+
+// ── switchTab 훅 (family 탭 진입 시 초기화) ──
+const _origSwitchTab = window.switchTab;
+window.switchTab = function(tabName) {
+  _origSwitchTab(tabName);
+  if (tabName === 'family') {
+    famInit();
+  }
+};
 
 </script>
 </body>
