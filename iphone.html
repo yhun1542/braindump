@@ -3,7 +3,7 @@
 <head>
 <script>
 // SW 캐시 강제 무효화 (pwa-v34)
-const CURRENT_CACHE = 'pwa-v34';
+const CURRENT_CACHE = 'pwa-v35';
 (async () => {
   try {
     const keys = await caches.keys();
@@ -2366,11 +2366,11 @@ async function arcOpenFileViewer(item) {
       // 하단 툴바
       const bar = document.createElement('div');
       bar.className = 'arc-fv-img-bar';
-      bar.innerHTML = \`
+      bar.innerHTML = `
         <button class="arc-fv-img-action" onclick="(function(u){const a=document.createElement('a');a.href=u;a.download='\${_esc(item.fileName||item.title||'image')}';a.target='_blank';a.click();})(window._arcFvCurrentItem.url||'')" title="저장">⬇️</button>
         \${navigator.share ? '<button class="arc-fv-img-action" onclick="navigator.share({title:window._arcFvCurrentItem.title,url:window._arcFvCurrentItem.url}).catch(()=>{})" title="공유">↗️</button>' : ''}
         <button class="arc-fv-img-action" onclick="closeArcFv()" title="닫기">✕</button>
-      \`;
+      `;
       body.appendChild(bar);
       // 배경 탭으로 닫기
       wrap.addEventListener('click', (e) => { if(e.target === wrap) closeArcFv(); });
@@ -2399,27 +2399,27 @@ async function arcOpenFileViewer(item) {
       const r = await fetch(url, {mode:'cors'});
       if(!r.ok) throw new Error('HTTP ' + r.status);
       const txt = await r.text();
-      body.innerHTML = \`<pre style="padding:16px;white-space:pre-wrap;font-size:13px;line-height:1.7;word-break:break-all;color:var(--text)">\${_esc(txt)}</pre>\`;
+      body.innerHTML = `<pre style="padding:16px;white-space:pre-wrap;font-size:13px;line-height:1.7;word-break:break-all;color:var(--text)">\${_esc(txt)}</pre>`;
     } catch(e) {
-      body.innerHTML = \`<div style="padding:24px;text-align:center"><div style="color:#f66;margin-bottom:12px">⚠️ 텍스트 로드 실패</div><a href="\${_esc(url)}" target="_blank" style="color:var(--accent)">새 탭에서 열기 ↗</a></div>\`;
+      body.innerHTML = `<div style="padding:24px;text-align:center"><div style="color:#f66;margin-bottom:12px">⚠️ 텍스트 로드 실패</div><a href="\${_esc(url)}" target="_blank" style="color:var(--accent)">새 탭에서 열기 ↗</a></div>`;
     }
   } else if (ft === 'pdf' || ft === 'doc' || ft === 'ppt' || ft === 'xls' || ft === 'hwp') {
     // Google Docs Viewer — CORS 없이 문서 미리보기
-    body.innerHTML = \`
+    body.innerHTML = `
       <div style="padding:16px;text-align:center;color:var(--text2);font-size:13px;margin-bottom:8px">Google Docs 뷰어로 로딩 중...</div>
       <iframe src="https://docs.google.com/viewer?url=\${encodeURIComponent(url)}&embedded=true" 
         style="width:100%;height:76dvh;border:none;border-radius:0" 
         onload="this.previousElementSibling.style.display='none'"
-        onerror="this.outerHTML='<div style=\'padding:24px;text-align:center\'><div style=\'margin-bottom:12px;color:#f66\'>미리보기를 불러올 수 없습니다.</div><a href=\"\${_esc(url)}\" target=\'_blank\' style=\'color:var(--accent)\'>직접 다운로드 ↗</a></div>'"
-      ></iframe>\`;
+        onerror="this.outerHTML='<div style=\'padding:24px;text-align:center\'><div style=\'margin-bottom:12px;color:#f66\'>미리보기를 불러올 수 없습니다.</div><a href=\"\${_esc(url)}\" target='_blank' style=\'color:var(--accent)\'>직접 다운로드 ↗</a></div>'"
+      ></iframe>`;
   } else if (url) {
-    body.innerHTML = \`
+    body.innerHTML = `
       <div style="padding:20px;text-align:center">
         <div style="font-size:40px;margin-bottom:12px">📄</div>
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">\${_esc(item.fileName||item.title||'파일')}</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:20px">미리보기를 지원하지 않는 형식입니다</div>
         <a href="\${_esc(url)}" target="_blank" style="background:var(--accent);color:#fff;padding:12px 24px;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px">다운로드 / 열기 ↗</a>
-      </div>\`;
+      </div>`;
   } else {
     body.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text3)">파일 URL이 없습니다.</div>';
   }
@@ -5510,8 +5510,8 @@ function scheduleNotification(title, eventDate, alarm) {
 // 파일 형식 감지 함수
 function arcGetFileType(item) {
   // item.type 기반 우선 판별 (Firebase Storage URL은 확장자가 없을 수 있음)
-  if (item?.type === \'image\') return \'img\';
-  if (item?.type === \'video\') return \'video\';
+  if (item?.type === 'image') return 'img';
+  if (item?.type === 'video') return 'video';
   const src = (item?.url || item?.content || item?.title || '').toLowerCase();
   if (/\.pdf(\?|#|$)/.test(src)) return 'pdf';
   if (/\.(doc|docx)(\?|#|$)/.test(src)) return 'doc';
