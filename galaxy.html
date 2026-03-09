@@ -2,23 +2,28 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v34)
-const CURRENT_CACHE = 'pwa-v39';
+// SW 캐시 강제 무효화 (pwa-v39)
+const CURRENT_CACHE = 'pwa-v40';
 (async () => {
   try {
+    // 모든 캐시 완전 삭제 (버전 무관)
     const keys = await caches.keys();
-    const oldKeys = keys.filter(k => k !== CURRENT_CACHE);
-    if (oldKeys.length > 0) {
-      await Promise.all(oldKeys.map(k => caches.delete(k)));
-      console.log('[PWA] 구버전 캐시 삭제 완료:', oldKeys);
+    if (keys.length > 0) {
+      await Promise.all(keys.map(k => caches.delete(k)));
+      console.log('[PWA] 전체 캐시 삭제 완료:', keys);
     }
-    // SW 강제 업데이트
+    // SW 강제 업데이트 및 즉시 활성화
     if ('serviceWorker' in navigator) {
       const reg = await navigator.serviceWorker.getRegistration();
       if (reg) {
         await reg.update();
-        if (reg.waiting) {
-          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        const sw = reg.waiting || reg.installing;
+        if (sw) {
+          sw.postMessage({ type: 'SKIP_WAITING' });
+          // 새 SW 활성화 시 페이지 자동 리로드
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            window.location.reload();
+          });
         }
       }
     }
