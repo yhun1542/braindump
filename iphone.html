@@ -1601,10 +1601,11 @@ window.__hideSplash = function () {
   var el = document.getElementById('bootSplash');
   if (!el) return;
   el.style.opacity = '0';
+  el.style.pointerEvents = 'none'; // 즉시 클릭 차단 해제
   setTimeout(function() { if (el && el.parentNode) el.parentNode.removeChild(el); }, 400);
 };
 // 안전장치: 8초 후 강제 제거 (Firebase 응답 지연/오류 시 멈춤 방지)
-setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
+setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 5000);
 </script>
 <!-- ══ LOGIN SCREEN ══ -->
 <div id="loginScreen">
