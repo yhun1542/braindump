@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v45)
-const CURRENT_CACHE = 'pwa-v45';
+// SW 캐시 강제 무효화 (pwa-v46)
+const CURRENT_CACHE = 'pwa-v46';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -2490,6 +2490,119 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 5000);
   </div>
 </div>
 
+
+<!-- ══ STANDALONE LOGIN SCRIPT (module 독립, window._firebaseAuth 사용) ══ -->
+<script>
+(function() {
+  'use strict';
+  
+  function waitForAuth(cb, tries) {
+    tries = tries || 0;
+    if (tries > 150) { 
+      console.error('[Login] Firebase Auth 로드 타임아웃');
+      // 타임아웃 시에도 버튼 활성화
+      var btn = document.getElementById('loginBtn');
+      if (btn) { btn.disabled = false; btn.textContent = '로그인'; }
+      return; 
+    }
+    if (window._firebaseAuth && window._firebaseAuthFns) {
+      cb();
+    } else {
+      setTimeout(function() { waitForAuth(cb, tries + 1); }, 100);
+    }
+  }
+  
+  function initLogin() {
+    var loginBtn = document.getElementById('loginBtn');
+    var loginEmail = document.getElementById('loginEmail');
+    var loginPw = document.getElementById('loginPw');
+    var loginMsg = document.getElementById('loginMsg');
+    var rememberMe = document.getElementById('rememberMe');
+    
+    if (!loginBtn) { console.error('[Login] loginBtn 없음'); return; }
+    
+    console.log('[Login] 독립 로그인 스크립트 초기화 완료');
+    
+    function setLoading(on) {
+      loginBtn.disabled = on;
+      loginBtn.textContent = on ? '로그인 중...' : '로그인';
+    }
+    
+    function showMsg(text, type) {
+      if (!loginMsg) return;
+      loginMsg.textContent = text;
+      loginMsg.className = 'login-msg ' + (type || 'error');
+    }
+    
+    function doLogin() {
+      var email = loginEmail ? loginEmail.value.trim() : '';
+      var pw = loginPw ? loginPw.value : '';
+      
+      if (!email) { showMsg('이메일을 입력해주세요.', 'error'); return; }
+      if (!pw) { showMsg('비밀번호를 입력해주세요.', 'error'); return; }
+      
+      setLoading(true);
+      
+      var auth = window._firebaseAuth;
+      var fns = window._firebaseAuthFns;
+      var persistence = (rememberMe && rememberMe.checked)
+        ? fns.browserLocalPersistence
+        : fns.browserSessionPersistence;
+      
+      fns.setPersistence(auth, persistence)
+        .then(function() {
+          return fns.signInWithEmailAndPassword(auth, email, pw);
+        })
+        .then(function() {
+          console.log('[Login] 로그인 성공');
+        })
+        .catch(function(e) {
+          console.error('[Login] 로그인 실패:', e.code, e.message);
+          var msg = '로그인에 실패했습니다.';
+          var code = e.code || '';
+          if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+            msg = '이메일 또는 비밀번호가 올바르지 않습니다.';
+          } else if (code === 'auth/too-many-requests') {
+            msg = '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
+          } else if (code === 'auth/network-request-failed') {
+            msg = '네트워크 오류입니다. 인터넷 연결을 확인해주세요.';
+          }
+          showMsg(msg, 'error');
+          setLoading(false);
+          if (loginPw) { loginPw.value = ''; loginPw.focus(); }
+        });
+    }
+    
+    // 기존 이벤트 중복 방지: loginBtn 교체
+    var newBtn = loginBtn.cloneNode(true);
+    loginBtn.parentNode.replaceChild(newBtn, loginBtn);
+    newBtn.addEventListener('click', doLogin);
+    
+    // Enter 키 지원
+    if (loginPw) {
+      loginPw.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); doLogin(); }
+      });
+    }
+    if (loginEmail) {
+      loginEmail.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { 
+          e.preventDefault(); 
+          if (loginPw && !loginPw.value) loginPw.focus(); 
+          else doLogin(); 
+        }
+      });
+    }
+  }
+  
+  // DOM 준비 후 Firebase Auth 대기
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { waitForAuth(initLogin); });
+  } else {
+    waitForAuth(initLogin);
+  }
+})();
+</script>
 <!-- ══ APP ══ -->
 <div id="app">
 
@@ -4000,6 +4113,8 @@ const fbApp = getApps().length > 0 ? getApp() : initializeApp({
   appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
 });
 const auth    = getAuth(fbApp);
+window._firebaseAuth = auth; // 독립 로그인 스크립트에서 접근 가능하도록 노출
+window._firebaseAuthFns = { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence };
 const db      = getFirestore(fbApp);
 const storage = getStorage(fbApp);
 
