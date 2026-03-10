@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v43)
-const CURRENT_CACHE = 'pwa-v43';
+// SW 캐시 강제 무효화 (pwa-v44)
+const CURRENT_CACHE = 'pwa-v44';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -4037,7 +4037,6 @@ const appEl         = document.getElementById('app');
 const loginEmail    = document.getElementById('loginEmail');
 const loginPw       = document.getElementById('loginPw');
 const loginBtn      = document.getElementById('loginBtn');
-const loginError    = document.getElementById('loginError');
 const rememberMe    = document.getElementById('rememberMe');
 const hdrDateBig    = document.getElementById('hdrDateBig');
 const hdrDateSub    = document.getElementById('hdrDateSub');
@@ -4160,6 +4159,7 @@ onAuthStateChanged(auth, async user => {
     currentUser = user;
     loginScreen.classList.add('hidden');
     appEl.classList.add('visible');
+    setLoginLoading(false); // 로그인 성공 시 스피너 해제
     // Load OpenAI key from Firestore
     try {
       const cfgDoc = await getDoc(doc(db,`users/${uid()}/config`,'openai'));
@@ -4184,6 +4184,7 @@ onAuthStateChanged(auth, async user => {
     unsubListeners.forEach(u=>u());
     unsubListeners = [];
     loginBtn.textContent = '로그인';
+    loginBtn.disabled = false;
     window.__hideSplash?.(); // 비로그인 상태에서도 스플래시 제거
   }
 });
