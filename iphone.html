@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v39)
-const CURRENT_CACHE = 'pwa-v40';
+// SW 캐시 강제 무효화 (pwa-v43)
+const CURRENT_CACHE = 'pwa-v43';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -21,7 +21,10 @@ const CURRENT_CACHE = 'pwa-v40';
         if (sw) {
           sw.postMessage({ type: 'SKIP_WAITING' });
           navigator.serviceWorker.addEventListener('controllerchange', () => {
-            window.location.reload();
+            if (!sessionStorage.getItem('_sw_reloaded')) {
+              sessionStorage.setItem('_sw_reloaded', '1');
+              window.location.reload();
+            }
           });
         }
       }

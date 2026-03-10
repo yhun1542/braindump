@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v39)
-const CURRENT_CACHE = 'pwa-v42';
+// SW 캐시 강제 무효화 (pwa-v43)
+const CURRENT_CACHE = 'pwa-v43';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -22,7 +22,10 @@ const CURRENT_CACHE = 'pwa-v42';
           sw.postMessage({ type: 'SKIP_WAITING' });
           // 새 SW 활성화 시 페이지 자동 리로드
           navigator.serviceWorker.addEventListener('controllerchange', () => {
-            window.location.reload();
+            if (!sessionStorage.getItem('_sw_reloaded')) {
+              sessionStorage.setItem('_sw_reloaded', '1');
+              window.location.reload();
+            }
           });
         }
       }
@@ -65,11 +68,13 @@ const CURRENT_CACHE = 'pwa-v42';
   }
 
   // PC/Mac (모바일 아님) → index.html
-  if (!/Android|windows phone/i.test(ua)) {
+  // SamsungBrowser, Mobile 키워드도 포함하여 갤럭시 기기 정확히 감지
+  var isMobile = /Android|windows phone|SamsungBrowser|Mobile|Tablet/i.test(ua);
+  if (!isMobile) {
     window.location.replace('/?device=pc');
     return;
   }
-  // Android → 현재 페이지 유지
+  // Android/갤럭시 → 현재 페이지 유지
 })();
 
 // ═══════════════════════════════════════════════════════
