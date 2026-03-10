@@ -2743,7 +2743,7 @@ async function addTask(cardId, text) {
 async function toggleTask(cardId, taskId, done) {
   const ds = dateStr(currentDate);
   await setDoc(doc(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks/${taskId}`), { done }, { merge:true });
-  if(done) setTimeout(()=>deleteTask(cardId,taskId), 600);
+  if(done) window.haptic?.success();
   showSaved();
 }
 async function deleteTask(cardId, taskId) {
@@ -3948,22 +3948,23 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
         updatedAt: serverTimestamp()
       };
 
-      // AI 분류 (백그라운드)
+      // 먼저 문서 저장 후, AI 분류 결과로 업데이트 (중복 생성 방지)
+      const newDocRef = await addDoc(arcCol(), payload);
+
+      // AI 분류 (백그라운드 - 기존 문서 업데이트)
       arcEnrichWithAI({ title, content, type }).then(ai => {
         if (ai) {
-          addDoc(arcCol(), {
-            ...payload,
+          updateDoc(doc(db, `users/${uid()}/archive/${newDocRef.id}`), {
             summary: ai.summary || '',
             tags: ai.tags || [],
             project: ai.project || '',
             kind: ai.kind || '',
             aiTag: ai.aiTag || '',
-            aiDone: true
+            aiDone: true,
+            updatedAt: serverTimestamp()
           });
         }
       }).catch(() => {});
-
-      await addDoc(arcCol(), payload);
       arcShowToast('✅ 저장됨');
       window.haptic?.success?.() || window.haptic?.medium();
     } catch(e) {
@@ -4866,7 +4867,7 @@ function initGIS() {
       document.getElementById('gcalStatus').textContent = '연동됨 ✓';
       document.getElementById('gcalStatus').style.color = '#27ae60';
       document.getElementById('gcalSyncItem').style.display = '';
-      showToast('구글 캘린더 연동 완료! 동기화 중...');
+      arcShowToast('구글 캘린더 연동 완료! 동기화 중...');
       syncFromGCal();
     }
   });
@@ -4880,7 +4881,7 @@ function initGIS() {
   }
 }
 document.getElementById('gcalConnectItem').addEventListener('click', () => { window.haptic?.medium();
-  if (!GCAL_CLIENT_ID) { showToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
+  if (!GCAL_CLIENT_ID) { arcShowToast('Google OAuth Client ID가 설정되지 않았습니다'); return; }
   if (gcalAccessToken) {
     if (confirm('구글 캘린더 연동을 해제하시겠습니까?')) {
       gcalAccessToken = null;
@@ -4891,16 +4892,16 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => { win
       document.getElementById('gcalStatus').style.color = '';
       document.getElementById('gcalSyncItem').style.display = 'none';
       renderCalendar();
-      showToast('구글 캘린더 연동 해제');
+      arcShowToast('구글 캘린더 연동 해제');
     }
   } else {
     if (gcalTokenClient) gcalTokenClient.requestAccessToken();
-    else { loadGIS(); showToast('Google OAuth 초기화 중...'); }
+    else { loadGIS(); arcShowToast('Google OAuth 초기화 중...'); }
   }
 });
 
 document.getElementById('gcalSyncItem').addEventListener('click', () => { window.haptic?.medium();
-  if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
+  if (!gcalAccessToken) { arcShowToast('먼저 구글 캘린더를 연동해주세요'); return; }
   syncFromGCal();
 });
 
@@ -4929,12 +4930,12 @@ async function syncFromGCal() {
           if (gcalTokenClient) {
             if (statusEl) statusEl.textContent = '재인증 중...';
             gcalTokenClient.requestAccessToken();
-            showToast('Google 토큰이 만료되었습니다. 재인증 후 다시 동기화해주세요.');
+            arcShowToast('Google 토큰이 만료되었습니다. 재인증 후 다시 동기화해주세요.');
           } else {
             document.getElementById('gcalStatus').textContent = '재연동 필요';
             document.getElementById('gcalStatus').style.color = '#e74c3c';
             if (statusEl) statusEl.textContent = '토큰 만료 - 재연동 필요';
-            showToast('Google 캘린더 토큰이 만료되었습니다. 재연동해주세요.');
+            arcShowToast('Google 캘린더 토큰이 만료되었습니다. 재연동해주세요.');
           }
           return;
         }
@@ -4955,7 +4956,7 @@ async function syncFromGCal() {
     const cnt = allEvents.filter(e => !e.isHoliday).length;
     const hcnt = allEvents.filter(e => e.isHoliday).length;
     if (statusEl) statusEl.textContent = `일정 ${cnt}개 · 공휴일 ${hcnt}개`;
-    showToast(`동기화 완료 (일정 ${cnt}개, 공휴일 ${hcnt}개)`);
+    arcShowToast(`동기화 완료 (일정 ${cnt}개, 공휴일 ${hcnt}개)`);
   } catch(e) {
     console.error('GCal sync error', e);
     if (statusEl) statusEl.textContent = '동기화 실패';

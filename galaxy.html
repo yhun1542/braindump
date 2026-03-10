@@ -4403,7 +4403,7 @@ async function addTask(cardId, text) {
 async function toggleTask(cardId, taskId, done) {
   const ds = dateStr(currentDate);
   await setDoc(doc(db,`users/${uid()}/today/${ds}/cards/${cardId}/tasks/${taskId}`), { done }, { merge:true });
-  if(done) setTimeout(()=>deleteTask(cardId,taskId), 600);
+  if(done) window.haptic?.success();
   showSaved();
 }
 async function deleteTask(cardId, taskId) {
@@ -6703,7 +6703,7 @@ function initGIS() {
       document.getElementById('gcalStatus').textContent = '연동됨 ✓';
       document.getElementById('gcalStatus').style.color = '#27ae60';
       document.getElementById('gcalSyncItem').style.display = '';
-      showToast('구글 캘린더 연동 완료! 동기화 중...');
+      arcShowToast('구글 캘린더 연동 완료! 동기화 중...');
       syncFromGCal();
     }
   });
@@ -6722,7 +6722,7 @@ function initGIS() {
 // 구글 캘린더 연동 버튼 클릭
 document.getElementById('gcalConnectItem').addEventListener('click', () => { window.haptic?.medium();
   if (!GCAL_CLIENT_ID) {
-    showToast('Setting에서 Google OAuth Client ID를 먼저 설정하세요');
+    arcShowToast('Setting에서 Google OAuth Client ID를 먼저 설정하세요');
     return;
   }
   if (gcalAccessToken) {
@@ -6735,17 +6735,17 @@ document.getElementById('gcalConnectItem').addEventListener('click', () => { win
       document.getElementById('gcalStatus').style.color = '';
       document.getElementById('gcalSyncItem').style.display = 'none';
       renderCalendar();
-      showToast('구글 캘린더 연동 해제');
+      arcShowToast('구글 캘린더 연동 해제');
     }
   } else {
     if (gcalTokenClient) gcalTokenClient.requestAccessToken();
-    else showToast('Google OAuth 클라이언트 초기화 중...');
+    else arcShowToast('Google OAuth 클라이언트 초기화 중...');
   }
 });
 
 // 구글 캘린더 동기화 버튼
 document.getElementById('gcalSyncItem').addEventListener('click', () => { window.haptic?.medium();
-  if (!gcalAccessToken) { showToast('먼저 구글 캘린더를 연동해주세요'); return; }
+  if (!gcalAccessToken) { arcShowToast('먼저 구글 캘린더를 연동해주세요'); return; }
   syncFromGCal();
 });
 
@@ -6776,12 +6776,12 @@ async function syncFromGCal() {
           if (gcalTokenClient) {
             if (statusEl) statusEl.textContent = '재인증 중...';
             gcalTokenClient.requestAccessToken();
-            showToast('Google 토큰이 만료되었습니다. 재인증 후 다시 동기화해주세요.');
+            arcShowToast('Google 토큰이 만료되었습니다. 재인증 후 다시 동기화해주세요.');
           } else {
             document.getElementById('gcalStatus').textContent = '재연동 필요';
             document.getElementById('gcalStatus').style.color = '#e74c3c';
             if (statusEl) statusEl.textContent = '토큰 만료 - 재연동 필요';
-            showToast('Google 캘린더 토큰이 만료되었습니다. 재연동해주세요.');
+            arcShowToast('Google 캘린더 토큰이 만료되었습니다. 재연동해주세요.');
           }
           return;
         }
@@ -6809,7 +6809,7 @@ async function syncFromGCal() {
     const cnt = allEvents.filter(e => !e.isHoliday).length;
     const hcnt = allEvents.filter(e => e.isHoliday).length;
     if (statusEl) statusEl.textContent = `일정 ${cnt}개 · 공휴일 ${hcnt}개`;
-    showToast(`동기화 완료 (일정 ${cnt}개, 공휴일 ${hcnt}개)`);
+    arcShowToast(`동기화 완료 (일정 ${cnt}개, 공휴일 ${hcnt}개)`);
   } catch(e) {
     console.error('GCal sync error', e);
     if (statusEl) statusEl.textContent = '동기화 실패';
@@ -6839,7 +6839,7 @@ async function addToGCal(ev) {
         const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         await updateDoc(doc(db, 'users', currentUser.uid, 'scheduleEvents', ev.id), { gcalEventId: data.id });
       }
-      showToast('구글 캘린더에 추가됨 ✓');
+      arcShowToast('구글 캘린더에 추가됨 ✓');
     } else if (res.status === 401) {
       gcalAccessToken = null; localStorage.removeItem('gcal_token');
       document.getElementById('gcalStatus').textContent = '재연동 필요';
