@@ -271,6 +271,14 @@ body {
 }
 .login-error { color: #ff6b6b; font-size: 13px; margin-top: 12px; text-align: center; display: block; }
 .login-error.hidden { display: none !important; }
+.login-forgot {
+  background: none; border: none; color: #6c63ff;
+  font-size: 13px; font-family: var(--font);
+  margin-top: 16px; cursor: pointer;
+  text-decoration: underline; opacity: 0.8;
+  width: 100%; text-align: center;
+}
+.login-forgot:hover { opacity: 1; }
 
 /* ── APP SHELL ── */
 #app { display: none; flex-direction: column; height: 100vh; }
@@ -3756,7 +3764,8 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 8000);
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  browserLocalPersistence, browserSessionPersistence, setPersistence
+  browserLocalPersistence, browserSessionPersistence, setPersistence,
+  sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
   getFirestore, collection, doc, setDoc, getDoc, getDocs,
@@ -4051,6 +4060,36 @@ loginBtn.addEventListener('click', async () => { window.haptic?.medium();
   }
 });
 loginPw.addEventListener('keydown', e => { if(e.key==='Enter') loginBtn.click(); });
+
+/* 승 Forgot Password 승 */
+const forgotPwBtn = document.getElementById('forgotPwBtn');
+forgotPwBtn.addEventListener('click', async () => {
+  const email = loginEmail.value.trim();
+  if (!email) {
+    loginError.textContent = '먼저 이메일을 입력해주세요.';
+    loginError.classList.remove('hidden');
+    return;
+  }
+  forgotPwBtn.textContent = '전송 중...';
+  forgotPwBtn.disabled = true;
+  try {
+    await sendPasswordResetEmail(auth, email);
+    loginError.style.color = '#4caf50';
+    loginError.textContent = '비밀번호 재설정 이메일을 전송했습니다. 이메일을 확인해주세요.';
+    loginError.classList.remove('hidden');
+  } catch(e) {
+    loginError.style.color = '#ff6b6b';
+    if (e.code === 'auth/user-not-found') {
+      loginError.textContent = '등록된 이메일이 없습니다.';
+    } else {
+      loginError.textContent = '이메일 전송에 실패했습니다. 다시 시도해주세요.';
+    }
+    loginError.classList.remove('hidden');
+  } finally {
+    forgotPwBtn.textContent = '비밀번호를 잊으셨나요?';
+    forgotPwBtn.disabled = false;
+  }
+});
 
 /* ── Auth State ── */
 onAuthStateChanged(auth, async user => {
