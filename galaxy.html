@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v46)
-const CURRENT_CACHE = 'pwa-v46';
+// SW 캐시 강제 무효화 (pwa-v47)
+const CURRENT_CACHE = 'pwa-v47';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -2450,6 +2450,7 @@ body {
   background:#0B1220; z-index:99999;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   transition: opacity 0.4s ease;
+  pointer-events:none;
 ">
   <div style="text-align:center;">
     <img src="/images/jf_os_header_dark_hd.png" alt="JF OS"
@@ -2467,7 +2468,7 @@ window.__hideSplash = function () {
   setTimeout(function() { if (el && el.parentNode) el.parentNode.removeChild(el); }, 400);
 };
 // 안전장치: 5초 후 강제 제거 (Firebase 응답 지연/오류 시 멈춤 방지)
-setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 5000);
+setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 1500);
 </script>
 <div id="loginScreen">
 <div class="login-card">
@@ -2491,115 +2492,84 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 5000);
 </div>
 
 
-<!-- ══ STANDALONE LOGIN SCRIPT (module 독립, window._firebaseAuth 사용) ══ -->
+<!-- ══ STANDALONE LOGIN SCRIPT v2 ══ -->
 <script>
 (function() {
   'use strict';
   
-  function waitForAuth(cb, tries) {
-    tries = tries || 0;
-    if (tries > 150) { 
-      console.error('[Login] Firebase Auth 로드 타임아웃');
-      // 타임아웃 시에도 버튼 활성화
-      var btn = document.getElementById('loginBtn');
-      if (btn) { btn.disabled = false; btn.textContent = '로그인'; }
-      return; 
-    }
-    if (window._firebaseAuth && window._firebaseAuthFns) {
-      cb();
-    } else {
-      setTimeout(function() { waitForAuth(cb, tries + 1); }, 100);
-    }
-  }
+  // bootSplash를 즉시 pointer-events:none으로 설정 (클릭 차단 방지)
+  var splash = document.getElementById('bootSplash');
+  if (splash) splash.style.pointerEvents = 'none';
   
-  function initLogin() {
+  // loginBtn에 직접 이벤트 등록 (cloneNode 없이)
+  // window.doLogin은 module 스크립트에서 노출됨
+  function bindLoginBtn() {
     var loginBtn = document.getElementById('loginBtn');
-    var loginEmail = document.getElementById('loginEmail');
-    var loginPw = document.getElementById('loginPw');
-    var loginMsg = document.getElementById('loginMsg');
-    var rememberMe = document.getElementById('rememberMe');
-    
     if (!loginBtn) { console.error('[Login] loginBtn 없음'); return; }
     
-    console.log('[Login] 독립 로그인 스크립트 초기화 완료');
-    
-    function setLoading(on) {
-      loginBtn.disabled = on;
-      loginBtn.textContent = on ? '로그인 중...' : '로그인';
-    }
-    
-    function showMsg(text, type) {
-      if (!loginMsg) return;
-      loginMsg.textContent = text;
-      loginMsg.className = 'login-msg ' + (type || 'error');
-    }
-    
-    function doLogin() {
-      var email = loginEmail ? loginEmail.value.trim() : '';
-      var pw = loginPw ? loginPw.value : '';
-      
-      if (!email) { showMsg('이메일을 입력해주세요.', 'error'); return; }
-      if (!pw) { showMsg('비밀번호를 입력해주세요.', 'error'); return; }
-      
-      setLoading(true);
-      
-      var auth = window._firebaseAuth;
-      var fns = window._firebaseAuthFns;
-      var persistence = (rememberMe && rememberMe.checked)
-        ? fns.browserLocalPersistence
-        : fns.browserSessionPersistence;
-      
-      fns.setPersistence(auth, persistence)
-        .then(function() {
-          return fns.signInWithEmailAndPassword(auth, email, pw);
-        })
-        .then(function() {
-          console.log('[Login] 로그인 성공');
-        })
-        .catch(function(e) {
-          console.error('[Login] 로그인 실패:', e.code, e.message);
-          var msg = '로그인에 실패했습니다.';
-          var code = e.code || '';
-          if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
-            msg = '이메일 또는 비밀번호가 올바르지 않습니다.';
-          } else if (code === 'auth/too-many-requests') {
-            msg = '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
-          } else if (code === 'auth/network-request-failed') {
-            msg = '네트워크 오류입니다. 인터넷 연결을 확인해주세요.';
-          }
-          showMsg(msg, 'error');
-          setLoading(false);
-          if (loginPw) { loginPw.value = ''; loginPw.focus(); }
-        });
-    }
-    
-    // 기존 이벤트 중복 방지: loginBtn 교체
-    var newBtn = loginBtn.cloneNode(true);
-    loginBtn.parentNode.replaceChild(newBtn, loginBtn);
-    newBtn.addEventListener('click', doLogin);
+    // 기존 이벤트 제거 후 재등록
+    loginBtn.removeEventListener('click', window._loginClickHandler);
+    window._loginClickHandler = function() {
+      if (typeof window.doLogin === 'function') {
+        window.doLogin();
+      } else {
+        console.error('[Login] window.doLogin 없음 - module 스크립트 로드 실패');
+        // fallback: 직접 Firebase 로그인 시도
+        var email = document.getElementById('loginEmail');
+        var pw = document.getElementById('loginPw');
+        if (!email || !pw) return;
+        var emailVal = email.value.trim();
+        var pwVal = pw.value;
+        if (!emailVal || !pwVal) {
+          alert('이메일과 비밀번호를 입력해주세요.');
+          return;
+        }
+        if (window._firebaseAuth && window._firebaseAuthFns) {
+          loginBtn.disabled = true;
+          loginBtn.textContent = '로그인 중...';
+          var auth = window._firebaseAuth;
+          var fns = window._firebaseAuthFns;
+          fns.signInWithEmailAndPassword(auth, emailVal, pwVal)
+            .then(function() { console.log('[Login] fallback 로그인 성공'); })
+            .catch(function(e) {
+              console.error('[Login] fallback 실패:', e.code);
+              loginBtn.disabled = false;
+              loginBtn.textContent = '로그인';
+              alert('로그인 실패: ' + (e.message || e.code));
+            });
+        } else {
+          alert('Firebase가 아직 로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
+        }
+      }
+    };
+    loginBtn.addEventListener('click', window._loginClickHandler);
+    console.log('[Login] loginBtn 이벤트 등록 완료');
     
     // Enter 키 지원
+    var loginPw = document.getElementById('loginPw');
+    var loginEmail = document.getElementById('loginEmail');
     if (loginPw) {
       loginPw.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); doLogin(); }
+        if (e.key === 'Enter') { e.preventDefault(); window._loginClickHandler(); }
       });
     }
     if (loginEmail) {
       loginEmail.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { 
-          e.preventDefault(); 
-          if (loginPw && !loginPw.value) loginPw.focus(); 
-          else doLogin(); 
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          var pw = document.getElementById('loginPw');
+          if (pw && !pw.value) pw.focus();
+          else window._loginClickHandler();
         }
       });
     }
   }
   
-  // DOM 준비 후 Firebase Auth 대기
+  // DOM 준비 후 즉시 실행
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { waitForAuth(initLogin); });
+    document.addEventListener('DOMContentLoaded', bindLoginBtn);
   } else {
-    waitForAuth(initLogin);
+    bindLoginBtn();
   }
 })();
 </script>
@@ -4238,6 +4208,7 @@ async function doLogin() {
     loginPw.focus();
   }
 }
+window.doLogin = doLogin; // 독립 스크립트에서 접근 가능하도록 전역 노출
 loginBtn.addEventListener('click', doLogin);
 loginEmail.addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); loginPw.value ? doLogin() : loginPw.focus(); }
