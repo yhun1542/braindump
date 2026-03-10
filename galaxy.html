@@ -10108,4 +10108,11 @@ document.getElementById('arcFile')?.addEventListener('change', function() {
       const ft = name.split('.').pop().toUpperCase();
       const icons = { PDF:'📕', DOC:'📘', DOCX:'📘', PPT:'📙', PPTX:'📙', XLS:'📗', XLSX:'📗', CSV:'📗', TXT:'📄', HWP:'📃', HWPX:'📃', ZIP:'🗜', RAR:'🗜' };
       const icon = icons[ft] || '📄';
-      previewEl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface);border-radius:10px;margin-top:8px"><span style="font-size:28px">${icon}</span><div><div sty
+      previewEl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface);border-radius:10px;margin-top:8px"><span style="font-size:28px">${icon}</span><div><div style="font-size:13px;font-weight:700;color:var(--text)">${escHtml(file.name)}</div><div style="font-size:11px;color:var(--text3)">${(file.size/1024).toFixed(1)} KB · ${ft}</div></div></div>`;
+    }
+  }
+});
+
+</script>
+</body>
+</html>
