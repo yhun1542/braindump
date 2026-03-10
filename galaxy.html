@@ -6714,9 +6714,17 @@ async function syncFromGCal() {
         const res = await fetch(url, { headers: { 'Authorization': `Bearer ${gcalAccessToken}` } });
         if (res.status === 401) {
           gcalAccessToken = null; localStorage.removeItem('gcal_token');
-          document.getElementById('gcalStatus').textContent = '재연동 필요';
-          document.getElementById('gcalStatus').style.color = '#e74c3c';
-          if (statusEl) statusEl.textContent = '토큰 만료';
+          // 토큰 만료 시 자동으로 재인증 시도
+          if (gcalTokenClient) {
+            if (statusEl) statusEl.textContent = '재인증 중...';
+            gcalTokenClient.requestAccessToken();
+            showToast('Google 토큰이 만료되었습니다. 재인증 후 다시 동기화해주세요.');
+          } else {
+            document.getElementById('gcalStatus').textContent = '재연동 필요';
+            document.getElementById('gcalStatus').style.color = '#e74c3c';
+            if (statusEl) statusEl.textContent = '토큰 만료 - 재연동 필요';
+            showToast('Google 캘린더 토큰이 만료되었습니다. 재연동해주세요.');
+          }
           return;
         }
         if (!res.ok) continue;
