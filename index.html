@@ -287,6 +287,22 @@ body {
   width: 100%; text-align: center;
 }
 .login-forgot:hover { opacity: 1; }
+.login-msg { font-size: 13px; margin-top: 12px; text-align: center; display: block; min-height: 18px; }
+.login-msg.hidden { display: none !important; }
+.login-msg.error { color: #ff6b6b; }
+.login-msg.success { color: #4caf50; }
+.login-forgot:disabled { opacity: 0.4; cursor: not-allowed; }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-btn .spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin 0.6s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes loginSpin { to { transform: rotate(360deg); } }
+.login-field.field-error { border-color: #ff6b6b !important; }
 
 /* ── APP SHELL ── */
 #app { display: none; flex-direction: column; height: 100vh; }
@@ -1591,14 +1607,14 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 5000);
          style="width:200px; height:auto; display:block; margin:0 auto;"
          onerror="this.src='/images/jf_os_header_dark_master.png'">
   </div>
-  <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email">
+  <input class="login-field" type="email" id="loginEmail" placeholder="이메일" autocomplete="email" inputmode="email">
   <input class="login-field" type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
   <label class="login-remember">
     <input type="checkbox" id="rememberMe" checked>
     <span>자동 로그인</span>
   </label>
   <button class="login-btn" id="loginBtn">로그인</button>
-  <div class="login-error hidden" id="loginError"></div>
+  <div class="login-msg hidden" id="loginMsg"></div>
   <button class="login-forgot" id="forgotPwBtn">비밀번호를 잊으셨나요?</button>
 </div>
 
@@ -2376,60 +2392,99 @@ const arcSearch     = document.getElementById('arcSearch');
 const aiItems       = document.getElementById('aiReminderItems');
 
 /* ── Login ── */
-loginBtn.addEventListener('click', async () => { window.haptic?.medium();
+const loginMsg = document.getElementById('loginMsg') || document.getElementById('loginError');
+
+function showLoginMsg(text, type) {
+  loginMsg.textContent = text;
+  loginMsg.className = 'login-msg ' + (type || 'error');
+  loginMsg.style.color = '';  // 인라인 색상 초기화
+  loginMsg.style.display = '';
+}
+function hideLoginMsg() {
+  loginMsg.textContent = '';
+  loginMsg.className = 'login-msg hidden';
+  loginMsg.style.color = '';
+}
+function setLoginLoading(loading) {
+  if (loading) {
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="spinner"></span>로그인 중…';
+  } else {
+    loginBtn.disabled = false;
+    loginBtn.textContent = '로그인';
+  }
+}
+function getAuthErrMsg(code) {
+  if (!code) return '로그인에 실패했습니다. 다시 시도해주세요.';
+  if (code.includes('user-not-found') || code.includes('wrong-password') || code.includes('invalid-credential'))
+    return '이메일 또는 비밀번호가 올바르지 않습니다.';
+  if (code.includes('too-many-requests')) return '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
+  if (code.includes('network-request-failed')) return '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.';
+  if (code.includes('unauthorized-domain')) return '인증 도메인 오류입니다. 관리자에게 문의하세요.';
+  if (code.includes('user-disabled')) return '비활성화된 계정입니다.';
+  return '로그인에 실패했습니다. 다시 시도해주세요.';
+}
+function validateLoginInputs() {
   const email = loginEmail.value.trim();
-  const pw    = loginPw.value;
-  loginError.classList.add('hidden');
-  loginBtn.textContent = '로그인 중...';
+  const pw = loginPw.value;
+  loginEmail.classList.remove('field-error');
+  loginPw.classList.remove('field-error');
+  if (!email) {
+    showLoginMsg('이메일을 입력해주세요.', 'error');
+    loginEmail.classList.add('field-error'); loginEmail.focus(); return false;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showLoginMsg('올바른 이메일 형식을 입력해주세요.', 'error');
+    loginEmail.classList.add('field-error'); loginEmail.focus(); return false;
+  }
+  if (!pw) {
+    showLoginMsg('비밀번호를 입력해주세요.', 'error');
+    loginPw.classList.add('field-error'); loginPw.focus(); return false;
+  }
+  return true;
+}
+async function doLogin() {
+  hideLoginMsg();
+  if (!validateLoginInputs()) return;
+  window.haptic?.medium();
+  setLoginLoading(true);
+  const email = loginEmail.value.trim();
+  const pw = loginPw.value;
   try {
     const persistence = rememberMe.checked ? browserLocalPersistence : browserSessionPersistence;
     await setPersistence(auth, persistence);
     await signInWithEmailAndPassword(auth, email, pw);
   } catch(e) {
-    const errCode = e.code || '';
-    let errMsg = '로그인에 실패했습니다. 다시 시도해주세요.';
-    if (errCode.includes('user-not-found') || errCode.includes('wrong-password') || errCode.includes('invalid-credential')) {
-      errMsg = '이메일 또는 비밀번호가 올바르지 않습니다.';
-    } else if (errCode.includes('too-many-requests')) {
-      errMsg = '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
-    } else if (errCode.includes('network-request-failed')) {
-      errMsg = '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.';
-    } else if (errCode.includes('unauthorized-domain')) {
-      errMsg = '인증 도메인 오류입니다. 관리자에게 문의하세요.';
-    } else if (errCode.includes('user-disabled')) {
-      errMsg = '비활성화된 계정입니다.';
-    }
-    loginError.textContent = errMsg;
-      loginError.style.display = 'block'; loginError.classList.remove('hidden');
-    loginBtn.textContent = '로그인';
+    showLoginMsg(getAuthErrMsg(e.code || ''), 'error');
+    setLoginLoading(false);
+    loginPw.value = '';
+    loginPw.focus();
   }
+}
+loginBtn.addEventListener('click', doLogin);
+loginEmail.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); loginPw.value ? doLogin() : loginPw.focus(); }
 });
-loginPw.addEventListener('keydown', e => { if(e.key==='Enter') loginBtn.click(); });
+loginPw.addEventListener('keydown', e => { if(e.key==='Enter') { e.preventDefault(); doLogin(); } });
+loginEmail.addEventListener('input', () => { loginEmail.classList.remove('field-error'); if(loginMsg.classList.contains('error')) hideLoginMsg(); });
+loginPw.addEventListener('input', () => { loginPw.classList.remove('field-error'); if(loginMsg.classList.contains('error')) hideLoginMsg(); });
 
 /* 승 Forgot Password 승 */
 const forgotPwBtn = document.getElementById('forgotPwBtn');
 forgotPwBtn.addEventListener('click', async () => {
   const email = loginEmail.value.trim();
   if (!email) {
-    loginError.textContent = '먼저 이메일을 입력해주세요.';
-    loginError.classList.remove('hidden');
-    return;
+    showLoginMsg('먼저 이메일을 입력해주세요.', 'error');
+    loginEmail.classList.add('field-error'); loginEmail.focus(); return;
   }
   forgotPwBtn.textContent = '전송 중...';
   forgotPwBtn.disabled = true;
   try {
     await sendPasswordResetEmail(auth, email);
-    loginError.style.color = '#4caf50';
-    loginError.textContent = '비밀번호 재설정 이메일을 전송했습니다. 이메일을 확인해주세요.';
-    loginError.classList.remove('hidden');
+    showLoginMsg('비밀번호 재설정 이메일을 전송했습니다. 메일함을 확인해주세요.', 'success');
   } catch(e) {
-    loginError.style.color = '#ff6b6b';
-    if (e.code === 'auth/user-not-found') {
-      loginError.textContent = '등록된 이메일이 없습니다.';
-    } else {
-      loginError.textContent = '이메일 전송에 실패했습니다. 다시 시도해주세요.';
-    }
-    loginError.classList.remove('hidden');
+    if ((e.code||'').includes('user-not-found')) showLoginMsg('등록되지 않은 이메일입니다.', 'error');
+    else showLoginMsg('이메일 전송에 실패했습니다. 다시 시도해주세요.', 'error');
   } finally {
     forgotPwBtn.textContent = '비밀번호를 잊으셨나요?';
     forgotPwBtn.disabled = false;
