@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v48)
-const CURRENT_CACHE = 'pwa-v48';
+// SW 캐시 강제 무효화 (pwa-v49)
+const CURRENT_CACHE = 'pwa-v49';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -2463,15 +2463,22 @@ body {
     // 독립 로그인 스크립트에서 사용할 수 있도록 전역 노출
     window._compatAuth = auth;
     window._compatFirebase = firebase;
-    // compat onAuthStateChanged: 로그인 성공 시 loginScreen 숨기기
+    // compat onAuthStateChanged: 로그인 성공 시 loginScreen 숨기고 앱 표시
     auth.onAuthStateChanged(function(user) {
       if (user) {
         console.log('[Firebase compat] 로그인됨:', user.email);
         var loginScreen = document.getElementById('loginScreen');
+        var appEl = document.getElementById('app');
         if (loginScreen) loginScreen.classList.add('hidden');
+        if (appEl) appEl.classList.add('visible');  // ← 핵심: 앱 화면 표시
         window.__hideSplash && window.__hideSplash();
+        console.log('[Firebase compat] 앱 화면 표시 완료');
       } else {
         console.log('[Firebase compat] 로그아웃 상태');
+        var loginScreen = document.getElementById('loginScreen');
+        var appEl = document.getElementById('app');
+        if (loginScreen) loginScreen.classList.remove('hidden');
+        if (appEl) appEl.classList.remove('visible');
         window.__hideSplash && window.__hideSplash();
       }
     });
