@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v50)
-const CURRENT_CACHE = 'pwa-v50';
+// SW 캐시 강제 무효화 (pwa-v51)
+const CURRENT_CACHE = 'pwa-v51';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -3977,19 +3977,15 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 1500);
 </div>
 
 <script type="module">
-import { initializeApp, getApps, getApp } from 'https://cdn.jsdelivr.net/npm/firebase@10.7.1/app/+esm';
 import {
+  initializeApp, getApps, getApp,
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
   browserLocalPersistence, browserSessionPersistence, setPersistence,
-  sendPasswordResetEmail
-} from 'https://cdn.jsdelivr.net/npm/firebase@10.7.1/auth/+esm';
-import {
+  sendPasswordResetEmail,
   getFirestore, collection, doc, setDoc, getDoc, getDocs,
-  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc
-} from 'https://cdn.jsdelivr.net/npm/firebase@10.7.1/firestore/+esm';
-import {
-  getStorage, ref as storageRef, uploadBytes, getDownloadURL
-} from 'https://cdn.jsdelivr.net/npm/firebase@10.7.1/storage/+esm';
+  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc,
+  getStorage, storageRef, uploadBytes, getDownloadURL
+} from '/firebase-bundle.js';
 
 // ── 파일 형식 감지 & 아이콘 (module 스코프에서 직접 사용) ──
 function arcGetFileType(item) {

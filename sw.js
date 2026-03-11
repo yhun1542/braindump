@@ -12,12 +12,13 @@
  *   - 업데이트 토스트에서 SKIP_WAITING 메시지로 즉시 반영
  */
 
-const CACHE_VERSION = 'pwa-v50';
+const CACHE_VERSION = 'pwa-v51';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
   '/galaxy.html',
   '/iphone.html',
+  '/firebase-bundle.js',
   '/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
