@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v52)
-const CURRENT_CACHE = 'pwa-v52';
+// SW 캐시 강제 무효화 (pwa-v53)
+const CURRENT_CACHE = 'pwa-v53';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -2442,6 +2442,7 @@ body {
 
 </style>
 <!-- Firebase compat SDK (갤럭시 호환성) -->
+<script src="/firebase-sdk.js"></script>
 <script src="/firebase-app-compat.js"></script>
 <script src="/firebase-auth-compat.js"></script>
 <script>
@@ -3976,8 +3977,9 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 1500);
   </div>
 </div>
 
-<script type="module">
-import {
+<script>
+// Firebase SDK는 window.FirebaseSDK에서 가져옴 (IIFE 번들)
+const {
   initializeApp, getApps, getApp,
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
   browserLocalPersistence, browserSessionPersistence, setPersistence,
@@ -3985,7 +3987,7 @@ import {
   getFirestore, collection, doc, setDoc, getDoc, getDocs,
   deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc,
   getStorage, storageRef, uploadBytes, getDownloadURL
-} from '/firebase-bundle.js';
+} = window.FirebaseSDK;
 
 // ── 파일 형식 감지 & 아이콘 (module 스코프에서 직접 사용) ──
 function arcGetFileType(item) {
