@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v47)
-const CURRENT_CACHE = 'pwa-v47';
+// SW 캐시 강제 무효화 (pwa-v48)
+const CURRENT_CACHE = 'pwa-v48';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -2441,6 +2441,46 @@ body {
 }
 
 </style>
+<!-- Firebase compat SDK (갤럭시 호환성) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script>
+// Firebase compat 초기화 (로그인 전용)
+(function() {
+  var fbConfig = {
+    apiKey: "AIzaSyAXep5gaNmCz8zhY4oP0Y7k95C1NIK9JvU",
+    authDomain: "braindump-jasoneye.firebaseapp.com",
+    projectId: "braindump-jasoneye",
+    storageBucket: "braindump-jasoneye.firebasestorage.app",
+    messagingSenderId: "931666684955",
+    appId: "1:931666684955:web:a1d069477abb46e53b5cbe"
+  };
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(fbConfig);
+    }
+    var auth = firebase.auth();
+    // 독립 로그인 스크립트에서 사용할 수 있도록 전역 노출
+    window._compatAuth = auth;
+    window._compatFirebase = firebase;
+    // compat onAuthStateChanged: 로그인 성공 시 loginScreen 숨기기
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        console.log('[Firebase compat] 로그인됨:', user.email);
+        var loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) loginScreen.classList.add('hidden');
+        window.__hideSplash && window.__hideSplash();
+      } else {
+        console.log('[Firebase compat] 로그아웃 상태');
+        window.__hideSplash && window.__hideSplash();
+      }
+    });
+    console.log('[Firebase compat] 초기화 완료');
+  } catch(e) {
+    console.error('[Firebase compat] 초기화 실패:', e);
+  }
+})();
+</script>
 </head>
 <body>
 
@@ -2510,35 +2550,88 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 1500);
     // 기존 이벤트 제거 후 재등록
     loginBtn.removeEventListener('click', window._loginClickHandler);
     window._loginClickHandler = function() {
+      var email = document.getElementById('loginEmail');
+      var pw = document.getElementById('loginPw');
+      if (!email || !pw) return;
+      var emailVal = email.value.trim();
+      var pwVal = pw.value;
+      if (!emailVal || !pwVal) {
+        alert('이메일과 비밀번호를 입력해주세요.');
+        return;
+      }
+      
+      // compat SDK 우선 (갤럭시 호환성)
+      if (window._compatAuth) {
+        var loginBtn = document.getElementById('loginBtn');
+        loginBtn.disabled = true;
+        loginBtn.textContent = '로그인 중...';
+        window._compatAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(function() {
+            return window._compatAuth.signInWithEmailAndPassword(emailVal, pwVal);
+          })
+          .then(function() {
+            console.log('[Login] compat 로그인 성공');
+            // onAuthStateChanged가 처리하므로 여기서는 아무것도 안 해도 됨
+          })
+          .catch(function(e) {
+            console.error('[Login] compat 실패:', e.code);
+            loginBtn.disabled = false;
+            loginBtn.textContent = '로그인';
+            var msg = e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'
+              ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+              : e.code === 'auth/user-not-found' ? '등록되지 않은 이메일입니다.'
+              : e.code === 'auth/too-many-requests' ? '너무 많은 시도. 잠시 후 다시 시도해주세요.'
+              : '로그인 실패: ' + e.code;
+            alert(msg);
+          });
+        return;
+      }
+      
+      // module SDK fallback
       if (typeof window.doLogin === 'function') {
         window.doLogin();
-      } else {
-        console.error('[Login] window.doLogin 없음 - module 스크립트 로드 실패');
-        // fallback: 직접 Firebase 로그인 시도
-        var email = document.getElementById('loginEmail');
-        var pw = document.getElementById('loginPw');
-        if (!email || !pw) return;
-        var emailVal = email.value.trim();
-        var pwVal = pw.value;
+        return;
+      }
+      
+      // 마지막 fallback
+      {
+        console.error('[Login] 모든 Firebase SDK 로드 실패');
         if (!emailVal || !pwVal) {
           alert('이메일과 비밀번호를 입력해주세요.');
           return;
         }
-        if (window._firebaseAuth && window._firebaseAuthFns) {
+        // compat SDK 우선 시도 (갤럭시 호환)
+        var compatAuth = window._compatAuth;
+        var moduleAuth = window._firebaseAuth;
+        var moduleAuthFns = window._firebaseAuthFns;
+        
+        if (compatAuth) {
           loginBtn.disabled = true;
           loginBtn.textContent = '로그인 중...';
-          var auth = window._firebaseAuth;
-          var fns = window._firebaseAuthFns;
-          fns.signInWithEmailAndPassword(auth, emailVal, pwVal)
-            .then(function() { console.log('[Login] fallback 로그인 성공'); })
+          compatAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(function() {
+              return compatAuth.signInWithEmailAndPassword(emailVal, pwVal);
+            })
+            .then(function() { console.log('[Login] compat 로그인 성공'); })
             .catch(function(e) {
-              console.error('[Login] fallback 실패:', e.code);
+              console.error('[Login] compat 실패:', e.code);
+              loginBtn.disabled = false;
+              loginBtn.textContent = '로그인';
+              alert('로그인 실패: ' + (e.message || e.code));
+            });
+        } else if (moduleAuth && moduleAuthFns) {
+          loginBtn.disabled = true;
+          loginBtn.textContent = '로그인 중...';
+          moduleAuthFns.signInWithEmailAndPassword(moduleAuth, emailVal, pwVal)
+            .then(function() { console.log('[Login] module 로그인 성공'); })
+            .catch(function(e) {
+              console.error('[Login] module 실패:', e.code);
               loginBtn.disabled = false;
               loginBtn.textContent = '로그인';
               alert('로그인 실패: ' + (e.message || e.code));
             });
         } else {
-          alert('Firebase가 아직 로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
+          alert('Firebase가 로드되지 않았습니다. 페이지를 새로고침 후 다시 시도해주세요.');
         }
       }
     };
