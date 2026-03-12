@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <script>
-// SW 캐시 강제 무효화 (pwa-v53)
-const CURRENT_CACHE = 'pwa-v53';
+// SW 캐시 강제 무효화 (pwa-v54)
+const CURRENT_CACHE = 'pwa-v54';
 (async () => {
   try {
     // 모든 캐시 완전 삭제 (버전 무관)
@@ -519,6 +519,7 @@ body {
 .cal-cell {
   background: var(--surface); min-height: 80px;
   padding: 4px 3px; cursor: pointer; position: relative;
+  overflow: hidden;
 }
 .cal-cell:hover { background: var(--bg); }
 .cal-cell.other-month .cal-day-num { opacity: 0.3; }
@@ -550,6 +551,7 @@ body {
   font-size: 10px; font-weight: 600; padding: 2px 5px;
   border-radius: 4px; color: #fff; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+  max-width: 100%; display: block; box-sizing: border-box;
 }
 .cal-more { font-size: 9px; color: var(--text3); padding: 1px 3px; }
 .cal-fab {
@@ -4375,7 +4377,7 @@ onAuthStateChanged(auth, async user => {
     setLoginLoading(false); // 로그인 성공 시 스피너 해제
     // Load OpenAI key from Firestore
     try {
-      const cfgDoc = await getDoc(doc(db,`users/${uid()}/config`,'openai'));
+      const cfgDoc = await getDoc(doc(db,`users/${currentUser.uid}/config`,'openai'));
       if(cfgDoc.exists()) openAiKey = cfgDoc.data().key || '';
     } catch(e) {}
     // Update profile
@@ -6611,7 +6613,18 @@ document.addEventListener('click', e=>{
 /* ── AI REMINDER ── */
 
 async function loadAiReminder() {
-  if(!openAiKey || !currentUser) {
+  if(!currentUser) {
+    aiItems.innerHTML = `<div class="ai-loading">로그인이 필요합니다.</div>`;
+    return;
+  }
+  // openAiKey가 없으면 Firestore에서 다시 로드 시도
+  if(!openAiKey) {
+    try {
+      const cfgDoc = await getDoc(doc(db, `users/${currentUser.uid}/config`, 'openai'));
+      if(cfgDoc.exists()) openAiKey = cfgDoc.data().key || '';
+    } catch(e) {}
+  }
+  if(!openAiKey) {
     aiItems.innerHTML = `<div class="ai-loading">AI 키가 설정되지 않았습니다. Setting에서 설정해주세요.</div>`;
     return;
   }
@@ -6665,7 +6678,8 @@ async function loadAiReminder() {
         </div>
       </div>`;
   } catch(e) {
-    aiItems.innerHTML = `<div class="ai-loading">AI 분석 실패. 잠시 후 다시 시도해주세요.</div>`;
+    console.error('AI 분석 오류:', e);
+    aiItems.innerHTML = `<div class="ai-loading">AI 분석 실패: ${e.message || '네트워크 오류'}. 잠시 후 다시 시도해주세요.</div>`;
   }
 }
 document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder);
