@@ -9,7 +9,8 @@ const CURRENT_CACHE = 'pwa-v54';
     // 모든 캐시 완전 삭제 (버전 무관)
     const keys = await caches.keys();
     if (keys.length > 0) {
-      await Promise.all(keys.map(k => caches.delete(k)));
+      const oldKeys = keys.filter(k => k !== CURRENT_CACHE);
+      if (oldKeys.length > 0) { await Promise.all(oldKeys.map(k => caches.delete(k)));
       console.log('[PWA] 전체 캐시 삭제 완료:', keys);
     }
     // SW 강제 업데이트 및 즉시 활성화
@@ -34,7 +35,7 @@ const CURRENT_CACHE = 'pwa-v54';
 })();
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="theme-color" content="#0B1220">
 <meta name="mobile-web-app-capable" content="yes">
   <!-- ═══ Icons & OG ═══ -->
@@ -1709,8 +1710,16 @@ window.__hideSplash = function () {
   el.style.pointerEvents = 'none'; // 즉시 클릭 차단 해제
   setTimeout(function() { if (el && el.parentNode) el.parentNode.removeChild(el); }, 400);
 };
-// 안전장치: 5초 후 강제 제거 (Firebase 응답 지연/오류 시 멈춤 방지)
-setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 1500);
+// 안전장치: 15초 후 강제 제거 (Firebase 응답 지연/오류 시 멈춤 방지)
+// 정상적으로는 onAuthStateChanged 콜백에서 __hideSplash 호출
+var __splashHidden = false;
+var __origHideSplash = window.__hideSplash;
+window.__hideSplash = function() {
+  if (__splashHidden) return;
+  __splashHidden = true;
+  __origHideSplash && __origHideSplash();
+};
+setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
 </script>
 <div id="loginScreen">
 <div class="login-card">
