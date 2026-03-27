@@ -473,9 +473,9 @@ body {
 }
 .add-input {
   flex: 1; border: none; outline: none; background: transparent;
-  font-size: 14px; color: var(--text3); font-family: var(--font);
+  font-size: 14px; color: var(--text); font-weight: 500; font-family: var(--font);
 }
-.add-input::placeholder { color: var(--text3); }
+.add-input::placeholder { color: var(--text2); font-weight: 400; }
 .progress-bar {
   height: 3px; background: var(--line); margin: 0;
 }
@@ -1074,25 +1074,35 @@ body {
 .family-sched-item .sched-color { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 .family-sched-item .sched-time { font-size:12px; color:var(--accent); font-weight:500; min-width:50px; }
 .family-sched-item .sched-title { font-size:14px; color:var(--text); flex:1; }
-/* ── Day Detail Overlay ── */
-.day-detail-sheet { max-height:90vh; display:flex; flex-direction:column; }
-.day-detail-event { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--surface); border-radius:14px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; border:1px solid var(--text3,#eee); }
-.day-detail-event:active { transform:scale(0.98); }
-.day-detail-event-color { width:14px; height:14px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+/* ── Day Detail Overlay (TimeBlocks 스타일) ── */
+#dayDetailOverlay { background:var(--bg) !important; align-items:stretch !important; justify-content:flex-start !important; }
+#dayDetailOverlay.hidden { display:none !important; }
+#dayDetailOverlay:not(.hidden) { display:flex !important; position:fixed; inset:0; z-index:1000; flex-direction:column; }
+.day-detail-sheet { max-height:100vh !important; height:100vh; border-radius:0 !important; display:flex; flex-direction:column; background:var(--bg) !important; padding:0 !important; }
+.day-detail-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--surface); border-bottom:1px solid var(--line); }
+.day-detail-topbar-back { background:none; border:none; font-size:22px; cursor:pointer; color:var(--text); padding:4px 8px; }
+.day-detail-topbar-title { font-size:18px; font-weight:700; color:var(--text); text-align:center; flex:1; }
+.day-detail-topbar-action { background:none; border:none; font-size:14px; cursor:pointer; color:var(--accent); font-weight:600; padding:4px 8px; }
+.day-detail-badges { display:flex; gap:8px; padding:12px 20px; flex-wrap:wrap; background:var(--surface); }
+.day-detail-list { flex:1; overflow-y:auto; padding:16px 20px calc(80px + var(--safe-bot)); }
+.day-detail-event { display:flex; align-items:center; gap:14px; padding:16px; background:var(--surface); border-radius:16px; margin-bottom:12px; cursor:pointer; transition:all 0.15s; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+.day-detail-event:active { transform:scale(0.97); background:var(--bg); }
+.day-detail-event-color { width:6px; height:44px; border-radius:3px; flex-shrink:0; }
 .day-detail-event-body { flex:1; min-width:0; }
-.day-detail-event-time { font-size:12px; font-weight:500; color:var(--accent); margin-bottom:4px; }
-.day-detail-event-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.4; word-break:break-word; }
-.day-detail-event-memo { font-size:13px; color:var(--text2,#888); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.day-detail-event.gcal { border-left:3px solid #4285f4; }
-.day-detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center; }
-.day-detail-empty-icon { font-size:56px; margin-bottom:16px; opacity:0.7; }
-.day-detail-empty-title { font-size:17px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.day-detail-event-time { font-size:13px; font-weight:600; color:var(--accent); margin-bottom:3px; }
+.day-detail-event-title { font-size:16px; font-weight:600; color:var(--text); line-height:1.4; word-break:break-word; }
+.day-detail-event-memo { font-size:13px; color:var(--text2,#888); line-height:1.4; margin-top:2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.day-detail-event.gcal .day-detail-event-color { background:#4285f4 !important; }
+.day-detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 20px; text-align:center; }
+.day-detail-empty-icon { font-size:64px; margin-bottom:20px; opacity:0.6; }
+.day-detail-empty-title { font-size:18px; font-weight:700; color:var(--text); margin-bottom:8px; }
 .day-detail-empty-desc { font-size:14px; color:var(--text2,#888); line-height:1.5; }
-.day-detail-section-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--text2,#888); text-transform:uppercase; letter-spacing:0.5px; padding:8px 4px; border-bottom:1px solid var(--text3,#eee); margin-bottom:8px; }
-.day-detail-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:500; }
+.day-detail-section-label { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--text2,#888); text-transform:uppercase; letter-spacing:0.5px; padding:12px 4px 8px; }
+.day-detail-badge { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; }
 .day-detail-badge.holiday { background:#fef2f2; color:#dc2626; }
 .day-detail-badge.count { background:#f0f4ff; color:#4f46e5; }
 .day-detail-badge.gcal-badge { background:#e8f5e9; color:#16a34a; }
+.day-detail-fab { position:fixed; bottom:calc(24px + var(--safe-bot)); right:24px; width:56px; height:56px; border-radius:50%; background:var(--accent,#6c63ff); color:#fff; border:none; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(108,99,255,0.4); cursor:pointer; z-index:1001; }
 .sheet {
   background: var(--surface);
   border-radius: 20px 20px 0 0;
@@ -2077,18 +2087,7 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
         <button class="arc-smart-btn" data-smart="docs">📁 문서</button>
         <button class="arc-smart-btn" data-smart="ai">AI 정리됨</button>
       </div>
-      <!-- Archive Dashboard -->
-      <div class="arc-dashboard" id="arcDashboard" style="display:none;">
-        <div class="arc-dash-stats">
-          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatTotal">0</span><span class="arc-dash-label">전체</span></div>
-          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatNote">0</span><span class="arc-dash-label">노트</span></div>
-          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatUrl">0</span><span class="arc-dash-label">링크</span></div>
-          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatMedia">0</span><span class="arc-dash-label">미디어</span></div>
-          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatFile">0</span><span class="arc-dash-label">파일</span></div>
-        </div>
-        <div class="arc-dash-recent" id="arcDashRecent"></div>
-        <div class="arc-dash-projects" id="arcDashProjects"></div>
-      </div>
+      <!-- Archive Dashboard (삭제됨 - 통계 대신 AI 자동 분류 사용) -->
       <div class="arc-hub" id="arcHub"></div>
       <div class="arc-grid" id="arcGrid"></div>
     </div>
@@ -2617,20 +2616,16 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
 <!-- OpenAI Key Sheet -->
 
 <!-- ══ Day Detail Overlay ══ -->
-<div class="overlay hidden" id="dayDetailOverlay">
-  <div class="sheet day-detail-sheet">
-    <div class="sheet-hdr" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;">
-      <button onclick="closeDayDetail()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">✕</button>
-      <span class="sheet-title" id="dayDetailTitle" style="font-size:17px;font-weight:700;"></span>
-      <span style="width:32px"></span>
+<div class="hidden" id="dayDetailOverlay">
+  <div class="day-detail-sheet">
+    <div class="day-detail-topbar">
+      <button class="day-detail-topbar-back" onclick="closeDayDetail()">←</button>
+      <div class="day-detail-topbar-title" id="dayDetailTitle"></div>
+      <button class="day-detail-topbar-action" style="visibility:hidden;">.</button>
     </div>
-    <div id="dayDetailSummary" style="display:flex;gap:8px;padding:0 20px 12px;flex-wrap:wrap;"></div>
-    <div id="dayDetailContent" style="flex:1;overflow-y:auto;padding:0 16px;min-height:200px;max-height:calc(90vh - 180px);"></div>
-    <div style="padding:12px 16px 20px;border-top:1px solid var(--text3,#eee);">
-      <button id="dayDetailAddBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;">
-        <span style="font-size:20px;">+</span> 새 일정 추가
-      </button>
-    </div>
+    <div class="day-detail-badges" id="dayDetailSummary"></div>
+    <div class="day-detail-list" id="dayDetailContent"></div>
+    <button class="day-detail-fab" id="dayDetailAddBtn">+</button>
   </div>
 </div>
 <div class="overlay hidden" id="openAiOverlay">
@@ -3833,29 +3828,8 @@ function updateArcCounts() {
   updateArcDashboard(counts);
 }
 function updateArcDashboard(counts) {
-  const dash = document.getElementById('arcDashboard');
-  if(!dash) return;
-  dash.style.display = arcItems.length > 0 ? '' : 'none';
-  const setNum = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-  setNum('arcStatTotal', counts.all || 0);
-  setNum('arcStatNote', counts.note || 0);
-  setNum('arcStatUrl', counts.url || 0);
-  setNum('arcStatMedia', (counts.image||0) + (counts.video||0));
-  setNum('arcStatFile', counts.file || 0);
-  // 최근 항목 3개
-  const recentEl = document.getElementById('arcDashRecent');
-  if(recentEl) {
-    const recent = [...arcItems].sort((a,b)=>arcSafeDate(b)-arcSafeDate(a)).slice(0,3);
-    recentEl.innerHTML = recent.length ? `<h4>최근 항목</h4>${recent.map(i=>`<div class="arc-dash-recent-item"><span>${{note:'📝',url:'🔗',image:'🖼',video:'🎬',file:'📄'}[i.type]||'📝'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(i.title||i.content?.slice(0,30)||'무제')}</span><span style="font-size:11px;color:var(--text3)">${arcFormatDate(i)}</span></div>`).join('')}` : '';
-  }
-  // 프로젝트 태그
-  const projEl = document.getElementById('arcDashProjects');
-  if(projEl) {
-    const projCounts = {};
-    arcItems.forEach(i => { if(i.project) projCounts[i.project] = (projCounts[i.project]||0)+1; });
-    const projs = Object.entries(projCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    projEl.innerHTML = projs.length ? `<h4>프로젝트</h4><div style="display:flex;flex-wrap:wrap">${projs.map(([name,cnt])=>`<span class="arc-dash-project-tag" onclick="openArcDashboard('${escHtml(name).replace(/'/g,"\\'")}')">📁 ${escHtml(name)} (${cnt})</span>`).join('')}</div>` : '';
-  }
+  // 대시보드 삭제됨 - 함수는 호환성을 위해 유지
+  return;
 }
 function sortArcItems(items) {
   if(arcSortMode === 'oldest') return [...items].sort((a,b)=>arcSafeDate(a)-arcSafeDate(b));
@@ -4641,14 +4615,12 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
 
     const isUrl = arcIsUrl(val);
     const type  = isUrl ? 'url' : 'note';
-    const title = isUrl ? arcGetDomain(val) : (val.length > 40 ? val.slice(0, 40) + '…' : val);
+    let title = isUrl ? arcGetDomain(val) : (val.length > 40 ? val.slice(0, 40) + '\u2026' : val);
     const content = val;
 
-    arcShowToast('저장 중...');
+    arcShowToast(isUrl ? '🔗 링크 저장 중... AI가 제목을 생성합니다' : '📝 저장 중...');
     try {
-      // modular SDK 사용
       if (!currentUser) { arcShowToast('로그인 필요'); return; }
-
 
       const payload = {
         type, title, content,
@@ -4657,16 +4629,15 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
         updatedAt: serverTimestamp()
       };
 
-      // 먼저 기본 저장 → 문서 ID 확보 → AI 결과로 updateDoc (이중 저장 방지)
       const docRef = await addDoc(arcCol(), payload);
-      _qSaving = false;  // 저장 완료 즉시 잠금 해제
+      _qSaving = false;
       arcShowToast('✅ 저장됨');
       window.haptic?.success?.() || window.haptic?.medium();
 
-      // AI 분류 (백그라운드 updateDoc — 새 문서 생성 안 함)
+      // AI 분류 + 제목 자동 생성 (백그라운드)
       arcEnrichWithAI({ title, content, type }).then(ai => {
         if (ai) {
-          updateDoc(docRef, {
+          const updates = {
             summary: ai.summary || '',
             tags: ai.tags || [],
             project: ai.project || '',
@@ -4674,6 +4645,13 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
             aiTag: ai.aiTag || '',
             aiDone: true,
             updatedAt: serverTimestamp()
+          };
+          // URL일 때 AI가 더 좋은 제목을 생성했으면 제목도 업데이트
+          if(isUrl && ai.summary) updates.title = ai.summary;
+          updateDoc(docRef, updates).then(()=>{
+            if(ai.summary || ai.tags?.length) {
+              arcShowToast(`🤖 AI 분류: ${ai.tags?.slice(0,3).map(t=>'#'+t).join(' ')||ai.summary||'완료'}`);
+            }
           }).catch(() => {});
         }
       }).catch(() => {});
@@ -4721,9 +4699,15 @@ document.getElementById('arcFileRemoveBtn')?.addEventListener('click', ()=>{
       });
       arcShowToast('✅ ' + (type==='image'?'이미지':'파일') + ' 저장됨');
       window.haptic?.success?.() || window.haptic?.medium();
-      // AI 분류 (백그라운드)
+      // AI 분류 + 제목 자동 생성 (백그라운드)
       arcEnrichWithAI({ title, content: file.name, type }).then(ai => {
-        if(ai) updateDoc(docRef, { summary:ai.summary||'', tags:ai.tags||[], project:ai.project||'', kind:ai.kind||'', aiTag:ai.aiTag||'', aiDone:true, updatedAt:serverTimestamp() }).catch(()=>{});
+        if(ai) {
+          const updates = { summary:ai.summary||'', tags:ai.tags||[], project:ai.project||'', kind:ai.kind||'', aiTag:ai.aiTag||'', aiDone:true, updatedAt:serverTimestamp() };
+          if(ai.summary && isUUID) updates.title = ai.summary;
+          updateDoc(docRef, updates).then(()=>{
+            if(ai.tags?.length) arcShowToast(`🤖 AI: ${ai.tags.slice(0,3).map(t=>'#'+t).join(' ')}`);
+          }).catch(()=>{});
+        }
       }).catch(()=>{});
     } catch(e) {
       console.error('파일 업로드 오류:', e);
@@ -5325,28 +5309,40 @@ document.addEventListener('click', e=>{
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function loadAiReminder(retryCount = 0) {
   const aiCard = document.getElementById('aiReminderCard');
-  const MAX_RETRIES = 3;
-  const TIMEOUT_MS = 15000;
+  const MAX_RETRIES = 2;
+  const TIMEOUT_MS = 20000;
   if(!currentUser) {
     aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">로그인이 필요합니다.</div></div>`;
     return;
   }
+  // 1) 네트워크 상태 먼저 확인
+  if(!navigator.onLine) {
+    console.warn('[AI] 오프라인 상태 감지');
+    renderLocalAnalysis(aiItems);
+    return;
+  }
+  // 2) API 키 로드
   if(!openAiKey) {
     try {
       const cfgDoc = await getDoc(doc(db, `users/${currentUser.uid}/config`, 'openai'));
       if(cfgDoc.exists()) openAiKey = cfgDoc.data().key || '';
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[AI] Firestore에서 키 로드 실패:', e.message);
+      renderLocalAnalysis(aiItems);
+      return;
+    }
   }
+  // 3) 키 없으면 로컬 분석 모드 (에러 대신 유용한 정보 제공)
   if(!openAiKey) {
-    aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">AI 키가 설정되지 않았습니다.</div><div class="ai-error-desc">Setting에서 OpenAI API 키를 입력해주세요.</div></div>`;
+    renderLocalAnalysis(aiItems);
     return;
   }
   aiItems.innerHTML = `<div class="ai-loading">✨ AI가 오늘의 하이라이트를 분석하고 있어요...</div>`;
   const slowTimer = setTimeout(() => {
     if(aiItems.querySelector('.ai-loading')) {
-      aiItems.innerHTML = `<div class="ai-loading">✨ 분석이 조금 오래 걸리고 있어요. 할일을 먼저 확인하세요!</div>`;
+      aiItems.innerHTML = `<div class="ai-loading">✨ 분석이 조금 오래 걸리고 있어요. 잠시만 기다려주세요...</div>`;
     }
-  }, 5000);
+  }, 8000);
   aiCard?.classList.remove('ai-collapsed');
   const ds = dateStr(currentDate);
   const todayEvsList = scheduleEvents.filter(e=>e.date===ds).map(e=>`${e.time||''} ${e.title}`).join(', ') || '없음';
@@ -5368,14 +5364,12 @@ async function loadAiReminder(retryCount = 0) {
       const errJ = await r.json().catch(()=>({}));
       const errMsg = errJ?.error?.message || `HTTP ${r.status}`;
       if(r.status === 401) {
-        aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">⚠️ API 키가 유효하지 않습니다.</div><div class="ai-error-desc">Setting에서 올바른 OpenAI API 키를 입력해주세요.</div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
+        aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">⚠️ API 키가 만료되었거나 잘못되었습니다</div><div class="ai-error-desc">Setting → OpenAI API Key에서 유효한 키를 다시 입력해주세요.<br><small style="color:var(--text3)">현재 키: ${openAiKey.slice(0,8)}...${openAiKey.slice(-4)}</small></div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
         return;
       }
-      if(r.status === 429 && retryCount < MAX_RETRIES) {
-        const delay = Math.pow(2, retryCount+1)*1000;
-        aiItems.innerHTML = `<div class="ai-loading">⏳ 요청 한도 초과, ${delay/1000}초 후 재시도...</div>`;
-        await sleep(delay);
-        return loadAiReminder(retryCount+1);
+      if(r.status === 429) {
+        aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">⚠️ OpenAI API 사용량 초과</div><div class="ai-error-desc">API 크레딧이 소진되었거나 요청 한도에 도달했습니다.<br>OpenAI 대시보드에서 잔액을 확인해주세요.</div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
+        return;
       }
       if([500,502,503].includes(r.status) && retryCount < MAX_RETRIES) {
         await sleep(Math.pow(2, retryCount)*1000);
@@ -5391,24 +5385,26 @@ async function loadAiReminder(retryCount = 0) {
       <div class="ai-item"><div class="ai-item-dot ai-dot-signal"></div><div class="ai-item-content"><div class="ai-item-label">SIGNAL TO ACTION</div><div class="ai-item-text">${escHtml(data.signal||'지금 가장 중요한 한 가지에 집중하세요.')}</div></div></div>`;
   } catch(e) {
     clearTimeout(timeoutId); clearTimeout(slowTimer);
-    console.error('AI 분석 오류:', e);
-    if(e.name === 'AbortError' || (e.name === 'TypeError' && e.message.includes('fetch'))) {
+    console.error('[AI] 분석 오류:', e.name, e.message);
+    // 네트워크 오류 → 재시도 후 로컬 분석
+    if(e.name === 'AbortError' || (e.name === 'TypeError' && (e.message.includes('fetch') || e.message.includes('network') || e.message.includes('Failed')))) {
       if(retryCount < MAX_RETRIES) {
-        aiItems.innerHTML = `<div class="ai-loading">🔄 네트워크 오류, 재시도 중...</div>`;
-        await sleep(Math.pow(2, retryCount)*1000);
+        aiItems.innerHTML = `<div class="ai-loading">🔄 네트워크 재연결 시도 중... (${retryCount+1}/${MAX_RETRIES})</div>`;
+        await sleep(Math.pow(2, retryCount)*2000);
         return loadAiReminder(retryCount+1);
       }
-      renderOfflineFallback(aiItems);
+      renderLocalAnalysis(aiItems);
       return;
     }
+    // 기타 오류
     if(retryCount < MAX_RETRIES) {
-      await sleep(Math.pow(2, retryCount)*1000);
+      await sleep(2000);
       return loadAiReminder(retryCount+1);
     }
-    aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">AI 분석 실패: ${escHtml(e.message||'알 수 없는 오류')}</div><div class="ai-error-desc">잠시 후 다시 시도해주세요.</div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
+    renderLocalAnalysis(aiItems);
   }
 }
-function renderOfflineFallback(container) {
+function renderLocalAnalysis(container) {
   const ds = dateStr(currentDate);
   const todayEvs = scheduleEvents.filter(e=>e.date===ds);
   const pendingTasks = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>!t.done));
@@ -5416,11 +5412,27 @@ function renderOfflineFallback(container) {
   const curTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   const upcoming = todayEvs.filter(e=>e.time && e.time >= curTime).sort((a,b)=>a.time.localeCompare(b.time))[0];
   const highTask = pendingTasks.find(t=>t.priority==='high');
-  let sched = upcoming ? `⏰ 다음 일정: ${upcoming.time} - ${upcoming.title}` : (todayEvs.length > 0 ? `오늘 ${todayEvs.length}개 일정` : '오늘은 등록된 일정이 없습니다.');
-  let todo = highTask ? `🔴 중요: ${highTask.text}` : (pendingTasks.length > 0 ? `📝 ${pendingTasks[0].text}` : '모든 할일 완료! 🎉');
-  let signal = pendingTasks.length > 5 ? `📊 ${pendingTasks.length}개 미완료! 중요한 3개부터 집중하세요.` : '💪 지금 바로 첫 번째 할일을 시작해보세요!';
+  const completedToday = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>t.done)).length;
+  const totalToday = completedToday + pendingTasks.length;
+  let sched = upcoming ? `⏰ 다음 일정: ${upcoming.time} - ${upcoming.title}` : (todayEvs.length > 0 ? `오늘 ${todayEvs.length}개 일정 (모두 완료)` : '오늘은 등록된 일정이 없습니다.');
+  let todo = highTask ? `🔴 우선: ${highTask.text}` : (pendingTasks.length > 0 ? `📝 ${pendingTasks[0].text}` : '모든 할일 완료! 🎉');
+  let signal;
+  if(totalToday > 0 && completedToday > 0) {
+    const pct = Math.round(completedToday/totalToday*100);
+    signal = `📊 오늘 진행률 ${pct}% (${completedToday}/${totalToday}) — ${pendingTasks.length > 0 ? '나머지 할일을 마무리하세요!' : '완벽한 하루!'}`;
+  } else if(pendingTasks.length > 5) {
+    signal = `📊 ${pendingTasks.length}개 미완료! 중요한 3개부터 집중하세요.`;
+  } else {
+    signal = '💪 지금 바로 첫 번째 할일을 시작해보세요!';
+  }
+  const isOffline = !navigator.onLine;
+  const hasKey = !!openAiKey;
+  let badge = '';
+  if(isOffline) badge = `<div class="ai-offline-badge">⚡ 오프라인 모드 — 로컬 데이터 기반 분석</div>`;
+  else if(!hasKey) badge = `<div class="ai-offline-badge">💡 로컬 분석 모드 — Setting에서 AI 키를 설정하면 더 스마트해져요</div>`;
+  else badge = `<div class="ai-offline-badge">⚡ 네트워크 오류 — 로컬 데이터 기반 분석</div>`;
   container.innerHTML = `
-    <div class="ai-offline-badge">⚡ 오프라인 모드 (로컬 데이터 기반)</div>
+    ${badge}
     <div class="ai-item"><div class="ai-item-dot ai-dot-schedule"></div><div class="ai-item-content"><div class="ai-item-label">SCHEDULE</div><div class="ai-item-text">${escHtml(sched)}</div></div></div>
     <div class="ai-item"><div class="ai-item-dot ai-dot-todo"></div><div class="ai-item-content"><div class="ai-item-label">TODO</div><div class="ai-item-text">${escHtml(todo)}</div></div></div>
     <div class="ai-item"><div class="ai-item-dot ai-dot-signal"></div><div class="ai-item-content"><div class="ai-item-label">SIGNAL</div><div class="ai-item-text">${escHtml(signal)}</div></div></div>
@@ -5517,6 +5529,7 @@ document.getElementById('dayDetailOverlay').addEventListener('click', e=>{
 let familyGroupId = null;
 let familyInited = false;
 let familyUnsubs = [];
+window.initFamilyTab = initFamilyTab;
 async function initFamilyTab() {
   if(familyInited || !currentUser) return;
   try {
@@ -5601,6 +5614,8 @@ function renderFamilyBoard(items) {
 }
 document.getElementById('familySchedInput')?.addEventListener('keydown', async e => {
   if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  if(!familyGroupId) { await initFamilyTab(); }
+  if(!familyGroupId) { alert('가족 그룹 초기화 실패. 로그인 상태를 확인해주세요.'); return; }
   const text = e.target.value.trim();
   e.target.value = '';
   const match = text.match(/^(\d{1,2})\/(\d{1,2})\s*(\d{1,2}시?\s*\d{0,2}분?)?\s*(.+)$/);
@@ -5620,12 +5635,16 @@ document.getElementById('familySchedInput')?.addEventListener('keydown', async e
 });
 document.getElementById('familyTodoInput')?.addEventListener('keydown', async e => {
   if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  if(!familyGroupId) { await initFamilyTab(); }
+  if(!familyGroupId) { alert('가족 그룹 초기화 실패. 로그인 상태를 확인해주세요.'); return; }
   const text = e.target.value.trim();
   e.target.value = '';
   await addDoc(collection(db, `family/${familyGroupId}/todos`), { text, done:false, assignee:'', createdAt:serverTimestamp() });
 });
 document.getElementById('familyBoardInput')?.addEventListener('keydown', async e => {
   if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  if(!familyGroupId) { await initFamilyTab(); }
+  if(!familyGroupId) { alert('가족 그룹 초기화 실패. 로그인 상태를 확인해주세요.'); return; }
   const text = e.target.value.trim();
   e.target.value = '';
   await addDoc(collection(db, `family/${familyGroupId}/board`), { text, author:currentUser?.displayName||'나', createdAt:serverTimestamp() });
