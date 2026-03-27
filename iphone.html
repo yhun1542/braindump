@@ -1011,6 +1011,46 @@ body {
 .ai-item-label { font-size: 10px; font-weight: 700; opacity: 0.5; letter-spacing: 1px; margin-bottom: 2px; }
 .ai-item-text  { font-size: 13px; line-height: 1.4; }
 .ai-loading { padding: 20px; text-align: center; font-size: 13px; opacity: 0.5; }
+/* ── AI Reminder 접힘/펼침 ── */
+.ai-collapsed .ai-reminder-items { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; padding: 0; }
+.ai-reminder-card:not(.ai-collapsed) .ai-reminder-items { max-height: 500px; opacity: 1; transition: max-height 0.4s ease, opacity 0.3s ease; }
+.ai-collapse-arrow { font-size: 12px; transition: transform 0.3s ease; margin-left: auto; margin-right: 8px; }
+.ai-collapsed .ai-collapse-arrow { transform: rotate(-90deg); }
+.ai-offline-badge { background: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; margin-bottom: 10px; text-align: center; }
+.ai-retry-btn { display: block; margin: 10px auto 0; padding: 8px 20px; background: var(--accent, #6c63ff); color: #fff; border: none; border-radius: 10px; font-size: 13px; cursor: pointer; }
+.ai-error { text-align: center; padding: 12px; }
+.ai-error-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.ai-error-desc { font-size: 12px; color: var(--text2, #888); line-height: 1.5; margin-bottom: 10px; }
+
+.family-section { padding: 8px 0; }
+.family-board-list { padding: 8px 0; }
+.family-board-item { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-bottom:1px solid var(--text3,#eee); }
+.family-board-item .board-avatar { width:32px; height:32px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; flex-shrink:0; }
+.family-board-item .board-body { flex:1; }
+.family-board-item .board-text { font-size:14px; color:var(--text); line-height:1.5; }
+.family-board-item .board-meta { font-size:11px; color:var(--text2,#888); margin-top:4px; }
+.family-board-item .board-del { background:none; border:none; color:#e74c3c; font-size:16px; cursor:pointer; padding:4px; }
+.family-sched-item { display:flex; align-items:center; gap:10px; padding:10px 16px; }
+.family-sched-item .sched-color { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.family-sched-item .sched-time { font-size:12px; color:var(--accent); font-weight:500; min-width:50px; }
+.family-sched-item .sched-title { font-size:14px; color:var(--text); flex:1; }
+.day-detail-sheet { max-height:90vh; display:flex; flex-direction:column; }
+.day-detail-event { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--surface); border-radius:14px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; border:1px solid var(--text3,#eee); }
+.day-detail-event:active { transform:scale(0.98); }
+.day-detail-event-color { width:14px; height:14px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.day-detail-event-body { flex:1; min-width:0; }
+.day-detail-event-time { font-size:12px; font-weight:500; color:var(--accent); margin-bottom:4px; }
+.day-detail-event-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.4; word-break:break-word; }
+.day-detail-event-memo { font-size:13px; color:var(--text2,#888); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.day-detail-event.gcal { border-left:3px solid #4285f4; }
+.day-detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center; }
+.day-detail-empty-icon { font-size:56px; margin-bottom:16px; opacity:0.7; }
+.day-detail-empty-title { font-size:17px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.day-detail-section-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--text2,#888); text-transform:uppercase; letter-spacing:0.5px; padding:8px 4px; border-bottom:1px solid var(--text3,#eee); margin-bottom:8px; }
+.day-detail-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:500; }
+.day-detail-badge.holiday { background:#fef2f2; color:#dc2626; }
+.day-detail-badge.count { background:#f0f4ff; color:#4f46e5; }
+.day-detail-badge.gcal-badge { background:#e8f5e9; color:#16a34a; }
 
 /* ════════════════════════════════════════
    MODALS & OVERLAYS
@@ -1331,6 +1371,16 @@ body {
 .arc-smartbar::-webkit-scrollbar{display:none}
 .arc-smart-btn{flex:0 0 auto;border:none;border-radius:999px;padding:9px 12px;background:var(--card);color:var(--text2);font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .arc-smart-btn.active{background:var(--accent);color:#fff}
+/* ── Archive Dashboard ── */
+.arc-dashboard{background:var(--surface);border-radius:14px;padding:14px;margin:10px 0;box-shadow:var(--shadow)}
+.arc-dash-stats{display:flex;gap:8px;justify-content:space-around;margin-bottom:12px}
+.arc-dash-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
+.arc-dash-num{font-size:20px;font-weight:700;color:var(--accent)}
+.arc-dash-label{font-size:11px;color:var(--text2)}
+.arc-dash-recent h4,.arc-dash-projects h4{font-size:12px;font-weight:600;color:var(--text2);margin:8px 0 6px;text-transform:uppercase;letter-spacing:0.5px}
+.arc-dash-recent-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text)}
+.arc-dash-project-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:10px;font-size:12px;background:var(--bg);color:var(--text);margin:3px;cursor:pointer}
+.arc-dash-project-tag:active{background:var(--accent);color:#fff}
 .arc-hub{padding:12px 16px 10px;display:flex;flex-direction:column;gap:12px}
 .arc-hub-top{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .arc-hub-card{background:var(--surface);border:1px solid var(--border-mid);border-radius:18px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.04)}
@@ -1679,10 +1729,11 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
         <div id="todayCards"></div>
       </div>
       <!-- AI Reminder -->
-      <div class="ai-reminder-card" id="aiReminderCard">
-        <div class="ai-reminder-hdr">
+      <div class="ai-reminder-card ai-collapsed" id="aiReminderCard">
+        <div class="ai-reminder-hdr" id="aiReminderToggle" style="cursor:pointer;">
           <span>✨</span>
           <span class="ai-reminder-title">HIGHLIGHT REMINDER OF THE DAY</span>
+          <span class="ai-collapse-arrow" id="aiCollapseArrow">▼</span>
           <button class="ai-refresh-btn" id="aiRefreshBtn" title="새로고침">↻</button>
         </div>
         <div class="ai-reminder-items" id="aiReminderItems">
@@ -1782,12 +1833,26 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
       <div class="arc-smartbar" id="arcSmartBar">
         <button class="arc-smart-btn active" data-smart="all">전체</button>
         <button class="arc-smart-btn" data-smart="recent7">최근 7일</button>
+        <button class="arc-smart-btn" data-smart="recent30">최근 30일</button>
+        <button class="arc-smart-btn" data-smart="recent90">최근 3개월</button>
         <button class="arc-smart-btn" data-smart="meeting">회의</button>
         <button class="arc-smart-btn" data-smart="material">자료</button>
         <button class="arc-smart-btn" data-smart="idea">아이디어</button>
         <button class="arc-smart-btn" data-smart="pdf">PDF</button>
         <button class="arc-smart-btn" data-smart="docs">📁 문서</button>
         <button class="arc-smart-btn" data-smart="ai">AI 정리됨</button>
+      </div>
+      <!-- Archive Dashboard -->
+      <div class="arc-dashboard" id="arcDashboard" style="display:none;">
+        <div class="arc-dash-stats">
+          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatTotal">0</span><span class="arc-dash-label">전체</span></div>
+          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatNote">0</span><span class="arc-dash-label">노트</span></div>
+          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatUrl">0</span><span class="arc-dash-label">링크</span></div>
+          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatMedia">0</span><span class="arc-dash-label">미디어</span></div>
+          <div class="arc-dash-stat"><span class="arc-dash-num" id="arcStatFile">0</span><span class="arc-dash-label">파일</span></div>
+        </div>
+        <div class="arc-dash-recent" id="arcDashRecent"></div>
+        <div class="arc-dash-projects" id="arcDashProjects"></div>
       </div>
       <div class="arc-hub" id="arcHub"></div>
       <div class="arc-grid" id="arcGrid"></div>
@@ -2661,7 +2726,7 @@ onAuthStateChanged(auth, async user => {
     updateHeader();
     subscribeAll();
     renderCalendar();
-    setTimeout(loadAiReminder, 1500);
+    setTimeout(function() { try { loadAiReminder(0); } catch(e) {} }, 5000);
     window.__hideSplash?.();
   } else {
     currentUser = null;
@@ -3384,6 +3449,8 @@ function arcSearchScore(item, query){
 function arcApplySmartFilter(items){
   const now = Date.now();
   if(currentArcSmartFilter === 'recent7') return items.filter(i => now - arcSafeDate(i).getTime() <= 7*24*60*60*1000);
+  if(currentArcSmartFilter === 'recent30') return items.filter(i => now - arcSafeDate(i).getTime() <= 30*24*60*60*1000);
+  if(currentArcSmartFilter === 'recent90') return items.filter(i => now - arcSafeDate(i).getTime() <= 90*24*60*60*1000);
   if(currentArcSmartFilter === 'meeting') return items.filter(i => i.kind === 'meeting');
   if(currentArcSmartFilter === 'material') return items.filter(i => i.kind === 'material');
   if(currentArcSmartFilter === 'idea') return items.filter(i => i.kind === 'idea');
@@ -3412,6 +3479,30 @@ function updateArcCounts() {
     const el = document.getElementById(`cnt-${k}`);
     if(el) el.textContent = counts[k];
   });
+  updateArcDashboard(counts);
+}
+function updateArcDashboard(counts) {
+  const dash = document.getElementById('arcDashboard');
+  if(!dash) return;
+  dash.style.display = arcItems.length > 0 ? '' : 'none';
+  const setNum = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  setNum('arcStatTotal', counts.all || 0);
+  setNum('arcStatNote', counts.note || 0);
+  setNum('arcStatUrl', counts.url || 0);
+  setNum('arcStatMedia', (counts.image||0) + (counts.video||0));
+  setNum('arcStatFile', counts.file || 0);
+  const recentEl = document.getElementById('arcDashRecent');
+  if(recentEl) {
+    const recent = [...arcItems].sort((a,b)=>arcSafeDate(b)-arcSafeDate(a)).slice(0,3);
+    recentEl.innerHTML = recent.length ? `<h4>최근 항목</h4>${recent.map(i=>`<div class="arc-dash-recent-item"><span>${{note:'📝',url:'🔗',image:'🖼',video:'🎬',file:'📄'}[i.type]||'📝'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(i.title||i.content?.slice(0,30)||'무제')}</span><span style="font-size:11px;color:var(--text3)">${arcFormatDate(i)}</span></div>`).join('')}` : '';
+  }
+  const projEl = document.getElementById('arcDashProjects');
+  if(projEl) {
+    const projCounts = {};
+    arcItems.forEach(i => { if(i.project) projCounts[i.project] = (projCounts[i.project]||0)+1; });
+    const projs = Object.entries(projCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    projEl.innerHTML = projs.length ? `<h4>프로젝트</h4><div style="display:flex;flex-wrap:wrap">${projs.map(([name,cnt])=>`<span class="arc-dash-project-tag" onclick="openArcDashboard('${escHtml(name).replace(/'/g,"\\'")}')">📁 ${escHtml(name)} (${cnt})</span>`).join('')}</div>` : '';
+  }
 }
 function sortArcItems(items) {
   if(arcSortMode === 'oldest') return [...items].sort((a,b)=>arcSafeDate(a)-arcSafeDate(b));
@@ -4877,65 +4968,317 @@ document.addEventListener('click', e=>{
 
 /* ── AI REMINDER ── */
 
-async function loadAiReminder() {
-  if(!openAiKey || !currentUser) {
-    aiItems.innerHTML = `<div class="ai-loading">AI 키가 설정되지 않았습니다. Setting에서 설정해주세요.</div>`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function loadAiReminder(retryCount = 0) {
+  const aiCard = document.getElementById('aiReminderCard');
+  const MAX_RETRIES = 3;
+  const TIMEOUT_MS = 15000;
+  if(!currentUser) {
+    aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">로그인이 필요합니다.</div></div>`;
     return;
   }
-  aiItems.innerHTML = `<div class="ai-loading">✨ AI 분석 중...</div>`;
+  if(!openAiKey) {
+    try {
+      const cfgDoc = await getDoc(doc(db, `users/${currentUser.uid}/config`, 'openai'));
+      if(cfgDoc.exists()) openAiKey = cfgDoc.data().key || '';
+    } catch(e) {}
+  }
+  if(!openAiKey) {
+    aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">AI 키가 설정되지 않았습니다.</div><div class="ai-error-desc">Setting에서 OpenAI API 키를 입력해주세요.</div></div>`;
+    return;
+  }
+  aiItems.innerHTML = `<div class="ai-loading">✨ AI가 오늘의 하이라이트를 분석하고 있어요...</div>`;
+  const slowTimer = setTimeout(() => {
+    if(aiItems.querySelector('.ai-loading')) {
+      aiItems.innerHTML = `<div class="ai-loading">✨ 분석이 조금 오래 걸리고 있어요. 할일을 먼저 확인하세요!</div>`;
+    }
+  }, 5000);
+  aiCard?.classList.remove('ai-collapsed');
   const ds = dateStr(currentDate);
   const todayEvsList = scheduleEvents.filter(e=>e.date===ds).map(e=>`${e.time||''} ${e.title}`).join(', ') || '없음';
-  const allTasks = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>!t.done).map(t=>t.text));
-  const tasksList = allTasks.slice(0,10).join(', ') || '없음';
-  const bdRecent  = bdItems.slice(0,5).map(i=>i.text.slice(0,50)).join('; ') || '없음';
-  const prompt = `당신은 개인 AI 어시스턴트입니다. 오늘(${ds}) 사용자의 상황을 분석하여 3가지 리마인더를 제공해주세요.
-
-오늘 일정: ${todayEvsList}
-미완료 할일: ${tasksList}
-최근 BrainDump: ${bdRecent}
-
-다음 JSON 형식으로 응답하세요:
-{
-  "schedule": "스케줄 리마인더 (한 문장)",
-  "todo": "할일 리마인더 (한 문장)",
-  "signal": "지금 즉시 행동해야 할 신호 (한 문장, 구체적으로)"
-}`;
+  const allTasks = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>!t.done).map(t=>({text:t.text, priority:t.priority})));
+  const tasksList = allTasks.slice(0,10).map(t=>t.priority==='high'?`[중요]${t.text}`:t.text).join(', ') || '없음';
+  const bdRecent = bdItems.slice(0,5).map(i=>i.text.slice(0,50)).join('; ') || '없음';
+  const prompt = `당신은 개인 AI 어시스턴트입니다. 오늘(${ds}) 사용자의 상황을 분석하여 3가지 리마인더를 제공해주세요.\n오늘 일정: ${todayEvsList}\n미완료 할일: ${tasksList}\n최근 BrainDump: ${bdRecent}\n다음 JSON 형식으로만 응답하세요:\n{"schedule":"스케줄 리마인더 (한 문장, 구체적으로)","todo":"할일 리마인더 (한 문장, 우선순위 고려)","signal":"지금 즉시 행동해야 할 신호 (한 문장, 행동 지향적으로)"}`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
-      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
-      body: JSON.stringify({ model:'gpt-4o-mini', max_tokens:300, response_format:{type:'json_object'},
-        messages:[{role:'user',content:prompt}]
-      })
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${openAiKey}`},
+      body: JSON.stringify({ model:'gpt-4o-mini', max_tokens:300, temperature:0.7, response_format:{type:'json_object'}, messages:[{role:'user',content:prompt}] }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId); clearTimeout(slowTimer);
+    if(!r.ok) {
+      const errJ = await r.json().catch(()=>({}));
+      const errMsg = errJ?.error?.message || `HTTP ${r.status}`;
+      if(r.status === 401) {
+        aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">⚠️ API 키가 유효하지 않습니다.</div><div class="ai-error-desc">Setting에서 올바른 OpenAI API 키를 입력해주세요.</div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
+        return;
+      }
+      if(r.status === 429 && retryCount < MAX_RETRIES) {
+        const delay = Math.pow(2, retryCount+1)*1000;
+        aiItems.innerHTML = `<div class="ai-loading">⏳ 요청 한도 초과, ${delay/1000}초 후 재시도...</div>`;
+        await sleep(delay);
+        return loadAiReminder(retryCount+1);
+      }
+      if([500,502,503].includes(r.status) && retryCount < MAX_RETRIES) {
+        await sleep(Math.pow(2, retryCount)*1000);
+        return loadAiReminder(retryCount+1);
+      }
+      throw new Error(errMsg);
+    }
     const j = await r.json();
     const data = JSON.parse(j.choices?.[0]?.message?.content||'{}');
     aiItems.innerHTML = `
-      <div class="ai-item">
-        <div class="ai-item-dot ai-dot-schedule"></div>
-        <div class="ai-item-content">
-          <div class="ai-item-label">SCHEDULE REMINDER</div>
-          <div class="ai-item-text">${escHtml(data.schedule||'오늘 일정을 확인하세요.')}</div>
-        </div>
-      </div>
-      <div class="ai-item">
-        <div class="ai-item-dot ai-dot-todo"></div>
-        <div class="ai-item-content">
-          <div class="ai-item-label">TODO REMINDER</div>
-          <div class="ai-item-text">${escHtml(data.todo||'미완료 할일을 처리하세요.')}</div>
-        </div>
-      </div>
-      <div class="ai-item">
-        <div class="ai-item-dot ai-dot-signal"></div>
-        <div class="ai-item-content">
-          <div class="ai-item-label">SIGNAL TO ACTION</div>
-          <div class="ai-item-text">${escHtml(data.signal||'지금 가장 중요한 한 가지에 집중하세요.')}</div>
-        </div>
-      </div>`;
+      <div class="ai-item"><div class="ai-item-dot ai-dot-schedule"></div><div class="ai-item-content"><div class="ai-item-label">SCHEDULE REMINDER</div><div class="ai-item-text">${escHtml(data.schedule||'오늘 일정을 확인하세요.')}</div></div></div>
+      <div class="ai-item"><div class="ai-item-dot ai-dot-todo"></div><div class="ai-item-content"><div class="ai-item-label">TODO REMINDER</div><div class="ai-item-text">${escHtml(data.todo||'미완료 할일을 처리하세요.')}</div></div></div>
+      <div class="ai-item"><div class="ai-item-dot ai-dot-signal"></div><div class="ai-item-content"><div class="ai-item-label">SIGNAL TO ACTION</div><div class="ai-item-text">${escHtml(data.signal||'지금 가장 중요한 한 가지에 집중하세요.')}</div></div></div>`;
   } catch(e) {
-    aiItems.innerHTML = `<div class="ai-loading">AI 분석 실패. 잠시 후 다시 시도해주세요.</div>`;
+    clearTimeout(timeoutId); clearTimeout(slowTimer);
+    console.error('AI 분석 오류:', e);
+    if(e.name === 'AbortError' || (e.name === 'TypeError' && e.message.includes('fetch'))) {
+      if(retryCount < MAX_RETRIES) {
+        aiItems.innerHTML = `<div class="ai-loading">🔄 네트워크 오류, 재시도 중...</div>`;
+        await sleep(Math.pow(2, retryCount)*1000);
+        return loadAiReminder(retryCount+1);
+      }
+      renderOfflineFallback(aiItems);
+      return;
+    }
+    if(retryCount < MAX_RETRIES) {
+      await sleep(Math.pow(2, retryCount)*1000);
+      return loadAiReminder(retryCount+1);
+    }
+    aiItems.innerHTML = `<div class="ai-error"><div class="ai-error-title">AI 분석 실패: ${escHtml(e.message||'알 수 없는 오류')}</div><div class="ai-error-desc">잠시 후 다시 시도해주세요.</div><button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 다시 시도</button></div>`;
   }
 }
-document.getElementById('aiRefreshBtn').addEventListener('click', loadAiReminder);
+function renderOfflineFallback(container) {
+  const ds = dateStr(currentDate);
+  const todayEvs = scheduleEvents.filter(e=>e.date===ds);
+  const pendingTasks = CARDS.flatMap(c=>Object.values(todayTasks[c.id]||{}).filter(t=>!t.done));
+  const now = new Date();
+  const curTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const upcoming = todayEvs.filter(e=>e.time && e.time >= curTime).sort((a,b)=>a.time.localeCompare(b.time))[0];
+  const highTask = pendingTasks.find(t=>t.priority==='high');
+  let sched = upcoming ? `⏰ 다음 일정: ${upcoming.time} - ${upcoming.title}` : (todayEvs.length > 0 ? `오늘 ${todayEvs.length}개 일정` : '오늘은 등록된 일정이 없습니다.');
+  let todo = highTask ? `🔴 중요: ${highTask.text}` : (pendingTasks.length > 0 ? `📝 ${pendingTasks[0].text}` : '모든 할일 완료! 🎉');
+  let signal = pendingTasks.length > 5 ? `📊 ${pendingTasks.length}개 미완료! 중요한 3개부터 집중하세요.` : '💪 지금 바로 첫 번째 할일을 시작해보세요!';
+  container.innerHTML = `
+    <div class="ai-offline-badge">⚡ 오프라인 모드 (로컬 데이터 기반)</div>
+    <div class="ai-item"><div class="ai-item-dot ai-dot-schedule"></div><div class="ai-item-content"><div class="ai-item-label">SCHEDULE</div><div class="ai-item-text">${escHtml(sched)}</div></div></div>
+    <div class="ai-item"><div class="ai-item-dot ai-dot-todo"></div><div class="ai-item-content"><div class="ai-item-label">TODO</div><div class="ai-item-text">${escHtml(todo)}</div></div></div>
+    <div class="ai-item"><div class="ai-item-dot ai-dot-signal"></div><div class="ai-item-content"><div class="ai-item-label">SIGNAL</div><div class="ai-item-text">${escHtml(signal)}</div></div></div>
+    <button class="ai-retry-btn" onclick="loadAiReminder(0)">🔄 AI 다시 시도</button>`;
+}
+document.getElementById('aiRefreshBtn').addEventListener('click', ()=>loadAiReminder(0));
+// AI 토글 (접기/펼치기)
+document.getElementById('aiReminderToggle').addEventListener('click', (e) => {
+  if(e.target.id === 'aiRefreshBtn') return;
+  document.getElementById('aiReminderCard').classList.toggle('ai-collapsed');
+});
+
+
+/* ══════════════════════════════════════════════════════
+   이슈 3: Day Detail (날짜 세부 페이지)
+   ══════════════════════════════════════════════════════ */
+const DAY_NAMES_KO = ['일','월','화','수','목','금','토'];
+let selectedDayStr = null;
+function openDayDetail(dayStr) {
+  selectedDayStr = dayStr;
+  const overlay = document.getElementById('dayDetailOverlay');
+  const titleEl = document.getElementById('dayDetailTitle');
+  const summaryEl = document.getElementById('dayDetailSummary');
+  const contentEl = document.getElementById('dayDetailContent');
+  const [y,m,d] = dayStr.split('-').map(Number);
+  const date = new Date(y, m-1, d);
+  const dayName = DAY_NAMES_KO[date.getDay()];
+  titleEl.textContent = `${y}년 ${m}월 ${d}일 (${dayName})`;
+  const holiday = KR_HOLIDAYS[dayStr];
+  const gcalHoliday = (typeof gcalImportedEvents !== 'undefined' ? gcalImportedEvents : []).find(e=>e.date===dayStr && e.isHoliday);
+  const holidayName = holiday || (gcalHoliday ? gcalHoliday.title : null);
+  const appEvents = scheduleEvents.filter(e=>e.date===dayStr);
+  const gcalEvs = (typeof gcalImportedEvents !== 'undefined' ? gcalImportedEvents : []).filter(e=>e.date===dayStr && !e.isHoliday);
+  const appGcalIds = new Set(appEvents.map(e=>e.gcalEventId).filter(Boolean));
+  const uniqueGcal = gcalEvs.filter(e=>!appGcalIds.has(e.gcalId));
+  const allEvents = [
+    ...appEvents.map(e=>({...e, source:'app'})),
+    ...uniqueGcal.map(e=>({...e, source:'gcal'}))
+  ].sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+  let badges = '';
+  if(holidayName) badges += `<span class="day-detail-badge holiday">🎊 ${escHtml(holidayName)}</span>`;
+  if(allEvents.length > 0) badges += `<span class="day-detail-badge count">📋 ${allEvents.length}개 일정</span>`;
+  if(uniqueGcal.length > 0) badges += `<span class="day-detail-badge gcal-badge">📅 Google ${uniqueGcal.length}개</span>`;
+  summaryEl.innerHTML = badges;
+  if(allEvents.length === 0) {
+    contentEl.innerHTML = `<div class="day-detail-empty"><div class="day-detail-empty-icon">${holidayName?'🎊':'📅'}</div><div class="day-detail-empty-title">${holidayName||'등록된 일정이 없습니다'}</div><div class="day-detail-empty-desc">${holidayName?'공휴일입니다. 편안한 하루 되세요!':'아래 버튼을 눌러 새 일정을 추가하세요'}</div></div>`;
+  } else {
+    const allDay = allEvents.filter(e=>!e.time);
+    const timed = allEvents.filter(e=>e.time);
+    let h = '';
+    if(allDay.length > 0) {
+      h += `<div><div class="day-detail-section-label"><span>🌅</span> 종일</div>${allDay.map(ev=>ddEventCard(ev)).join('')}</div>`;
+    }
+    if(timed.length > 0) {
+      h += `<div><div class="day-detail-section-label"><span>⏰</span> 시간별 일정</div>${timed.map(ev=>ddEventCard(ev)).join('')}</div>`;
+    }
+    contentEl.innerHTML = h;
+  }
+  contentEl.querySelectorAll('.day-detail-event').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      window.haptic?.light();
+      const eid = el.dataset.eventId;
+      const src = el.dataset.source;
+      if(src==='app' && eid) { closeDayDetail(); setTimeout(()=>openEventEdit(eid), 150); }
+      else if(src==='gcal') { if(confirm('구글 캘린더 이벤트입니다.\n구글 캘린더에서 수정하시겠습니까?')) window.open('https://calendar.google.com','_blank'); }
+    });
+  });
+  overlay.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  history.pushState({ tab:'schedule', dayDetail:dayStr }, '', `#schedule-day`);
+}
+function ddEventCard(ev) {
+  const isGcal = ev.source==='gcal';
+  const color = isGcal ? '#4285f4' : `var(--ec-${ev.colorIdx||0}, #6c63ff)`;
+  return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div><span style="color:var(--text3,#ccc);font-size:16px;margin-left:auto;">›</span></div>`;
+}
+function closeDayDetail() {
+  document.getElementById('dayDetailOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  selectedDayStr = null;
+}
+document.getElementById('dayDetailAddBtn').addEventListener('click', ()=>{
+  window.haptic?.medium();
+  const d = selectedDayStr;
+  closeDayDetail();
+  setTimeout(()=>openEventSheet(null, d), 150);
+});
+document.getElementById('dayDetailOverlay').addEventListener('click', e=>{
+  if(e.target.id==='dayDetailOverlay') closeDayDetail();
+});
+
+/* ══════════════════════════════════════════════════════
+   이슈 4: Family 탭 로직
+   ══════════════════════════════════════════════════════ */
+let familyGroupId = null;
+let familyInited = false;
+let familyUnsubs = [];
+async function initFamilyTab() {
+  if(familyInited || !currentUser) return;
+  try {
+    const cfgDoc = await getDoc(doc(db, `users/${currentUser.uid}/config`, 'family'));
+    if(cfgDoc.exists()) familyGroupId = cfgDoc.data().groupId || null;
+  } catch(e) {}
+  if(!familyGroupId) {
+    familyGroupId = currentUser.uid;
+    try { await setDoc(doc(db, `users/${currentUser.uid}/config`, 'family'), { groupId: familyGroupId }); } catch(e) {}
+  }
+  familyInited = true;
+  subscribeFamily();
+}
+function subscribeFamily() {
+  familyUnsubs.forEach(u=>u());
+  familyUnsubs = [];
+  const gid = familyGroupId;
+  const schedCol = collection(db, `family/${gid}/schedule`);
+  familyUnsubs.push(onSnapshot(query(schedCol, orderBy('date')), snap => {
+    const items = []; snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    renderFamilySchedule(items);
+  }));
+  const todoCol = collection(db, `family/${gid}/todos`);
+  familyUnsubs.push(onSnapshot(query(todoCol, orderBy('createdAt')), snap => {
+    const items = []; snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    renderFamilyTodos(items);
+  }));
+  const boardCol = collection(db, `family/${gid}/board`);
+  familyUnsubs.push(onSnapshot(query(boardCol, orderBy('createdAt','desc')), snap => {
+    const items = []; snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    renderFamilyBoard(items);
+  }));
+}
+function renderFamilySchedule(items) {
+  const list = document.getElementById('familySchedList');
+  const count = document.getElementById('familySchedCount');
+  const today = dateStr(new Date());
+  const upcoming = items.filter(i=>i.date >= today).slice(0, 10);
+  count.textContent = upcoming.length;
+  if(upcoming.length === 0) {
+    list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text2);font-size:13px;">등록된 가족 일정이 없습니다</div>';
+    return;
+  }
+  list.innerHTML = upcoming.map(i => `<div class="family-sched-item"><div class="sched-color" style="background:${i.color||'var(--accent)'}"></div><div class="sched-time">${i.time||'종일'}</div><div class="sched-title">${escHtml(i.title)} <span style="font-size:11px;color:var(--text2)">${i.date}</span></div></div>`).join('');
+}
+function renderFamilyTodos(items) {
+  const list = document.getElementById('familyTodoList');
+  const count = document.getElementById('familyTodoCount');
+  const done = items.filter(i=>i.done).length;
+  count.textContent = `${done}/${items.length}`;
+  if(items.length === 0) {
+    list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text2);font-size:13px;">가족 할일이 없습니다</div>';
+    return;
+  }
+  list.innerHTML = items.map(i => `<div class="task-row" style="display:flex;align-items:center;gap:10px;padding:10px 16px;"><input type="checkbox" class="task-check family-todo-check" data-id="${i.id}" ${i.done?'checked':''}><span style="flex:1;font-size:14px;color:var(--text);${i.done?'text-decoration:line-through;opacity:0.5;':''}">${escHtml(i.text)}</span>${i.assignee?`<span style="font-size:11px;color:var(--accent);background:var(--surface);padding:2px 8px;border-radius:10px;">${escHtml(i.assignee)}</span>`:''}</div>`).join('');
+  list.querySelectorAll('.family-todo-check').forEach(cb => {
+    cb.addEventListener('change', async () => {
+      await updateDoc(doc(db, `family/${familyGroupId}/todos`, cb.dataset.id), { done: cb.checked });
+    });
+  });
+}
+function renderFamilyBoard(items) {
+  const list = document.getElementById('familyBoardList');
+  const count = document.getElementById('familyBoardCount');
+  count.textContent = items.length;
+  if(items.length === 0) {
+    list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text2);font-size:13px;">공지사항이 없습니다</div>';
+    return;
+  }
+  list.innerHTML = items.slice(0,20).map(i => {
+    const ts = i.createdAt?.toDate ? i.createdAt.toDate() : new Date();
+    const timeStr = `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}`;
+    return `<div class="family-board-item"><div class="board-avatar">${(i.author||'?')[0].toUpperCase()}</div><div class="board-body"><div class="board-text">${escHtml(i.text)}</div><div class="board-meta">${escHtml(i.author||'익명')} · ${timeStr}</div></div><button class="board-del" data-id="${i.id}" title="삭제">×</button></div>`;
+  }).join('');
+  list.querySelectorAll('.board-del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(confirm('삭제하시겠습니까?')) {
+        await deleteDoc(doc(db, `family/${familyGroupId}/board`, btn.dataset.id));
+      }
+    });
+  });
+}
+document.getElementById('familySchedInput')?.addEventListener('keydown', async e => {
+  if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  const text = e.target.value.trim();
+  e.target.value = '';
+  const match = text.match(/^(\d{1,2})\/(\d{1,2})\s*(\d{1,2}시?\s*\d{0,2}분?)?\s*(.+)$/);
+  let data;
+  if(match) {
+    const yr = new Date().getFullYear();
+    const mon = match[1].padStart(2,'0');
+    const day = match[2].padStart(2,'0');
+    const timeRaw = match[3] || '';
+    const title = match[4] || text;
+    const timeParsed = timeRaw.replace(/시/,'').replace(/분/,'').trim().replace(/\s+/,':');
+    data = { title, date:`${yr}-${mon}-${day}`, time:timeParsed, color:'#6c63ff', createdAt:serverTimestamp() };
+  } else {
+    data = { title:text, date:dateStr(new Date()), time:'', color:'#6c63ff', createdAt:serverTimestamp() };
+  }
+  await addDoc(collection(db, `family/${familyGroupId}/schedule`), data);
+});
+document.getElementById('familyTodoInput')?.addEventListener('keydown', async e => {
+  if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  const text = e.target.value.trim();
+  e.target.value = '';
+  await addDoc(collection(db, `family/${familyGroupId}/todos`), { text, done:false, assignee:'', createdAt:serverTimestamp() });
+});
+document.getElementById('familyBoardInput')?.addEventListener('keydown', async e => {
+  if(e.key !== 'Enter' || !e.target.value.trim()) return;
+  const text = e.target.value.trim();
+  e.target.value = '';
+  await addDoc(collection(db, `family/${familyGroupId}/board`), { text, author:currentUser?.displayName||'나', createdAt:serverTimestamp() });
+});
+
+
 
 /* ── SETTING ── */
 const themeToggle = document.getElementById('themeToggle');
@@ -4983,7 +5326,7 @@ document.getElementById('openAiSave').addEventListener('click', async()=>{ windo
 });
 
 /* ── TAB SWITCHING ── */
-function switchTab(tabName) {
+function switchTab(tabName, pushToHistory = true) {
   activeTab = tabName;
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
@@ -4997,10 +5340,47 @@ function switchTab(tabName) {
     calYear = currentDate.getFullYear(); calMonth = currentDate.getMonth();
     renderCalendar();
   }
+  if(tabName==='family') { if(typeof initFamilyTab==='function') initFamilyTab(); }
+  if(pushToHistory) {
+    history.pushState({ tab: tabName, date: dateStr(currentDate) }, '', `#${tabName}`);
+  }
 }
 document.querySelectorAll('.tab-item').forEach(btn=>{
   btn.addEventListener('click', ()=>{ window.haptic?.light(); switchTab(btn.dataset.tab); });
 });
+
+// popstate 이벤트 - Android 뒤로가기 처리 (이탈 방지 강화)
+window.addEventListener('popstate', (event) => {
+  window.haptic?.light();
+  const ddOverlay = document.getElementById('dayDetailOverlay');
+  if(ddOverlay && !ddOverlay.classList.contains('hidden')) {
+    closeDayDetail();
+    history.pushState({ tab: activeTab, date: dateStr(currentDate) }, '', `#${activeTab}`);
+    return;
+  }
+  const openOverlay = document.querySelector('.overlay:not(.hidden)');
+  if(openOverlay) {
+    openOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+    history.pushState({ tab: activeTab, date: dateStr(currentDate) }, '', `#${activeTab}`);
+    return;
+  }
+  if(event.state && event.state.tab) {
+    switchTab(event.state.tab, false);
+    if(event.state.date) {
+      const parts = event.state.date.split('-').map(Number);
+      currentDate = new Date(parts[0], parts[1]-1, parts[2]);
+      updateHeader();
+      if(event.state.tab === 'today') resubscribeToday();
+    }
+  } else {
+    if(activeTab !== 'today') switchTab('today', false);
+    history.pushState({ tab: 'today', date: dateStr(currentDate) }, '', '#today');
+    history.pushState({ tab: 'today', date: dateStr(currentDate) }, '', '#today');
+  }
+});
+history.replaceState({ tab: 'today', date: dateStr(currentDate) }, '', '#today');
+history.pushState({ tab: 'today', date: dateStr(currentDate) }, '', '#today');
 window.switchTab = switchTab;
 
 /* ── DATE NAV ── */
