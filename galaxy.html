@@ -36,7 +36,7 @@ const CURRENT_CACHE = 'pwa-v54';
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<meta name="theme-color" content="#0B1220">
+<meta name="theme-color" content="#f5f5f1">
 <meta name="mobile-web-app-capable" content="yes">
   <!-- ═══ Icons & OG ═══ -->
   <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
@@ -558,11 +558,11 @@ body {
 .cal-event-tag.multi-day { border-radius: 2px; opacity: 0.85; }
 .cal-more { font-size: 9px; color: var(--text3); padding: 1px 3px; }
 /* Day Detail 액션 버튼 */
-.dd-actions { display:flex; gap:8px; margin-left:auto; flex-shrink:0; }
-.dd-action-btn { background:none; border:none; font-size:16px; padding:4px 6px; cursor:pointer; border-radius:6px; }
-.dd-action-btn:active { background:rgba(0,0,0,0.05); }
-.dd-action-btn.del { color:#e74c3c; }
-.dd-action-btn.move { color:var(--accent); }
+.dd-actions { display:flex; gap:6px; margin-left:auto; flex-shrink:0; }
+.dd-action-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); font-size:11px; padding:5px 10px; cursor:pointer; border-radius:8px; color:#ccc; font-weight:500; letter-spacing:0.3px; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; }
+.dd-action-btn:active { background:rgba(255,255,255,0.2); transform:scale(0.95); }
+.dd-action-btn.del { color:#ff6b6b; border-color:rgba(255,107,107,0.3); }
+.dd-action-btn.move { color:#74b9ff; border-color:rgba(116,185,255,0.3); }
 .cal-fab {
   position: fixed; bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
   right: 20px; width: 52px; height: 52px; border-radius: 50%;
@@ -5540,36 +5540,40 @@ function openDayDetail(dayStr) {
       else if(src==='gcal') { if(confirm('구글 캘린더 이벤트입니다.\n구글 캘린더에서 수정하시겠습니까?')) window.open('https://calendar.google.com','_blank'); }
     });
   });
-  // 삭제 버튼 핸들러
-  contentEl.querySelectorAll('.dd-action-btn.del').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{
-      e.stopPropagation();
-      window.haptic?.medium();
-      const eid = btn.dataset.eid;
+  // 삭제/이동 버튼 핸들러 - 이벤트 위임 방식
+  contentEl.addEventListener('click', async (e)=>{
+    const delBtn = e.target.closest('.dd-action-btn.del');
+    const moveBtn = e.target.closest('.dd-action-btn.move');
+    if(!delBtn && !moveBtn) return;
+    e.stopPropagation();
+    e.preventDefault();
+    window.haptic?.medium();
+    if(delBtn) {
+      const eid = delBtn.dataset.eid;
+      if(!eid) { showToast('이벤트 ID 없음'); return; }
       if(!confirm('이 일정을 삭제하시겠습니까?')) return;
       try {
         await deleteDoc(eventPath(eid));
         showToast('일정이 삭제되었습니다');
-      } catch(err) { console.error(err); showToast('삭제 실패'); }
-    });
-  });
-  // 날짜 이동 버튼 핸들러
-  contentEl.querySelectorAll('.dd-action-btn.move').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{
-      e.stopPropagation();
-      window.haptic?.medium();
-      const eid = btn.dataset.eid;
+        // 삭제 후 상세페이지 새로고침
+        const dayStr = selectedDayStr;
+        if(dayStr) { closeDayDetail(); setTimeout(()=>openDayDetail(dayStr), 200); }
+      } catch(err) { console.error('삭제 에러:', err); showToast('삭제 실패: ' + err.message); }
+    }
+    if(moveBtn) {
+      const eid = moveBtn.dataset.eid;
+      if(!eid) { showToast('이벤트 ID 없음'); return; }
       const ev = scheduleEvents.find(ev=>ev.id===eid);
-      if(!ev) return;
+      if(!ev) { showToast('일정을 찾을 수 없습니다'); return; }
       const newDate = prompt('이동할 날짜를 입력하세요 (YYYY-MM-DD)', ev.date);
       if(!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) { if(newDate!==null) showToast('올바른 날짜 형식이 아닙니다'); return; }
       try {
         await setDoc(eventPath(eid), { date: newDate, updatedAt: serverTimestamp() }, {merge:true});
+        showToast(`일정이 ${newDate}로 이동되었습니다`);
         closeDayDetail();
         setTimeout(()=>openDayDetail(newDate), 200);
-        showToast(`일정이 ${newDate}로 이동되었습니다`);
-      } catch(err) { console.error(err); showToast('이동 실패'); }
-    });
+      } catch(err) { console.error('이동 에러:', err); showToast('이동 실패: ' + err.message); }
+    }
   });
   overlay.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -5579,7 +5583,7 @@ function ddEventCard(ev) {
   const isGcal = ev.source==='gcal';
   const color = isGcal ? '#4285f4' : `var(--ec-${ev.colorIdx||0}, #6c63ff)`;
   const dateRange = ev.endDate ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">${ev.date} ~ ${ev.endDate}</div>` : '';
-  const actionBtns = !isGcal ? `<div class="dd-actions"><button class="dd-action-btn move" data-eid="${ev.id}" title="날짜이동">📅</button><button class="dd-action-btn del" data-eid="${ev.id}" title="삭제">🗑</button></div>` : '';
+  const actionBtns = !isGcal ? `<div class="dd-actions"><button class="dd-action-btn move" data-eid="${ev.id}" title="날짜이동">이동</button><button class="dd-action-btn del" data-eid="${ev.id}" title="삭제">삭제</button></div>` : '';
   return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${dateRange}${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div>${actionBtns}</div>`;
 }
 function closeDayDetail() {
@@ -5746,6 +5750,9 @@ function updateLogoTheme() {
     hdrLogo.src = `/images/jf_os_header_${variant}_hd.png`;
     hdrLogo.srcset = `/images/jf_os_header_${variant}_hd.webp 2x, /images/jf_os_header_${variant}_hd.png 1x`;
   }
+  // meta theme-color 동적 업데이트 (TWA/PWA 상태바 색상)
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if(metaTheme) metaTheme.setAttribute('content', isDark ? '#0e0e0e' : '#f5f5f1');
 }
 updateLogoTheme();
 themeToggle.addEventListener('change', ()=>{ setTimeout(updateLogoTheme, 50); });
