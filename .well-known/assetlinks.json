@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.jasoneye.synapse",
+    "sha256_cert_fingerprints": [
+      "9A:D0:44:B6:BC:5F:84:A1:7D:4A:3F:3D:DA:6B:46:F1:CC:47:EE:13:E3:02:8D:38:F8:60:1C:D1:81:0F:08:BF"
+    ]
+  }
+}]
