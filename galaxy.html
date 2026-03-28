@@ -5530,51 +5530,7 @@ function openDayDetail(dayStr) {
     }
     contentEl.innerHTML = h;
   }
-  contentEl.querySelectorAll('.day-detail-event').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      if(e.target.closest('.dd-action-btn')) return; // 액션 버튼 클릭 시 편집 열지 않음
-      window.haptic?.light();
-      const eid = el.dataset.eventId;
-      const src = el.dataset.source;
-      if(src==='app' && eid) { closeDayDetail(); setTimeout(()=>openEventEdit(eid), 150); }
-      else if(src==='gcal') { if(confirm('구글 캘린더 이벤트입니다.\n구글 캘린더에서 수정하시겠습니까?')) window.open('https://calendar.google.com','_blank'); }
-    });
-  });
-  // 삭제/이동 버튼 핸들러 - 이벤트 위임 방식
-  contentEl.addEventListener('click', async (e)=>{
-    const delBtn = e.target.closest('.dd-action-btn.del');
-    const moveBtn = e.target.closest('.dd-action-btn.move');
-    if(!delBtn && !moveBtn) return;
-    e.stopPropagation();
-    e.preventDefault();
-    window.haptic?.medium();
-    if(delBtn) {
-      const eid = delBtn.dataset.eid;
-      if(!eid) { showToast('이벤트 ID 없음'); return; }
-      if(!confirm('이 일정을 삭제하시겠습니까?')) return;
-      try {
-        await deleteDoc(eventPath(eid));
-        showToast('일정이 삭제되었습니다');
-        // 삭제 후 상세페이지 새로고침
-        const dayStr = selectedDayStr;
-        if(dayStr) { closeDayDetail(); setTimeout(()=>openDayDetail(dayStr), 200); }
-      } catch(err) { console.error('삭제 에러:', err); showToast('삭제 실패: ' + err.message); }
-    }
-    if(moveBtn) {
-      const eid = moveBtn.dataset.eid;
-      if(!eid) { showToast('이벤트 ID 없음'); return; }
-      const ev = scheduleEvents.find(ev=>ev.id===eid);
-      if(!ev) { showToast('일정을 찾을 수 없습니다'); return; }
-      const newDate = prompt('이동할 날짜를 입력하세요 (YYYY-MM-DD)', ev.date);
-      if(!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) { if(newDate!==null) showToast('올바른 날짜 형식이 아닙니다'); return; }
-      try {
-        await setDoc(eventPath(eid), { date: newDate, updatedAt: serverTimestamp() }, {merge:true});
-        showToast(`일정이 ${newDate}로 이동되었습니다`);
-        closeDayDetail();
-        setTimeout(()=>openDayDetail(newDate), 200);
-      } catch(err) { console.error('이동 에러:', err); showToast('이동 실패: ' + err.message); }
-    }
-  });
+  // 이벤트 핸들러는 innerHTML 교체 후 한 번만 등록 (onclick 인라인 사용으로 중복 방지)
   overlay.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
   history.pushState({ tab:'schedule', dayDetail:dayStr }, '', `#schedule-day`);
@@ -5583,13 +5539,35 @@ function ddEventCard(ev) {
   const isGcal = ev.source==='gcal';
   const color = isGcal ? '#4285f4' : `var(--ec-${ev.colorIdx||0}, #6c63ff)`;
   const dateRange = ev.endDate ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">${ev.date} ~ ${ev.endDate}</div>` : '';
-  const actionBtns = !isGcal ? `<div class="dd-actions"><button class="dd-action-btn move" data-eid="${ev.id}" title="날짜이동">이동</button><button class="dd-action-btn del" data-eid="${ev.id}" title="삭제">삭제</button></div>` : '';
-  return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${dateRange}${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div>${actionBtns}</div>`;
+  const actionBtns = !isGcal ? `<div class="dd-actions"><button class="dd-action-btn move" onclick="event.stopPropagation();ddMoveEvent('${ev.id}','${ev.date}')" title="날짜이동">이동</button><button class="dd-action-btn del" onclick="event.stopPropagation();ddDeleteEvent('${ev.id}')" title="삭제">삭제</button></div>` : '';
+  const cardClick = isGcal ? `onclick="if(confirm('구글 캘린더 이벤트입니다.\n구글 캘린더에서 수정하시겠습니까?')) window.open('https://calendar.google.com','_blank')"` : (ev.id ? `onclick="closeDayDetail();setTimeout(()=>openEventEdit('${ev.id}'),150)"` : '');
+  return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}" ${cardClick} style="cursor:pointer"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${dateRange}${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div>${actionBtns}</div>`;
 }
 function closeDayDetail() {
   document.getElementById('dayDetailOverlay').classList.add('hidden');
   document.body.style.overflow = '';
   selectedDayStr = null;
+}
+async function ddDeleteEvent(eid) {
+  if(!eid) { showToast('이벤트 ID 없음'); return; }
+  if(!confirm('이 일정을 삭제하시겠습니까?')) return;
+  try {
+    await deleteDoc(eventPath(eid));
+    showToast('일정이 삭제되었습니다');
+    const dayStr = selectedDayStr;
+    if(dayStr) { closeDayDetail(); setTimeout(()=>openDayDetail(dayStr), 300); }
+  } catch(err) { console.error('삭제 에러:', err); showToast('삭제 실패: ' + err.message); }
+}
+async function ddMoveEvent(eid, currentDate) {
+  if(!eid) { showToast('이벤트 ID 없음'); return; }
+  const newDate = prompt('이동할 날짜를 입력하세요 (YYYY-MM-DD)', currentDate);
+  if(!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) { if(newDate!==null) showToast('올바른 날짜 형식이 아닙니다'); return; }
+  try {
+    await setDoc(eventPath(eid), { date: newDate, updatedAt: serverTimestamp() }, {merge:true});
+    showToast(`일정이 ${newDate}로 이동되었습니다`);
+    closeDayDetail();
+    setTimeout(()=>openDayDetail(newDate), 300);
+  } catch(err) { console.error('이동 에러:', err); showToast('이동 실패: ' + err.message); }
 }
 document.getElementById('dayDetailAddBtn').addEventListener('click', ()=>{
   window.haptic?.medium();
@@ -5735,6 +5713,7 @@ themeToggle.addEventListener('click', ()=>{ window.haptic?.medium();
   document.documentElement.setAttribute('data-theme', isDark?'':'dark');
   themeToggle.classList.toggle('on', !isDark);
   localStorage.setItem('theme', isDark?'light':'dark');
+  setTimeout(updateLogoTheme, 50);
 });
 // 라이트 모드 디폴트: 저장된 값이 'dark'일 때만 다크 적용
 if(localStorage.getItem('theme')==='dark') {
