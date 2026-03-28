@@ -526,7 +526,14 @@ body {
   border-radius: 4px; color: #fff; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; cursor: pointer;
 }
+.cal-event-tag.multi-day { border-radius: 2px; opacity: 0.85; }
 .cal-more { font-size: 9px; color: var(--text3); padding: 1px 3px; }
+/* Day Detail 액션 버튼 */
+.dd-actions { display:flex; gap:8px; margin-left:auto; flex-shrink:0; }
+.dd-action-btn { background:none; border:none; font-size:16px; padding:4px 6px; cursor:pointer; border-radius:6px; }
+.dd-action-btn:active { background:rgba(0,0,0,0.05); }
+.dd-action-btn.del { color:#e74c3c; }
+.dd-action-btn.move { color:var(--accent); }
 .cal-fab {
   position: fixed; bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
   right: 20px; width: 52px; height: 52px; border-radius: 50%;
@@ -1997,7 +2004,11 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
       <input class="sheet-input" type="date" id="eventDate">
     </div>
     <div class="sheet-field">
-      <div class="sheet-label">시간 (선택)</div>
+      <div class="sheet-label">종료날짜 <span style="font-size:12px;color:var(--text3)">(2일 이상 일정 시)</span></div>
+      <input class="sheet-input" type="date" id="eventEndDate">
+    </div>
+    <div class="sheet-field">
+      <div class="sheet-label">알람시간</div>
       <input class="sheet-input" type="time" id="eventTime">
     </div>
     <div class="sheet-field">
@@ -2015,14 +2026,10 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
       <div class="sheet-label">색상</div>
       <div class="sheet-colors" id="eventColors">
         <div class="color-dot ec-0 selected" data-ci="0"></div>
-        <div class="color-dot ec-1" data-ci="1"></div>
-        <div class="color-dot ec-2" data-ci="2"></div>
         <div class="color-dot ec-3" data-ci="3"></div>
-        <div class="color-dot ec-4" data-ci="4"></div>
         <div class="color-dot ec-5" data-ci="5"></div>
         <div class="color-dot ec-6" data-ci="6"></div>
-        <div class="color-dot ec-7" data-ci="7"></div>
-        <div class="color-dot ec-8" data-ci="8"></div>
+        <div class="color-dot ec-1" data-ci="1"></div>
         <div class="color-dot ec-9" data-ci="9"></div>
       </div>
     </div>
@@ -3053,7 +3060,12 @@ function renderCalendar() {
     if(isToday)    d.classList.add('today');
     if(dow===0 || holiday) d.classList.add('sunday');
     if(dow===6)    d.classList.add('saturday');
-    const evs = cellStr ? scheduleEvents.filter(e=>e.date===cellStr) : [];
+    // 단일 일정 + 구간 일정(시작일~종료일 사이에 해당하는 날짜)
+    const evs = cellStr ? scheduleEvents.filter(e=>{
+      if(e.date===cellStr) return true;
+      if(e.endDate && cellStr > e.date && cellStr <= e.endDate) return true;
+      return false;
+    }) : [];
     const gcalEvs = cellStr ? gcalImportedEvents.filter(e => e.date===cellStr && !e.isHoliday) : [];
     const gcalHolidays = cellStr ? gcalImportedEvents.filter(e => e.date===cellStr && e.isHoliday) : [];
     const holidayName = holiday || (gcalHolidays.length > 0 ? gcalHolidays[0].title : null);
@@ -3065,17 +3077,18 @@ function renderCalendar() {
     d.innerHTML = `
       <div class="cal-day-num"><span>${cell.day}</span>${holidayName?`<span class="cal-holiday-name">${escHtml(holidayName)}</span>`:''}</div>
       <div class="cal-events">
-        ${evs.slice(0,maxShow).map(ev=>`<div class="cal-event-tag ec-${ev.colorIdx||0}" data-eid="${ev.id}">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
+        ${evs.slice(0,maxShow).map(ev=>{
+          const isMulti = !!ev.endDate;
+          const isStart = ev.date===cellStr;
+          const label = isMulti && !isStart ? '\u2194 '+ev.title.slice(0,4) : (ev.time?ev.time.slice(0,5)+' ':'')+escHtml(ev.title);
+          return `<div class="cal-event-tag ec-${ev.colorIdx||0}${isMulti?' multi-day':''}" data-eid="${ev.id}">${label}</div>`;
+        }).join('')}
         ${uniqueGcalEvs.slice(0, Math.max(0, maxShow - evs.length)).map(ev=>`<div class="cal-event-tag gcal-event" title="구글 캘린더">${ev.time?ev.time.slice(0,5)+' ':''}${escHtml(ev.title)}</div>`).join('')}
         ${allEvs.length>maxShow?`<div class="cal-more">+${allEvs.length-maxShow}개</div>`:''}
       </div>`;
     if(!cell.other) {
       d.addEventListener('click', e => { window.haptic?.light();
-        if(e.target.classList.contains('cal-event-tag')) {
-          openEventEdit(e.target.dataset.eid);
-        } else {
-          openEventSheet(null, cellStr);
-        }
+        openDayDetail(cellStr);
       });
     }
     calGrid.appendChild(d);
@@ -3106,6 +3119,7 @@ function openEventSheet(eventId, defaultDate) {
     if(ev) {
       document.getElementById('eventTitle').value = ev.title||'';
       document.getElementById('eventDate').value  = ev.date||'';
+      document.getElementById('eventEndDate').value = ev.endDate||'';
       document.getElementById('eventTime').value  = ev.time||'';
       document.getElementById('eventNote').value  = ev.note||'';
       selectedColorIdx = ev.colorIdx||0;
@@ -3114,6 +3128,7 @@ function openEventSheet(eventId, defaultDate) {
   } else {
     document.getElementById('eventTitle').value = '';
     document.getElementById('eventDate').value  = defaultDate||dateStr(new Date());
+    document.getElementById('eventEndDate').value = '';
     document.getElementById('eventTime').value  = '';
     document.getElementById('eventNote').value  = '';
     setAlarmUI('none');
@@ -3144,10 +3159,13 @@ document.getElementById('eventSave').addEventListener('click', async()=>{ window
 
   // alarm 저장
   const alarmData = (window.selectedAlarm ?? 'none') === 'none' ? null : window.selectedAlarm;
+  const timeVal = document.getElementById('eventTime').value || '';
+  const endDateVal = document.getElementById('eventEndDate').value || null;
   const data = {
     title,
     date:     document.getElementById('eventDate').value,
-    time:     document.getElementById('eventTime').value,
+    endDate:  endDateVal,
+    time:     timeVal,
     note:     document.getElementById('eventNote').value,
     colorIdx: selectedColorIdx,
     alarm:    alarmData,
@@ -5093,7 +5111,11 @@ function openDayDetail(dayStr) {
   const holiday = KR_HOLIDAYS[dayStr];
   const gcalHoliday = (typeof gcalImportedEvents !== 'undefined' ? gcalImportedEvents : []).find(e=>e.date===dayStr && e.isHoliday);
   const holidayName = holiday || (gcalHoliday ? gcalHoliday.title : null);
-  const appEvents = scheduleEvents.filter(e=>e.date===dayStr);
+  const appEvents = scheduleEvents.filter(e=>{
+    if(e.date===dayStr) return true;
+    if(e.endDate && dayStr > e.date && dayStr <= e.endDate) return true;
+    return false;
+  });
   const gcalEvs = (typeof gcalImportedEvents !== 'undefined' ? gcalImportedEvents : []).filter(e=>e.date===dayStr && !e.isHoliday);
   const appGcalIds = new Set(appEvents.map(e=>e.gcalEventId).filter(Boolean));
   const uniqueGcal = gcalEvs.filter(e=>!appGcalIds.has(e.gcalId));
@@ -5121,12 +5143,44 @@ function openDayDetail(dayStr) {
     contentEl.innerHTML = h;
   }
   contentEl.querySelectorAll('.day-detail-event').forEach(el=>{
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.closest('.dd-action-btn')) return;
       window.haptic?.light();
       const eid = el.dataset.eventId;
       const src = el.dataset.source;
       if(src==='app' && eid) { closeDayDetail(); setTimeout(()=>openEventEdit(eid), 150); }
       else if(src==='gcal') { if(confirm('구글 캘린더 이벤트입니다.\n구글 캘린더에서 수정하시겠습니까?')) window.open('https://calendar.google.com','_blank'); }
+    });
+  });
+  // 삭제 버튼 핸들러
+  contentEl.querySelectorAll('.dd-action-btn.del').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      window.haptic?.medium();
+      const eid = btn.dataset.eid;
+      if(!confirm('이 일정을 삭제하시겠습니까?')) return;
+      try {
+        await deleteDoc(eventPath(eid));
+        showToast('일정이 삭제되었습니다');
+      } catch(err) { console.error(err); showToast('삭제 실패'); }
+    });
+  });
+  // 날짜 이동 버튼 핸들러
+  contentEl.querySelectorAll('.dd-action-btn.move').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      window.haptic?.medium();
+      const eid = btn.dataset.eid;
+      const ev = scheduleEvents.find(ev=>ev.id===eid);
+      if(!ev) return;
+      const newDate = prompt('이동할 날짜를 입력하세요 (YYYY-MM-DD)', ev.date);
+      if(!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) { if(newDate!==null) showToast('올바른 날짜 형식이 아닙니다'); return; }
+      try {
+        await setDoc(eventPath(eid), { date: newDate, updatedAt: serverTimestamp() }, {merge:true});
+        closeDayDetail();
+        setTimeout(()=>openDayDetail(newDate), 200);
+        showToast(`일정이 ${newDate}로 이동되었습니다`);
+      } catch(err) { console.error(err); showToast('이동 실패'); }
     });
   });
   overlay.classList.remove('hidden');
@@ -5136,7 +5190,9 @@ function openDayDetail(dayStr) {
 function ddEventCard(ev) {
   const isGcal = ev.source==='gcal';
   const color = isGcal ? '#4285f4' : `var(--ec-${ev.colorIdx||0}, #6c63ff)`;
-  return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div><span style="color:var(--text3,#ccc);font-size:16px;margin-left:auto;">›</span></div>`;
+  const dateRange = ev.endDate ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">${ev.date} ~ ${ev.endDate}</div>` : '';
+  const actionBtns = !isGcal ? `<div class="dd-actions"><button class="dd-action-btn move" data-eid="${ev.id}" title="날짜이동">📅</button><button class="dd-action-btn del" data-eid="${ev.id}" title="삭제">🗑</button></div>` : '';
+  return `<div class="day-detail-event ${isGcal?'gcal':''}" data-event-id="${ev.id||''}" data-source="${ev.source}"><div class="day-detail-event-color" style="background:${color}"></div><div class="day-detail-event-body">${ev.time?`<div class="day-detail-event-time">🕐 ${ev.time}${ev.endTime?' - '+ev.endTime:''}</div>`:''}<div class="day-detail-event-title">${escHtml(ev.title)}</div>${dateRange}${ev.note||ev.memo?`<div class="day-detail-event-memo">${escHtml(ev.note||ev.memo)}</div>`:''}</div>${actionBtns}</div>`;
 }
 function closeDayDetail() {
   document.getElementById('dayDetailOverlay').classList.add('hidden');
