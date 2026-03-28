@@ -2209,6 +2209,19 @@ setTimeout(function() { window.__hideSplash && window.__hideSplash(); }, 15000);
             <span class="setting-arrow">›</span>
           </div>
         </div>
+        <div class="setting-group">
+          <div class="setting-item" id="settingInstallPwa" onclick="window.triggerPwaInstall?.()">
+            <span class="setting-icon">📲</span>
+            <span class="setting-label">앱 설치 (PWA)</span>
+            <span class="setting-value" id="pwaInstallStatus">설치 가능</span>
+            <span class="setting-arrow">›</span>
+          </div>
+          <div class="setting-item" onclick="window.open('https://jasoneye.com/synapse-brain.apk','_blank')">
+            <span class="setting-icon">🤖</span>
+            <span class="setting-label">Android APK 다운로드</span>
+            <span class="setting-arrow">›</span>
+          </div>
+        </div>
         <button class="setting-logout-btn" id="logoutBtn">로그아웃</button>
       </div>
     </div>
@@ -6311,12 +6324,39 @@ window.arcFormatDate = typeof arcFormatDate !== 'undefined' ? arcFormatDate : un
   // ══ 3) Android/Chrome 설치 버튼 (beforeinstallprompt) ══
   var deferredPrompt = null;
   var installBtn = document.getElementById('installBtn');
+  var pwaStatusEl = document.getElementById('pwaInstallStatus');
 
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
     if (installBtn) installBtn.style.display = 'block';
+    if (pwaStatusEl) pwaStatusEl.textContent = '설치 가능';
   });
+
+  // Setting 탭에서 PWA 설치 트리거
+  window.triggerPwaInstall = function() {
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      if (typeof showToast === 'function') showToast('이미 앱으로 설치되어 있습니다');
+      return;
+    }
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(choice) {
+        if (choice.outcome === 'accepted') {
+          if (typeof showToast === 'function') showToast('앱 설치 완료!');
+        }
+        deferredPrompt = null;
+      });
+    } else {
+      // iOS 또는 이미 설치된 경우
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isIOS) {
+        if (typeof showToast === 'function') showToast('Safari 하단 공유 버튼(\u2197) → 홈 화면에 추가');
+      } else {
+        if (typeof showToast === 'function') showToast('브라우저 메뉴에서 앱 설치를 선택하세요');
+      }
+    }
+  };
 
   if (installBtn) {
     installBtn.addEventListener('click', function() { haptic.medium();
@@ -6332,8 +6372,14 @@ window.arcFormatDate = typeof arcFormatDate !== 'undefined' ? arcFormatDate : un
   window.addEventListener('appinstalled', function() {
     if (installBtn) installBtn.style.display = 'none';
     deferredPrompt = null;
+    if (pwaStatusEl) pwaStatusEl.textContent = '설치됨';
     console.log('[PWA] 앱 설치 완료');
   });
+
+  // 이미 standalone 모드면 상태 업데이트
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    if (pwaStatusEl) pwaStatusEl.textContent = '설치됨';
+  }
 
   // ══ 4) iOS 홈화면 추가 안내 (사파리만, 스탠드얼론 아닐 때, 최대 2회) ══
   var isIOS        = /iphone|ipad|ipod/i.test(navigator.userAgent);
